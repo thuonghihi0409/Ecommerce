@@ -14,14 +14,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
+
       theme: ThemeData(
-
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),//
+        useMaterial3: true,//
+        // primarySwatch: Colors.blue,
+        // brightness: Brightness.light, // Chế độ sáng mặc định
       ),
+      darkTheme: ThemeData(
+        // primarySwatch: Colors.blue,
+        // brightness: Brightness.dark, // Chế độ tối
+      ),
+     // themeMode: ThemeMode.system, // Tự động thay đổi giữa sáng/tối
+
       home: LoginScreen(),
     );
   }
+
 }
 

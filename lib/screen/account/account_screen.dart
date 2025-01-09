@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/screen/Authentication/login_screen.dart';
+import 'package:thuongmaidientu/screen/account/purchase_history_screen.dart';
+import 'package:thuongmaidientu/screen/account/setting_screen.dart';
+import 'package:thuongmaidientu/service/picker_service.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -19,10 +22,30 @@ class AccountScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Avatar và tên người dùng
-              CircleAvatar(
-                radius: 50,
-               backgroundColor: Colors.deepPurple,
-               // backgroundImage: AssetImage('assets/avatar_placeholder.png'),
+              Stack(
+                children: [
+                  InkWell(
+                    child: Container(
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.deepPurple,
+                        // backgroundImage: AssetImage('assets/avatar_placeholder.png'),
+                      ),
+                    ),
+                    onTap: () {},
+                  ),
+                  Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: IconButton(
+                          onPressed: () {
+                            _showImagePickerDialog(context);
+                          },
+                          icon: Icon(
+                            Icons.camera_alt_outlined,
+                            color: Colors.black,
+                          ))),
+                ],
               ),
               SizedBox(height: 16),
               Text(
@@ -44,10 +67,16 @@ class AccountScreen extends StatelessWidget {
 
               // Danh sách các tùy chọn
               _buildAccountOption(Icons.settings, 'Cài đặt tài khoản', () {
-                // Xử lý nhấn vào
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AccountSettingsScreen()));
               }),
               _buildAccountOption(Icons.history, 'Lịch sử mua hàng', () {
-                // Xử lý nhấn vào
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PurchaseHistoryScreen()));
               }),
               _buildAccountOption(Icons.favorite, 'Danh sách yêu thích', () {
                 // Xử lý nhấn vào
@@ -62,8 +91,7 @@ class AccountScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => LoginScreen()),
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
                   );
                 },
                 icon: Icon(Icons.logout),
@@ -90,6 +118,45 @@ class AccountScreen extends StatelessWidget {
       ),
       trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
       onTap: onTap,
+    );
+  }
+
+  void _showImagePickerDialog(BuildContext context) {
+    PickerService pickerService = PickerService();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            color: Colors.black.withOpacity(0.6),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: const Text('Chọn từ thư viện'),
+                    leading: const Icon(Icons.photo_library),
+                    onTap: (){pickerService.pickMultipleFiles();},
+                  ),
+                  const SizedBox(height: 20),
+                  ListTile(
+                    title: const Text('Mở camera'),
+                    leading: const Icon(Icons.camera_alt_outlined),
+                    onTap: (){
+                      pickerService.captureImageFromCamera();
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
