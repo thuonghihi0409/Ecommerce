@@ -1,5 +1,5 @@
 
-class ProductModel {
+class Product {
   String? id;
   String? name;
   String? description;
@@ -10,7 +10,7 @@ class ProductModel {
   List<ColorItem>? colors;
   String? typeDetailsId;
   bool hidden;
-  ProductModel({
+  Product({
     this.id,
     this.name,
     this.description,
@@ -23,8 +23,8 @@ class ProductModel {
     required this.hidden,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
       id: json['_id'],
       name: json['name'],
       description: json['description'],

@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 2),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.4),
                   borderRadius: BorderRadius.circular(10),
@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
         ).createShader(bounds),
         child: Icon(
           icon,
-          size: 30,
+          size: 25,
           color: Colors.white,
         ),
       ),

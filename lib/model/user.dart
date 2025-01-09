@@ -1,5 +1,5 @@
 
-class UserModel {
+class User {
   late String? id;
   final String username;
   final String password;
@@ -11,7 +11,7 @@ class UserModel {
   late String? fullname;
   late String? image;
 
-  UserModel({
+  User({
     this.id,
     required this.username,
     required this.password,
@@ -39,8 +39,8 @@ class UserModel {
   }
 
 
-  static UserModel fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  static User fromJson(Map<String, dynamic> json) {
+    return User(
       id: json['_id'],
       username: json['username'],
       password: json['password'],
