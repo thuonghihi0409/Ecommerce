@@ -1,24 +1,16 @@
-class User {
-  late String? id;
-  final String username;
-  final String password;
-  late String? phone;
-  late String? email;
-  final String role;
-  late DateTime? birth;
-  late String? gender;
-  late String? fullname;
-  late String? image;
 
-  User({
-    this.id,
-    required this.username,
-    required this.password,
-    this.phone,
-    this.email,
-    required this.role,
-    this.birth,
-    this.gender,
-    this.fullname,
-    this.image,
-  });}
+import 'package:thuongmaidientu/features/auth/domain/entities/user.dart';
+
+class Conversation {
+  String conversationId;
+  User user1;
+  User user2;
+  Message? lastMessage ;
+  // Constructor
+  Conversation({
+    required this.conversationId,
+    required this.user1,
+    required this.user2,
+  });
+
+}

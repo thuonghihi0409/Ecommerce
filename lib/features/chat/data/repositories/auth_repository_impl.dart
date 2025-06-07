@@ -1,15 +1,10 @@
-import '../../domain/entities/user.dart';
+import '../../domain/entities/conversation.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_datasource.dart';
 
-class AuthRepositoryImpl implements AuthRepository {
-  final AuthRemoteDataSource remoteDataSource;
+class ChatRepositoryImpl implements AuthRepository {
+  final ChatRemoteDataSource remoteDataSource;
 
-  AuthRepositoryImpl(this.remoteDataSource);
+  ChatRepositoryImpl(this.remoteDataSource);
 
-  @override
-  Future<User> login(String email, String password) async {
-    final userModel = await remoteDataSource.login(email, password);
-    return userModel;
-  }
 }

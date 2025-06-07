@@ -1,26 +1,26 @@
-import '../models/user_model.dart';
+import '../models/conversation_model.dart';
 
 import 'package:dio/dio.dart';
 
 
-abstract class AuthRemoteDataSource {
-  Future<UserModel> login(String email, String password);
+abstract class ChatRemoteDataSource {
+  Future<ConversationModel> login(String email, String password);
 }
 
-class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+class AuthRemoteDataSourceImpl implements ChatRemoteDataSource {
   final Dio dio;
 
   AuthRemoteDataSourceImpl(this.dio);
 
   @override
-  Future<UserModel> login(String email, String password) async {
+  Future<ConversationModel> login(String email, String password) async {
     final response = await dio.post(
       '/login',
       data: {'email': email, 'password': password},
     );
 
     if (response.statusCode == 200) {
-      return UserModel.fromJson(response.data);
+      return ConversationModel.fromJson(response.data);
     } else {
       throw Exception('Login failed');
     }

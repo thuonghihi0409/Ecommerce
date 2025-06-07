@@ -5,15 +5,15 @@ import 'package:thuongmaidientu/features/chat/domain/entities/conversation.dart'
 
 class ConversationModel  extends Conversation{
   
-  Conversation({
-    required this.conversationId,
-    required this.user1,
-    required this.user2,
+  ConversationModel({
+    required super.conversationId,
+    required super.user1,
+    required super.user2,
   });
 
   // From JSON
-  factory Conversation.fromJson(Map<String, dynamic> json) {
-    return Conversation(
+  factory ConversationModel.fromJson(Map<String, dynamic> json) {
+    return ConversationModel(
       conversationId: json['conversationId'],
       user1: UserModel.fromJson(json['user1']),
       user2: UserModel.fromJson(json['user2']),
