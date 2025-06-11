@@ -1,4 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:thuongmaidientu/shared/utils/extension.dart';
+import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,7 +18,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
-  bool _showPassword = false;
+  late FocusNode _usernameNode;
+  late FocusNode _emailNode;
+  late FocusNode _passwordNode;
+  late FocusNode _confirmPasswordNode;
+  final bool _showPassword = false;
 
   @override
   void initState() {
@@ -22,6 +31,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
+    _usernameNode = FocusNode();
+    _emailNode = FocusNode();
+    _passwordNode = FocusNode();
+    _confirmPasswordNode = FocusNode();
   }
 
   @override
@@ -30,132 +43,113 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _usernameNode.dispose();
+    _emailNode.dispose();
+    _passwordNode.dispose();
+    _confirmPasswordNode.dispose();
     super.dispose();
   }
 
   void _submit() {
-    if (_formKey.currentState!.validate()) {
-      // Xử lý logic đăng ký tại đây
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Đăng ký thành công!")),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Đăng ký thành công!")),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("ĐĂNG KÝ"),
-        backgroundColor: Colors.green,
-        centerTitle: true,
+      appBar: CustomAppBar(
+        title: "key_register".tr(),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Tạo tài khoản mới",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            50.h,
+            CustomTextField(
+                prefixIcon: const Icon(Icons.person_2_outlined),
+                labelText: "key_name".tr(),
                 controller: _usernameController,
-                decoration: const InputDecoration(
-                  labelText: "Tên đăng nhập",
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Tên đăng nhập không được để trống";
-                  }
-                  return null;
+                focusNode: _usernameNode,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (p0) {
+                  _emailNode.requestFocus();
                 },
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
-                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Email không được để trống";
                   }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return "Email không hợp lệ";
-                  }
                   return null;
-                },
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: !_showPassword,
-                decoration: InputDecoration(
-                  labelText: "Mật khẩu",
-                  border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _showPassword ? Icons.visibility_off : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _showPassword = !_showPassword;
-                      });
-                    },
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Mật khẩu không được để trống";
-                  }
-                  if (value.length < 6) {
-                    return "Mật khẩu phải chứa ít nhất 6 ký tự";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: _confirmPasswordController,
-                obscureText: !_showPassword,
-                decoration: const InputDecoration(
-                  labelText: "Xác nhận mật khẩu",
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock),
-                ),
-                validator: (value) {
-                  if (value != _passwordController.text) {
-                    return "Mật khẩu xác nhận không khớp";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                  ),
-                  child: const Text(
-                    "Đăng ký",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-            ],
-          ),
+                }),
+            15.h,
+            CustomTextField(
+              prefixIcon: const Icon(Icons.email_outlined),
+              labelText: "key_email".tr(),
+              controller: _emailController,
+              focusNode: _emailNode,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (p0) {
+                _passwordNode.requestFocus();
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Email không được để trống";
+                }
+                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                  return "Email không hợp lệ";
+                }
+                return null;
+              },
+            ),
+            15.h,
+            CustomTextField(
+              isPassword: true,
+              prefixIcon: const Icon(Icons.lock_outline),
+              labelText: "key_password".tr(),
+              controller: _passwordController,
+              focusNode: _passwordNode,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (p0) {
+                _confirmPasswordNode.requestFocus();
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Mật khẩu không được để trống";
+                }
+                if (value.length < 6) {
+                  return "Mật khẩu phải chứa ít nhất 6 ký tự";
+                }
+                return null;
+              },
+            ),
+            15.h,
+            CustomTextField(
+              isPassword: true,
+              prefixIcon: const Icon(Icons.lock_outlined),
+              labelText: "key_confirm_password".tr(),
+              controller: _confirmPasswordController,
+              focusNode: _confirmPasswordNode,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (p0) {
+                _submit();
+              },
+              validator: (value) {
+                if (value != _passwordController.text) {
+                  return "Mật khẩu xác nhận không khớp";
+                }
+                return null;
+              },
+            ),
+            50.h,
+            CustomButton(
+              text: "key_register".tr(),
+              onPressed: () {
+                _submit();
+              },
+            )
+          ],
         ),
       ),
     );

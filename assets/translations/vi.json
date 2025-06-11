@@ -1,0 +1,18 @@
+{
+    "key_login":"Đăng nhập",
+    "key_welcome": "Chào mừng",
+    "key_username": "Tên đăng nhập",
+    "key_password": "Mật khẩu",
+    "key_forgot_password": "Quên mật khẩu?",
+    "key_register": "Đăng ký",
+    "key_are_you_have_the_account": "Bạn có tài khoản không?",
+    "key_login_with": "Đăng nhập với",
+    "key_email": "Email",
+    "key_send_request": "Gửi yêu cầu",
+    "key_back_login":"Quay lại trang đăng nhập",
+    "key_reset_password": "Khôi phục mật khẩu",
+    "key_name": "Tên",
+    "key_confirm_password": "Nhập lại mật khẩu",
+    "key_skip": "Bỏ qua",
+    "key_technology_product":"Sản phẩm công nghệ"
+}

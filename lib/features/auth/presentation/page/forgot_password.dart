@@ -1,4 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:thuongmaidientu/core/app_color.dart';
+import 'package:thuongmaidientu/core/app_text_style.dart';
+import 'package:thuongmaidientu/shared/utils/extension.dart';
+import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart'
+    show CustomAppBar;
+import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -8,8 +16,6 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPassword> {
-  @override
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _emailController;
 
   @override
@@ -25,83 +31,60 @@ class _ForgotPasswordScreenState extends State<ForgotPassword> {
   }
 
   void _submit() {
-    if (_formKey.currentState!.validate()) {
-      // Xử lý logic gửi email khôi phục mật khẩu tại đây
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Vui lòng kiểm tra email để đặt lại mật khẩu!")),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+          content: Text("Vui lòng kiểm tra email để đặt lại mật khẩu!")),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("QUÊN MẬT KHẨU"),
-        backgroundColor: Colors.amber,
-        centerTitle: true,
+      appBar: CustomAppBar(
+        title: "key_forgot_password".tr(),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Khôi phục mật khẩu",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            50.h,
+            Text(
+              "key_reset_password".tr(),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            30.h,
+            CustomTextField(
+              labelText: "key_email".tr(),
+              prefixIcon: const Icon(Icons.email_outlined),
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Email không được để trống";
+                }
+                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                  return "Email không hợp lệ";
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            CustomButton(
+              text: "key_send_request".tr(),
+              onPressed: _submit,
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "key_back_login".tr(),
+                style: AppTextStyles.textSize18(color: AppColor.primary),
               ),
-              const SizedBox(height: 20),
-              const Text(
-                "Nhập địa chỉ email của bạn, chúng tôi sẽ gửi một đường dẫn để đặt lại mật khẩu.",
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Email không được để trống";
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return "Email không hợp lệ";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                  ),
-                  child: const Text(
-                    "Gửi yêu cầu",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Quay lại đăng nhập",
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

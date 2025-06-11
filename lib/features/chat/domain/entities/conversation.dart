@@ -1,5 +1,6 @@
 
 import 'package:thuongmaidientu/features/auth/domain/entities/user.dart';
+import 'package:thuongmaidientu/features/chat/domain/entities/message.dart';
 
 class Conversation {
   String conversationId;
