@@ -71,20 +71,20 @@ class ImageModel extends ImageItem {
 }
 
 class VariantModel extends Variant {
-  VariantModel({
-    required super.id,
-    required super.name,
-    required super.price,
-    required super.stock,
-  });
+  VariantModel(
+      {required super.id,
+      required super.name,
+      required super.price,
+      required super.stock,
+      required super.cover});
 
   factory VariantModel.fromJson(Map<String, dynamic> json) {
     return VariantModel(
-      id: json['id'],
-      name: json['name'],
-      price: (json['price'] as num).toDouble(),
-      stock: json['stock'],
-    );
+        id: json['id'],
+        name: json['name'],
+        price: (json['price'] as num).toDouble(),
+        stock: json['stock'],
+        cover: json['cover'] ?? "");
   }
 
   Map<String, dynamic> toJson() {

@@ -112,12 +112,14 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
       "images": [
         {
           "id": "img001",
-          "url": "https://example.com/images/laptop_front.jpg",
+          "url":
+              "https://aurora.edu.vn/wp-content/uploads/2023/05/lukas_blazek_mc_S_Dtb_WXUZU_unsplash_7bc2fc449a.jpg",
           "alt": "Laptop góc trước"
         },
         {
           "id": "img002",
-          "url": "https://example.com/images/laptop_side.jpg",
+          "url":
+              "https://techlandshop.com/wp-content/uploads/camera-yoosee-00-300x300.jpg",
           "alt": "Laptop góc nghiêng"
         }
       ],
@@ -126,13 +128,17 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
           "id": "v001",
           "name": "RAM 16GB / SSD 512GB",
           "price": 2499.99,
-          "stock": 10
+          "stock": 10,
+          "cover":
+              "https://techlandshop.com/wp-content/uploads/camera-yoosee-00-300x300.jpg",
         },
         {
           "id": "v002",
           "name": "RAM 32GB / SSD 1TB",
           "price": 2999.99,
-          "stock": 5
+          "stock": 5,
+          "cover":
+              "https://aurora.edu.vn/wp-content/uploads/2023/05/lukas_blazek_mc_S_Dtb_WXUZU_unsplash_7bc2fc449a.jpg",
         }
       ]
     };

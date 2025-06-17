@@ -38,14 +38,15 @@ class ImageItem {
 
 class Variant {
   final String id;
+  final String cover;
   final String name;
   final double price;
   final int stock;
 
-  Variant({
-    required this.id,
-    required this.name,
-    required this.price,
-    required this.stock,
-  });
+  Variant(
+      {required this.id,
+      required this.name,
+      required this.price,
+      required this.stock,
+      required this.cover});
 }

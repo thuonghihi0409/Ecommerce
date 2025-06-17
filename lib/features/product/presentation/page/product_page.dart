@@ -2,7 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
+import 'package:thuongmaidientu/features/product/presentation/page/product_detail_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
+import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 
@@ -67,7 +69,11 @@ class _ProductPageState extends State<ProductPage> {
                     final product = state.listProduct.results?[index];
                     return ProductCard(
                       product: product!,
-                      onTap: () {},
+                      onTap: () {
+                        NavigationService.instance.push(ProductDetailPage(
+                          product: product,
+                        ));
+                      },
                     );
                   },
                 ),

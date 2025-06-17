@@ -44,6 +44,10 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   cached_network_image: ^3.4.1
   flutter_spinkit: ^5.2.1
+  firebase_core: ^3.14.0
+  firebase_auth: ^5.6.0
+  firebase_storage: ^12.4.7
+  cloud_firestore: ^5.6.9
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -43,6 +43,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       emit(state.copyWith(isGetDetail: true));
       final listProduct = await getProductDetailUsecase.call();
+      await Future.delayed(const Duration(seconds: 2));
       emit(state.copyWith(
           isGetDetail: false,
           productDetailModel: listProduct,
