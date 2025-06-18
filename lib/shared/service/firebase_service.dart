@@ -95,4 +95,70 @@ class FirebaseService {
   Future<void> deleteFile(String path) {
     return _storage.ref().child(path).delete();
   }
+
+  // Future<void> addProductToCart({
+  //   required String userId,
+  //   required CartItemModel newItem,
+  // }) async {
+  //   final cartRef = _firestore
+  //       .collection('users')
+  //       .doc(userId)
+  //       .collection('cart')
+  //       .doc(newItem.storeId);
+
+  //   final doc = await cartRef.get();
+
+  //   if (doc.exists) {
+  //     final data = doc.data()!;
+  //     final List<dynamic> currentItems = data['items'] ?? [];
+
+  //     final index = currentItems.indexWhere(
+  //       (e) =>
+  //           e['productId'] == newItem.productId &&
+  //           e['variant']['id'] == newItem.variant.id,
+  //     );
+
+  //     if (index != -1) {
+  //       // Đã có trong giỏ, cập nhật số lượng
+  //       currentItems[index]['quantity'] += newItem.quantity;
+  //     } else {
+  //       // Chưa có, thêm mới
+  //       currentItems.add(newItem.toJson());
+  //     }
+
+  //     await cartRef.update({'items': currentItems});
+  //   } else {
+  //     // Chưa có store trong giỏ
+  //     await cartRef.set({
+  //       'storeName': newItem.storeName,
+  //       'items': [newItem.toMap()],
+  //     });
+  //   }
+  // }
+
+  // Future<List<CartItemModel>> getCartItemsByStore({
+  //   required String userId,
+  //   required String storeId,
+  // }) async {
+  //   final doc = await _firestore
+  //       .collection('users')
+  //       .doc(userId)
+  //       .collection('cart')
+  //       .doc(storeId)
+  //       .get();
+
+  //   if (!doc.exists) return [];
+
+  //   final data = doc.data()!;
+  //   final List items = data['items'] ?? [];
+  //   return items.map((e) => CartItemModel.fromjson(e)).toList();
+  // }
+
+  // Future<void> clearCart(String userId) async {
+  //   final cartCollection = _firestore.collection('users').doc(userId).collection('cart');
+  //   final cartDocs = await cartCollection.get();
+  //   for (var doc in cartDocs.docs) {
+  //     await doc.reference.delete();
+  //   }
+  // }
 }

@@ -1,29 +1,34 @@
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
 
 class ProductDetailModel extends ProductDetail {
-  ProductDetailModel({
-    required super.productId,
-    required super.productName,
-    required super.description,
-    required super.price,
-    required super.storeId,
-    required super.categoryId,
-    required super.createdAt,
-    required super.updatedAt,
-    required super.images,
-    required super.variants,
-  });
+  ProductDetailModel(
+      {required super.productId,
+      required super.productName,
+      required super.description,
+      required super.price,
+      required super.storeId,
+      required super.categoryId,
+      required super.createdAt,
+      required super.updatedAt,
+      required super.images,
+      required super.variants,
+      required super.avgRating,
+      required super.totalRating,
+      required super.totalSold});
 
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
     return ProductDetailModel(
-      productId: json['productId'],
-      productName: json['productName'],
+      totalRating: json['total_rating'],
+      avgRating: json['avg_rating'],
+      totalSold: json['total_sold'],
+      productId: json['product_id'],
+      productName: json['product_name'],
       description: json['description'],
       price: (json['price'] as num).toDouble(),
-      storeId: json['storeId'],
-      categoryId: json['categoryId'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      storeId: json['store_id'],
+      categoryId: json['category_id'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
       images:
           (json['images'] as List).map((e) => ImageModel.fromJson(e)).toList(),
       variants: (json['variants'] as List)
@@ -34,14 +39,17 @@ class ProductDetailModel extends ProductDetail {
 
   Map<String, dynamic> toJson() {
     return {
-      'productId': productId,
-      'productName': productName,
+      'product_id': productId,
+      'product_name': productName,
       'description': description,
       'price': price,
-      'storeId': storeId,
-      'categoryId': categoryId,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'store_id': storeId,
+      'category_id': categoryId,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+      'total_rating': totalRating,
+      'total_sold': totalSold,
+      'avg_rating': avgRating
     };
   }
 }

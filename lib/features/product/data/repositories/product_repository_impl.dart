@@ -1,4 +1,5 @@
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
 import '../../domain/entities/product.dart';
@@ -20,5 +21,17 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<ProductDetail> getProductDetail() async {
     final productdetail = await remoteDataSource.getProductDetail();
     return productdetail;
+  }
+
+  @override
+  Future<Store> getStore() async {
+    final store = await remoteDataSource.getStore();
+    return store;
+  }
+
+  @override
+  Future<List<Product>> getListProductSummerice() async {
+    final productModels = await remoteDataSource.getListProductSummerice();
+    return productModels;
   }
 }

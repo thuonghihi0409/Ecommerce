@@ -2,8 +2,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/product/domain/usecases/get_list_product_summerice_usecase.dart';
 import 'package:thuongmaidientu/features/product/domain/usecases/get_list_product_usecase.dart';
 import 'package:thuongmaidientu/features/product/domain/usecases/get_product_detail_usecase.dart';
+import 'package:thuongmaidientu/features/product/domain/usecases/get_store_usecase.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
@@ -12,9 +15,12 @@ part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  final GetListProductUseCase getListProductUseCase;
-  final GetProductDetailUsecase getProductDetailUsecase;
-  ProductBloc(this.getListProductUseCase, this.getProductDetailUsecase)
+  final GetListProductUseCase _getListProductUseCase;
+  final GetProductDetailUsecase _getProductDetailUsecase;
+  final GetStoreUsecase _getStoreUsecase;
+  final GetListProductSummericeUseCase _getListProductSummericeUseCase;
+  ProductBloc(this._getListProductUseCase, this._getProductDetailUsecase,
+      this._getStoreUsecase, this._getListProductSummericeUseCase)
       : super(ProductState.empty()) {
     on<GetListProduct>(_getListProduct);
     on<GetListCategory>(_getListCategory);
@@ -24,8 +30,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   void _getListProduct(GetListProduct event, Emitter<ProductState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await Future.delayed(const Duration(seconds: 2));
-      final listProduct = await getListProductUseCase.call();
+      await Future.delayed(const Duration(seconds: 1));
+      final listProduct = await _getListProductUseCase.call();
       emit(state.copyWith(isLoading: false, listProduct: listProduct));
     } catch (e) {
       emit(state.copyWith(
@@ -38,16 +44,21 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   void _getListCategory(
       GetListCategory event, Emitter<ProductState> emit) async {}
+
   void _getProductDetail(
       GetProductDetail event, Emitter<ProductState> emit) async {
     try {
       emit(state.copyWith(isGetDetail: true));
-      final listProduct = await getProductDetailUsecase.call();
-      await Future.delayed(const Duration(seconds: 2));
+      final product = await _getProductDetailUsecase.call();
+      final store = await _getStoreUsecase.call();
+      final listSummerice = await _getListProductSummericeUseCase.call();
+      await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(
           isGetDetail: false,
-          productDetailModel: listProduct,
-          getProductDetailError: ""));
+          productDetailModel: product,
+          getProductDetailError: "",
+          store: store,
+          listProductSummerice: listSummerice));
     } catch (e) {
       emit(state.copyWith(
           isGetDetail: false,

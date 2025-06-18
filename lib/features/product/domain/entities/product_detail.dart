@@ -9,19 +9,24 @@ class ProductDetail {
   final DateTime updatedAt;
   final List<ImageItem> images;
   final List<Variant> variants;
+  final double avgRating;
+  final int totalSold;
+  final int totalRating;
 
-  ProductDetail({
-    required this.productId,
-    required this.productName,
-    required this.description,
-    required this.price,
-    required this.storeId,
-    required this.categoryId,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.images,
-    required this.variants,
-  });
+  ProductDetail(
+      {required this.productId,
+      required this.productName,
+      required this.description,
+      required this.price,
+      required this.storeId,
+      required this.categoryId,
+      required this.createdAt,
+      required this.updatedAt,
+      required this.images,
+      required this.variants,
+      required this.avgRating,
+      required this.totalRating,
+      required this.totalSold});
 }
 
 class ImageItem {

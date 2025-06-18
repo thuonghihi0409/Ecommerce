@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 
@@ -20,6 +21,8 @@ class _InitPageState extends State<InitPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+      color: AppColor.primary,
+    );
   }
 }

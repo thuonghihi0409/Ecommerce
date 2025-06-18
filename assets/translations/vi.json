@@ -14,5 +14,15 @@
     "key_name": "Tên",
     "key_confirm_password": "Nhập lại mật khẩu",
     "key_skip": "Bỏ qua",
-    "key_technology_product":"Sản phẩm công nghệ"
+    "key_technology_product":"Sản phẩm công nghệ",
+    "key_chat":"Chat",
+    "key_buy_now":"Mua ngay",
+    "key_add_to_cart": "Giỏ hàng",
+    "key_solded": "Đã bán",
+    "key_review": "Đánh giá",
+    "key_view_all": "Xem tất cả",
+    "key_view_store": "Xem shop",
+    "key_stock": "Kho",
+    "key_product": "Sản phẩm",
+    "key_cart": "Giỏ hàng"
 }

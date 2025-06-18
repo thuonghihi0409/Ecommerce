@@ -14,6 +14,101 @@ enum PickerType { takePhoto, gallery, video, recordVideo }
 
 class Helper {
   /// Use when showing custom dialog
+
+  static void showCustomBottomSheet({
+    required BuildContext context,
+    String? message,
+    Function()? onClose,
+    bool isShowSecondButton = false,
+    Function()? onPressPrimaryButton,
+    Function()? onPressSecondButton,
+    String? labelPrimary,
+    String? labelSecondary,
+    Widget? headerCustom,
+    ValueNotifier<bool>? isDisablePrimaryButton,
+    bool isScrollControlled = true,
+    bool isDismissible = true,
+    bool enableDrag = true,
+  }) {
+    final disableNotifier = isDisablePrimaryButton ?? ValueNotifier(false);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: isScrollControlled,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            top: 16,
+          ),
+          child: ValueListenableBuilder<bool>(
+            valueListenable: disableNotifier,
+            builder: (context, isDisabled, _) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header (icon, title...)
+                  if (headerCustom != null) headerCustom,
+
+                  // Nội dung thông báo
+                  if (message != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Text(
+                        message,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+
+                  // Nút hành động
+                  if (onPressPrimaryButton != null)
+                    Row(
+                      children: [
+                        // Nút phụ
+                        if (isShowSecondButton)
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: onPressSecondButton,
+                              child: Text(labelSecondary ?? 'Cancel'),
+                            ),
+                          ),
+
+                        if (isShowSecondButton) const SizedBox(width: 12),
+
+                        // Nút chính
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: isDisabled ? null : onPressPrimaryButton,
+                            child: Text(labelPrimary ?? 'Confirm'),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                  // Close icon hoặc hành động đóng
+                  if (onClose != null)
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        onClose();
+                      },
+                      child: const Text('Close'),
+                    ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   static void showCustomDialog({
     required BuildContext context,
     String? message,

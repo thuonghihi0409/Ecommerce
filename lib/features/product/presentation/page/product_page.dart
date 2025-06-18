@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/product_detail_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
@@ -42,7 +43,9 @@ class _ProductPageState extends State<ProductPage> {
           showLeading: false,
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  NavigationService.instance.push(const CartPage());
+                },
                 icon: const Icon(Icons.add_shopping_cart_outlined))
           ],
         ),

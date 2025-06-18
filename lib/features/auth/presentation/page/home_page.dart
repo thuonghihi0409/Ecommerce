@@ -3,7 +3,6 @@ import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/product_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/account_screen.dart';
 import 'package:thuongmaidientu/screen/Notification/notification_screen.dart';
-import 'package:thuongmaidientu/screen/live/live_screen.dart';
 import 'package:thuongmaidientu/screen/videos/videos_screen.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,7 +18,6 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _screens = [
     const ProductPage(),
-    const LiveScreen(),
     const VideosScreen(),
     const NotificationScreen(),
     const AccountScreen()
@@ -60,11 +58,6 @@ class _HomePageState extends State<HomePage> {
               icon: Icons.home_outlined,
               index: 0,
               label: 'Trang Chu',
-            ),
-            _buildNavItem(
-              icon: Icons.video_call,
-              index: 1,
-              label: 'Live',
             ),
             _buildNavItem(
               icon: Icons.live_tv_outlined,

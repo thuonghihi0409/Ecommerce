@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/init_page.dart';
+import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/get_it.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
@@ -20,9 +21,10 @@ void main() async {
       path: 'assets/translations',
       fallbackLocale: const Locale('vi'),
       child: OverlaySupport.global(
-        child: MultiBlocProvider(
-            providers: [BlocProvider(create: (_) => sl<ProductBloc>())],
-            child: const MyApp()),
+        child: MultiBlocProvider(providers: [
+          BlocProvider(create: (_) => sl<ProductBloc>()),
+          BlocProvider(create: (_) => sl<CartBloc>())
+        ], child: const MyApp()),
       )));
 }
 
