@@ -2,6 +2,7 @@ part of 'product_bloc.dart';
 
 class ProductState extends Equatable {
   final ListModel<Product> listProduct;
+  final List<Category>? listCategory;
   final ProductDetail? productDetailModel;
   final Store? store;
   final List<Product>? productSummerice;
@@ -14,6 +15,7 @@ class ProductState extends Equatable {
   const ProductState(
       {required this.listProduct,
       this.productDetailModel,
+      this.listCategory,
       this.getProductDetailError = '',
       this.isGetDetail = false,
       this.isLoading = false,
@@ -24,16 +26,16 @@ class ProductState extends Equatable {
 
   factory ProductState.empty() {
     return const ProductState(
-      listProduct: ListModel(),
-      isGetDetail: false,
-      getProductDetailError: "",
-      productDetailModel: null,
-      isLoading: false,
-      isLoadingMore: false,
-      isRefreshing: false,
-      productSummerice: [],
-      store: null,
-    );
+        listProduct: ListModel(),
+        isGetDetail: false,
+        getProductDetailError: "",
+        productDetailModel: null,
+        isLoading: false,
+        isLoadingMore: false,
+        isRefreshing: false,
+        productSummerice: null,
+        store: null,
+        listCategory: null);
   }
 
   ProductState copyWith(
@@ -45,7 +47,8 @@ class ProductState extends Equatable {
       bool? isLoadingMore,
       bool? isRefreshing,
       List<Product>? listProductSummerice,
-      Store? store}) {
+      Store? store,
+      List<Category>? listCategory}) {
     return ProductState(
         listProduct: listProduct ?? this.listProduct,
         isLoading: isLoading ?? this.isLoading,
@@ -56,7 +59,8 @@ class ProductState extends Equatable {
         getProductDetailError:
             getProductDetailError ?? this.getProductDetailError,
         productSummerice: listProductSummerice ?? productSummerice,
-        store: store ?? this.store);
+        store: store ?? this.store,
+        listCategory: listCategory ?? this.listCategory);
   }
 
   @override
@@ -69,6 +73,7 @@ class ProductState extends Equatable {
         productDetailModel,
         getProductDetailError,
         productSummerice,
-        store
+        store,
+        listCategory
       ];
 }

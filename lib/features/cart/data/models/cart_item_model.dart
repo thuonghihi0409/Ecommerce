@@ -11,7 +11,7 @@ class CartItemModel extends CartItem {
   factory CartItemModel.fromJson(Map<String, dynamic> map) {
     return CartItemModel(
       store: StoreModel.fromJson(map['store']),
-      productItem: (map['productItem'] as List)
+      productItem: (map['product_item'] as List)
           .map((item) => ProductItemModel.fromJson(item))
           .toList(),
     );
@@ -20,7 +20,7 @@ class CartItemModel extends CartItem {
   Map<String, dynamic> toJson() {
     return {
       'store': (store as StoreModel).toJson(),
-      'productItem': productItem
+      'product_item': productItem
           .map((item) => (item as ProductItemModel).toMap())
           .toList(),
     };

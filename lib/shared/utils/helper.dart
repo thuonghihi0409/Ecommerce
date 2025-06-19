@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -268,11 +267,8 @@ class Helper {
       return '${(number / 1000000000).toStringAsFixed(1)}B';
     } else if (number >= 1000000) {
       return '${(number / 1000000).toStringAsFixed(1)}M';
-    } else if (number >= 10000) {
-      return '${(number / 1000).toStringAsFixed(1)}k';
     } else if (number >= 1000) {
-      final formatter = NumberFormat("#,###");
-      return formatter.format(number);
+      return '${(number / 1000).toStringAsFixed(1)}k';
     } else {
       return number.toString();
     }

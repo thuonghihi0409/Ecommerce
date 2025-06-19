@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
@@ -130,11 +132,60 @@ class _CustomTextFieldState extends State<CustomTextField> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide:
-                  BorderSide(color: defaultFocusedBorderColor, width: 2),
+                  BorderSide(color: defaultFocusedBorderColor, width: 1),
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class CustomSearchField extends StatefulWidget {
+  final String? hintText;
+  final void Function(String)? onSearchChanged;
+  final TextEditingController? controller;
+
+  const CustomSearchField({
+    super.key,
+    this.hintText,
+    this.onSearchChanged,
+    this.controller,
+  });
+
+  @override
+  State<CustomSearchField> createState() => _CustomSearchFieldState();
+}
+
+class _CustomSearchFieldState extends State<CustomSearchField> {
+  Timer? _debounce;
+
+  void _onChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (widget.onSearchChanged != null) {
+        widget.onSearchChanged!(value);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomTextField(
+      controller: widget.controller,
+      hintText: widget.hintText ?? 'Tìm kiếm...',
+      prefixIcon: const Icon(Icons.search),
+      onChanged: _onChanged,
+      borderColor: Colors.blue,
+      focusedBorderColor: Colors.blue,
+      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/add_cart_widget.dart';
+import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -51,6 +54,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       }),
       child: Scaffold(
         appBar: CustomAppBar(
+          title: "key_product_detail".tr(),
           actions: [
             IconButton(
                 onPressed: () {}, icon: const Icon(Icons.share_outlined)),
@@ -58,9 +62,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 onPressed: () {
                   NavigationService.instance.push(const CartPage());
                 },
-                icon: const Icon(Icons.add_shopping_cart_outlined)),
+                icon: SvgPicture.asset(
+                  AppAssets.chatIcon,
+                  height: 25,
+                  width: 25,
+                )),
             IconButton(
-                onPressed: () {}, icon: const Icon(Icons.more_vert_outlined)),
+                onPressed: () {
+                  NavigationService.instance.push(const CartPage());
+                },
+                icon: SvgPicture.asset(
+                  AppAssets.cartIcon,
+                  height: 25,
+                  width: 25,
+                )),
           ],
         ),
         body: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
@@ -232,6 +247,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ),
                         ),
                         20.h,
+                        Center(
+                          child: Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: (state.productSummerice ?? [])
+                                .map((item) => SizedBox(
+                                      width: context.widthScreen * 0.47,
+                                      child: ProductCard(
+                                          product: item,
+                                          onTap: () {
+                                            // NavigationService.instance.replace(
+                                            //     ProductDetailPage(product: item));
+                                          }),
+                                    ))
+                                .toList(),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -275,6 +308,26 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         child: CustomButton(
                       text: "key_buy_now".tr(),
                       borderRadius: 0,
+                      onPressed: () {
+                        Helper.showCustomBottomSheet(
+                          headerCustom: Column(
+                            children: [
+                              AddCartWidget(
+                                  productDetail: state.productDetailModel),
+                              CustomButton(
+                                text: "key_buy_now".tr(),
+                                onPressed: () {
+                                  BlocProvider.of<CartBloc>(context)
+                                      .add(const AddToCart());
+                                  NavigationService.instance.goBack();
+                                },
+                              ),
+                              10.h
+                            ],
+                          ),
+                          context: context,
+                        );
+                      },
                     )),
                   ],
                 )

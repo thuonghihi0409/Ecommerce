@@ -10,7 +10,7 @@ class ProductItemModel extends ProductItem {
 
   factory ProductItemModel.fromJson(Map<String, dynamic> map) {
     return ProductItemModel(
-      productDetail: ProductDetailModel.fromJson(map['productDetail']),
+      productDetail: ProductDetailModel.fromJson(map['product_detail']),
       variant: VariantModel.fromJson(map['variant']),
       number: map['number'] ?? 1,
     );
@@ -18,7 +18,7 @@ class ProductItemModel extends ProductItem {
 
   Map<String, dynamic> toMap() {
     return {
-      'productDetail': (productDetail as ProductDetailModel).toJson(),
+      'product_detail': (productDetail as ProductDetailModel).toJson(),
       'variant': (variant as VariantModel).toJson(),
       'number': number,
     };

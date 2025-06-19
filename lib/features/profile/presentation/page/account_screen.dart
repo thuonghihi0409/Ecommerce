@@ -3,6 +3,7 @@ import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart'
 import 'package:thuongmaidientu/features/profile/presentation/page/purchase_history_screen.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/setting_screen.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
+import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -10,11 +11,9 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tài khoản của tôi',
-            style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-        backgroundColor: Colors.cyan,
+      appBar: const CustomAppBar(
+        title: 'Cài đặt',
+        showLeading: false,
       ),
       body: SingleChildScrollView(
         child: Padding(

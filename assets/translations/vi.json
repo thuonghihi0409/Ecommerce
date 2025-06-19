@@ -24,5 +24,7 @@
     "key_view_store": "Xem shop",
     "key_stock": "Kho",
     "key_product": "Sản phẩm",
-    "key_cart": "Giỏ hàng"
+    "key_cart": "Giỏ hàng",
+    "key_confirm": "Xác nhận",
+    "key_product_detail": "Chi tiết sản phẩm"
 }

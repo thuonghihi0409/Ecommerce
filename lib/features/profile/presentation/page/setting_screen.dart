@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/change_password_screen.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/update_profile_screen.dart';
-
+import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -17,10 +17,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.cyan,
-        title: const Text('Cài đặt tài khoản'),
-      ),
+      appBar: const CustomAppBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

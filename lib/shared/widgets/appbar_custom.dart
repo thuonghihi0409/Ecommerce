@@ -10,6 +10,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final List<Widget>? actions;
   final double height;
+  final Widget? customTitle;
 
   const CustomAppBar({
     super.key,
@@ -19,6 +20,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showLeading = true,
     this.leading,
     this.actions,
+    this.customTitle,
     this.height = kToolbarHeight,
   });
 
@@ -28,13 +30,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: title != null
-          ? Text(
-              title!,
-              style: titleStyle ??
-                  AppTextStyles.textSize18(fontWeight: FontWeight.w400),
-            )
-          : null,
+      title: customTitle ??
+          (title != null
+              ? Text(
+                  title!,
+                  style: titleStyle ??
+                      AppTextStyles.textSize18(fontWeight: FontWeight.w400),
+                )
+              : null),
       centerTitle: true,
       backgroundColor: backgroundColor,
       automaticallyImplyLeading: false,

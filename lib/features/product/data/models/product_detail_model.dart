@@ -91,7 +91,7 @@ class VariantModel extends Variant {
         id: json['id'],
         name: json['name'],
         price: (json['price'] as num).toDouble(),
-        stock: json['stock'],
+        stock: json['stock'] ?? 0,
         cover: json['cover'] ?? "");
   }
 

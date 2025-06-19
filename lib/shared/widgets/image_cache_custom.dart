@@ -24,21 +24,22 @@ class CustomCacheImageNetwork extends StatelessWidget {
   final Widget? errorWidget;
 
   final ImageType imageType;
+  final bool isShowLoading;
 
-  const CustomCacheImageNetwork({
-    super.key,
-    required this.imageUrl,
-    this.width,
-    this.height,
-    this.borderRadius = 0,
-    this.boxFit = BoxFit.cover,
-    this.errorWidget,
-    this.customColor,
-    this.imageType = ImageType.none,
-    this.withResize = 512,
-    this.heightResize = 512,
-    this.boxFitResize = BoxFit.contain,
-  });
+  const CustomCacheImageNetwork(
+      {super.key,
+      required this.imageUrl,
+      this.width,
+      this.height,
+      this.borderRadius = 0,
+      this.boxFit = BoxFit.cover,
+      this.errorWidget,
+      this.customColor,
+      this.imageType = ImageType.none,
+      this.withResize = 512,
+      this.heightResize = 512,
+      this.boxFitResize = BoxFit.contain,
+      this.isShowLoading = true});
 
   @override
   Widget build(BuildContext context) {
@@ -88,10 +89,12 @@ class CustomCacheImageNetwork extends StatelessWidget {
                           borderRadius: BorderRadius.circular(borderRadius)),
                     );
               },
-              placeholder: (context, string) => const Center(
-                child: CircularProgressIndicator(
-                  color: AppColor.primary,
-                ),
+              placeholder: (context, string) => Center(
+                child: isShowLoading
+                    ? const CircularProgressIndicator(
+                        color: AppColor.primary,
+                      )
+                    : const SizedBox(),
               ),
               width: width,
               height: height,

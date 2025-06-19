@@ -1,7 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
+import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
+import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 
 class ProductCard extends StatelessWidget {
@@ -32,32 +35,48 @@ class ProductCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: AspectRatio(
-                  aspectRatio: 1,
+                  aspectRatio: 1.1,
                   child: CustomCacheImageNetwork(imageUrl: product.cover)),
             ),
-            const SizedBox(height: 8),
+            8.h,
 
             // Product Name
             Text(
               product.productName,
-              maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
             ),
-
+            5.h,
+            Row(
+              children: [
+                Text("${product.avgRating}", style: AppTextStyles.textSize14()),
+                3.w,
+                const Icon(
+                  Icons.star_half,
+                  color: AppColor.yellowColor,
+                  size: 28,
+                ),
+              ],
+            ),
             5.h,
 
             // Product Price
-            Text(
-              "\$${product.price}",
-              style: const TextStyle(
-                fontSize: 15,
-                color: AppColor.primary,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("${product.price} VND",
+                    style: AppTextStyles.textSize14(color: AppColor.primary)),
+                Text(
+                  "${"key_solded".tr()} ${Helper.formatNumber(
+                    product.totalSold,
+                  )}",
+                  style: AppTextStyles.textSize12(
+                      color: AppColor.greyColor, fontWeight: FontWeight.bold),
+                )
+              ],
             ),
           ],
         ),

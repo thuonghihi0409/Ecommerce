@@ -1,3 +1,4 @@
+import 'package:thuongmaidientu/features/product/domain/entities/category.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
@@ -9,4 +10,5 @@ abstract class ProductRepository {
   Future<ProductDetail> getProductDetail();
   Future<Store> getStore();
   Future<List<Product>> getListProductSummerice();
+  Future<List<Category>> getListCategory();
 }

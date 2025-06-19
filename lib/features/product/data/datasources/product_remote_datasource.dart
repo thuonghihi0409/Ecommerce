@@ -1,5 +1,7 @@
+import 'package:thuongmaidientu/features/product/data/models/category_model.dart';
 import 'package:thuongmaidientu/features/product/data/models/product_detail_model.dart';
 import 'package:thuongmaidientu/features/product/data/models/store_model.dart';
+import 'package:thuongmaidientu/features/product/domain/entities/category.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
@@ -10,6 +12,7 @@ abstract class ProductRemoteDatasource {
   Future<ProductDetailModel> getProductDetail();
   Future<Store> getStore();
   Future<List<ProductModel>> getListProductSummerice();
+  Future<List<Category>> getListCategory();
 }
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
@@ -86,6 +89,51 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
           "price": 15.0,
           "avg_rating": 3.5,
           "total_sold": 100
+        },
+        {
+          "product_id": "5",
+          "store_id": "105",
+          "cover":
+              "https://techlandshop.com/wp-content/uploads/camera-yoosee-00-300x300.jpg",
+          "category_id": "205",
+          "brand_id": "305",
+          "product_name": "Apple Watch Series 9",
+          "description": "Đồng hồ thông minh đa năng",
+          "created_at": "2024-06-05T08:00:00Z",
+          "updated_at": "2024-06-05T16:00:00Z",
+          "price": 30.0,
+          "avg_rating": 4.7,
+          "total_sold": 10700
+        },
+        {
+          "product_id": "5",
+          "store_id": "105",
+          "cover":
+              "https://techlandshop.com/wp-content/uploads/camera-yoosee-00-300x300.jpg",
+          "category_id": "205",
+          "brand_id": "305",
+          "product_name": "Apple Watch Series 9",
+          "description": "Đồng hồ thông minh đa năng",
+          "created_at": "2024-06-05T08:00:00Z",
+          "updated_at": "2024-06-05T16:00:00Z",
+          "price": 30.0,
+          "avg_rating": 4.7,
+          "total_sold": 10700
+        },
+        {
+          "product_id": "5",
+          "store_id": "105",
+          "cover":
+              "https://techlandshop.com/wp-content/uploads/camera-yoosee-00-300x300.jpg",
+          "category_id": "205",
+          "brand_id": "305",
+          "product_name": "Apple Watch Series 9",
+          "description": "Đồng hồ thông minh đa năng",
+          "created_at": "2024-06-05T08:00:00Z",
+          "updated_at": "2024-06-05T16:00:00Z",
+          "price": 30.0,
+          "avg_rating": 4.7,
+          "total_sold": 10700
         },
         {
           "product_id": "5",
@@ -300,5 +348,69 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
     //   throw Exception('Login failed');
     // }
     return data.map((item) => ProductModel.fromJson(item)).toList();
+  }
+
+  @override
+  Future<List<CategoryModel>> getListCategory() async {
+    final data = [
+      {
+        "id": "1",
+        "cover":
+            "https://thoibaonganhang.vn/stores/news_dataimages/minhvl/122019/18/10/3454_4855477_AirPods.jpg",
+        "name": "Category 1",
+        "description": "Danh mục các sản phẩm điện thoại"
+      },
+      {
+        "id": "2",
+        "cover":
+            "https://thoibaonganhang.vn/stores/news_dataimages/minhvl/122019/18/10/3506_4855468_amazon_echo.jpg",
+        "name": "Category 2",
+        "description": "Danh mục các sản phẩm điện thoại"
+      },
+      {
+        "id": "3",
+        "cover":
+            "https://kenh14cdn.com/k:thumb_w/600/pgHuXrcq18KdYtKp3bAtptdIKIxsLl/Image/2013/07/h2-b3d63/14-san-pham-cong-nghe-sang-tao-nhat-moi-thoi-dai.jpg",
+        "name": "Category 3",
+        "description": "Danh mục các sản phẩm điện thoại"
+      },
+      {
+        "id": "5",
+        "cover":
+            "https://xenangnhapkhau.com/wp-content/uploads/2023/09/San-pham-cong-nghe-gia-dinh-robot-hut-bui-thong-minh.jpg",
+        "name": "Category 4",
+        "description": "Danh mục các sản phẩm điện thoại"
+      },
+      {
+        "id": "4",
+        "cover":
+            "https://xenangnhapkhau.com/wp-content/uploads/2023/09/San-pham-cong-nghe-gia-dinh-robot-hut-bui-thong-minh.jpg",
+        "name": "Category 5",
+        "description": "Danh mục các sản phẩm điện thoại"
+      },
+      {
+        "id": "6",
+        "cover":
+            "https://xenangnhapkhau.com/wp-content/uploads/2023/09/May-phun-suong-thong-minh-san-pham-cong-nghe-gia-dinh-ban-chay-trong-nhung-ngay-nong-buc.jpg",
+        "name": "Caterory 6",
+        "description": "Danh mục các sản phẩm điện thoại"
+      },
+      {
+        "id": "7",
+        "cover":
+            "https://video.vietjack.com/upload2/images/1657376072/1657376301-image13.png",
+        "name": "Category 7",
+        "description": "Danh mục các sản phẩm điện thoại"
+      },
+      {
+        "id": "8",
+        "cover":
+            "https://video.vietjack.com/upload2/images/1657376072/1657376301-image12.png",
+        "name": "Category 8",
+        "description": "Danh mục các sản phẩm điện thoại"
+      }
+    ];
+
+    return data.map((item) => CategoryModel.fromJson(item)).toList();
   }
 }

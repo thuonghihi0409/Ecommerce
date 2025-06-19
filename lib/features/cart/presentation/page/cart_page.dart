@@ -1,9 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/cart/presentation/widget/cart_item_widget.dart';
-import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
+import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 
@@ -24,7 +25,7 @@ class _CartPageState extends State<CartPage> {
   }
 
   _getDate() async {
-    context.read<ProductBloc>().add(const GetListProduct());
+    context.read<CartBloc>().add(const GetListCart());
   }
 
   void _onRefresh() {}
@@ -35,7 +36,7 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
       return Scaffold(
-        backgroundColor: Colors.grey.withAlpha(100),
+        backgroundColor: AppColor.greyColor,
         appBar: CustomAppBar(
           title: "key_cart".tr(),
         ),
@@ -45,22 +46,25 @@ class _CartPageState extends State<CartPage> {
               isLoading: true,
             );
           }
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.all(8),
-                  itemCount: state.listCart.results?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    final product = state.listCart.results?[index];
-                    return CartItemWidget(
-                      cartItem: product!,
-                    );
-                  },
+          return Padding(
+            padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => 5.h,
+                    controller: _scrollController,
+                    itemCount: state.listCart.results?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      final product = state.listCart.results?[index];
+                      return CartItemWidget(
+                        cartItem: product!,
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         }),
       );
