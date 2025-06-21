@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
+import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/purchase_history_screen.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/setting_screen.dart';
+import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 
@@ -82,7 +84,7 @@ class AccountScreen extends StatelessWidget {
                 // Xử lý nhấn vào
               }),
               _buildAccountOption(Icons.help_outline, 'Trợ giúp', () {
-                // Xử lý nhấn vào
+                NavigationService.instance.push(const GeminiChatPage());
               }),
               Divider(height: 32, color: Colors.grey[400]),
 

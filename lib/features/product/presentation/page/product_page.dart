@@ -5,6 +5,7 @@ import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
+import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/product_detail_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
@@ -53,7 +54,8 @@ class _ProductPageState extends State<ProductPage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  //  NavigationService.instance.push( );
+                  NavigationService.instance
+                      .push(const ConversationPage(currentUserId: ""));
                 },
                 icon: SvgPicture.asset(
                   AppAssets.chatIcon,
