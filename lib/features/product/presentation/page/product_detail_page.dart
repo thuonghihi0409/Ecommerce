@@ -11,6 +11,7 @@ import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/add_cart_widget.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
+import 'package:thuongmaidientu/features/review/presentation/page/review_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -53,7 +54,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         );
       }),
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: CustomAppBar(
+          backgroundColor: Colors.transparent,
           title: "key_product_detail".tr(),
           actions: [
             IconButton(
@@ -154,38 +157,45 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         10.h,
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    (state.productDetailModel?.avgRating ?? 0)
-                                        .toString(),
-                                    style: AppTextStyles.textSize18(),
-                                  ),
-                                  const Icon(
-                                    Icons.star_half,
-                                    color: AppColor.yellowColor,
-                                    size: 28,
-                                  ),
-                                  Text(
-                                    "${"key_review".tr()}(${Helper.formatNumber(state.productDetailModel?.totalRating ?? 0)})",
-                                    style: AppTextStyles.textSize18(),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "key_view_all".tr(),
-                                    style: AppTextStyles.textSize16(),
-                                  ),
-                                  5.w,
-                                  const Icon(Icons.chevron_right)
-                                ],
-                              )
-                            ],
+                          child: InkWell(
+                            onTap: () {
+                              NavigationService.instance.push(ReviewPage(
+                                productDetail: state.productDetailModel,
+                              ));
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      (state.productDetailModel?.avgRating ?? 0)
+                                          .toString(),
+                                      style: AppTextStyles.textSize18(),
+                                    ),
+                                    const Icon(
+                                      Icons.star_half,
+                                      color: AppColor.yellowColor,
+                                      size: 28,
+                                    ),
+                                    Text(
+                                      "${"key_review".tr()}(${Helper.formatNumber(state.productDetailModel?.totalRating ?? 0)})",
+                                      style: AppTextStyles.textSize18(),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "key_view_all".tr(),
+                                      style: AppTextStyles.textSize16(),
+                                    ),
+                                    5.w,
+                                    const Icon(Icons.chevron_right)
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                         10.h,

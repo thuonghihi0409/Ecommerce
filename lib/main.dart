@@ -2,10 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/init_page.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
+import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
 import 'package:thuongmaidientu/get_it.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 
@@ -14,6 +16,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await dotenv.load();
   await Firebase.initializeApp();
   await init();
   runApp(EasyLocalization(
@@ -23,7 +26,8 @@ void main() async {
       child: OverlaySupport.global(
         child: MultiBlocProvider(providers: [
           BlocProvider(create: (_) => sl<ProductBloc>()),
-          BlocProvider(create: (_) => sl<CartBloc>())
+          BlocProvider(create: (_) => sl<CartBloc>()),
+          BlocProvider(create: (_) => sl<ReviewBloc>())
         ], child: const MyApp()),
       )));
 }

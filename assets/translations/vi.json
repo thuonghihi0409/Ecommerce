@@ -26,6 +26,12 @@
     "key_product": "Sản phẩm",
     "key_cart": "Giỏ hàng",
     "key_confirm": "Xác nhận",
-    "key_product_detail": "Chi tiết sản phẩm"
-   
+    "key_product_detail": "Chi tiết sản phẩm",
+    "key_logout": "Đăng xuất",
+    "key_setting":"Cài đặt",
+    "key_help": "Trợ giúp",
+    "key_account_setting": "Cài đặt tài khoản",
+    "key_history": "Lịch sử mua hàng",
+    "key_list_favorite":" Danh sách yêu thích",
+    "key_":""
 }

@@ -61,17 +61,17 @@ class _HomePageState extends State<HomePage> {
             ),
             _buildNavItem(
               icon: Icons.live_tv_outlined,
-              index: 2,
+              index: 1,
               label: 'Video',
             ),
             _buildNavItem(
               icon: Icons.notifications,
-              index: 3,
+              index: 2,
               label: 'Thong bao',
             ),
             _buildNavItem(
               icon: Icons.account_circle_outlined,
-              index: 4,
+              index: 3,
               label: 'Tai khoan',
             ),
           ],

@@ -14,6 +14,11 @@ import 'package:thuongmaidientu/features/product/domain/usecases/get_list_produc
 import 'package:thuongmaidientu/features/product/domain/usecases/get_product_detail_usecase.dart';
 import 'package:thuongmaidientu/features/product/domain/usecases/get_store_usecase.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
+import 'package:thuongmaidientu/features/review/data/datasources/review_remote_datasource.dart';
+import 'package:thuongmaidientu/features/review/data/repositories/review_repository_impl.dart';
+import 'package:thuongmaidientu/features/review/domain/repositories/review_repository.dart';
+import 'package:thuongmaidientu/features/review/domain/usecases/get_list_review_usecase.dart';
+import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -22,6 +27,8 @@ Future<void> init() async {
   sl.registerFactory(() => ProductBloc(sl(), sl(), sl(), sl(), sl()));
 
   sl.registerFactory(() => CartBloc(sl()));
+
+  sl.registerFactory(() => ReviewBloc(sl()));
 
   // UseCase
   sl.registerLazySingleton(() => GetListProductUseCase(sl()));
@@ -32,11 +39,15 @@ Future<void> init() async {
 
   sl.registerLazySingleton(() => GetListCartUseCase(sl()));
 
+  sl.registerLazySingleton(() => GetListReviewUseCase(sl()));
+
   // Repository
   sl.registerLazySingleton<ProductRepository>(
       () => ProductRepositoryImpl(sl()));
 
   sl.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<ReviewRepository>(() => ReviewRepositoryImpl(sl()));
 
   // DataSource
   sl.registerLazySingleton<ProductRemoteDatasource>(
@@ -44,4 +55,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton<CartRemoteDatasource>(
       () => CartRemoteDataSourceImpl());
+
+  sl.registerLazySingleton<ReviewRemoteDatasource>(
+      () => ReviewRemoteDataSourceImpl());
 }

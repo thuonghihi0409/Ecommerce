@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page.dart';
@@ -6,15 +7,22 @@ import 'package:thuongmaidientu/features/profile/presentation/page/setting_scree
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
 
   @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  String _avt = "";
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Cài đặt',
+      appBar: CustomAppBar(
+        title: "key_setting".tr(),
         showLeading: false,
       ),
       body: SingleChildScrollView(
@@ -27,12 +35,11 @@ class AccountScreen extends StatelessWidget {
               Stack(
                 children: [
                   InkWell(
-                    child: Container(
-                      child: const CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.deepPurple,
-                        // backgroundImage: AssetImage('assets/avatar_placeholder.png'),
-                      ),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.deepPurple,
+                      backgroundImage:
+                          _avt.isEmpty ? NetworkImage(_avt) : AssetImage(_avt),
                     ),
                     onTap: () {},
                   ),
@@ -68,43 +75,31 @@ class AccountScreen extends StatelessWidget {
               Divider(height: 32, color: Colors.grey[400]),
 
               // Danh sách các tùy chọn
-              _buildAccountOption(Icons.settings, 'Cài đặt tài khoản', () {
+              _buildAccountOption(Icons.settings, "key_account_setting".tr(),
+                  () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const AccountSettingsScreen()));
               }),
-              _buildAccountOption(Icons.history, 'Lịch sử mua hàng', () {
+              _buildAccountOption(Icons.history, "key_history".tr(), () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => PurchaseHistoryScreen()));
               }),
-              _buildAccountOption(Icons.favorite, 'Danh sách yêu thích', () {
+              _buildAccountOption(Icons.favorite, "key_list_favorite".tr(), () {
                 // Xử lý nhấn vào
               }),
-              _buildAccountOption(Icons.help_outline, 'Trợ giúp', () {
+              _buildAccountOption(Icons.help_outline, "key_help".tr(), () {
                 NavigationService.instance.push(const GeminiChatPage());
               }),
               Divider(height: 32, color: Colors.grey[400]),
-
-              // Nút đăng xuất
-              ElevatedButton.icon(
+              CustomButton(
+                text: "key_logout".tr(),
                 onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()),
-                  );
+                  NavigationService.instance.push(const LoginScreen());
                 },
-                icon: const Icon(Icons.logout),
-                label: const Text('Đăng xuất'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
               ),
             ],
           ),
@@ -128,6 +123,7 @@ class AccountScreen extends StatelessWidget {
 
   void _showImagePickerDialog(BuildContext context) {
     PickerService pickerService = PickerService();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -135,31 +131,34 @@ class AccountScreen extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Container(
-            color: Colors.black.withOpacity(0.6),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ListTile(
-                    title: const Text('Chọn từ thư viện'),
-                    leading: const Icon(Icons.photo_library),
-                    onTap: () {
-                      pickerService.pickMultipleFiles();
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  ListTile(
-                    title: const Text('Mở camera'),
-                    leading: const Icon(Icons.camera_alt_outlined),
-                    onTap: () {
-                      pickerService.captureImageFromCamera();
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: const Text('Chọn từ thư viện'),
+                  leading: const Icon(Icons.photo_library),
+                  onTap: () async {
+                    NavigationService.instance.goBack();
+                    final path =
+                        await pickerService.pickSingleImageFromGallery();
+                    setState(() {
+                      _avt = path ?? "";
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
+                ListTile(
+                  title: const Text('Mở camera'),
+                  leading: const Icon(Icons.camera_alt_outlined),
+                  onTap: () {
+                    NavigationService.instance.goBack();
+                    pickerService.captureImageFromCamera();
+                  },
+                ),
+                const SizedBox(height: 10),
+              ],
             ),
           ),
         );

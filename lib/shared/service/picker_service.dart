@@ -7,46 +7,62 @@ import 'package:permission_handler/permission_handler.dart';
 
 class PickerService {
   final ImagePicker _picker = ImagePicker();
+
+  /// ✅ Xin quyền truy cập thư viện (Android)
   Future<void> requestStoragePermission() async {
     if (Platform.isAndroid) {
-      if (await Permission.storage.isGranted) {
-        print("Quyền lưu trữ đã được cấp.");
-      } else {
-        var status = await Permission.storage.request();
-        if (status.isPermanentlyDenied) openAppSettings();
+      final status = await Permission.storage.request();
+      if (status.isPermanentlyDenied) {
+        await openAppSettings();
       }
     }
   }
 
-  Future<List<String>> pickMultipleFiles() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+  /// ✅ Chọn 1 ảnh từ thư viện
+  Future<String?> pickSingleImageFromGallery() async {
+    final XFile? pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+    return pickedFile?.path;
+  }
+
+  /// ✅ Chọn nhiều ảnh từ thư viện
+  Future<List<String>> pickMultipleImagesFromGallery() async {
+    final List<XFile> pickedFiles = await _picker.pickMultiImage(
+      imageQuality: 80,
+    );
+    return pickedFiles.map((file) => file.path).toList();
+  }
+
+  /// ✅ Chụp ảnh từ camera
+  Future<String?> captureImageFromCamera() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+    return pickedFile?.path;
+  }
+
+  /// ✅ Chọn video từ thư viện
+  Future<String?> pickVideoFromGallery() async {
+    final XFile? video = await _picker.pickVideo(
+      source: ImageSource.gallery,
+    );
+    return video?.path;
+  }
+
+  /// ✅ Chọn nhiều loại file (tùy chọn thêm)
+  Future<List<String>> pickFiles({List<String>? allowedExtensions}) async {
+    final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
-      allowedExtensions: ['jpeg', 'png', 'mp4'],
+      allowedExtensions: allowedExtensions ?? ['jpeg', 'png', 'mp4'],
     );
+
     if (result != null) {
-      log("${result.paths[0]}");
       return result.paths.whereType<String>().toList();
     } else {
-      print('Người dùng đã không chọn tệp nào.');
+      log('Người dùng không chọn tệp nào.');
       return [];
     }
-  }
-
-  Future<String> captureImageFromCamera() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      return pickedFile.path;
-    }
-    return "";
-  }
-
-  Future<String> captureVideo() async {
-    final XFile? video = await _picker.pickVideo(source: ImageSource.camera);
-    if (video != null) {
-      return video.path;
-    }
-    return "";
   }
 }
