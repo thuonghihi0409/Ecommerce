@@ -26,6 +26,10 @@ class ReviewRemoteDataSourceImpl implements ReviewRemoteDatasource {
           "content": "Sản phẩm tốt, giao hàng nhanh.",
           "image_urls": [
             "https://example.com/image1.jpg",
+            "https://example.com/image1.jpg",
+            "https://example.com/image1.jpg",
+            "https://example.com/image1.jpg",
+            "https://example.com/image1.jpg",
             "https://example.com/image2.jpg"
           ],
           "rating": 5,

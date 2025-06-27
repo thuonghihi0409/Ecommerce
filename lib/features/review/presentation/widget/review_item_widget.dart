@@ -6,12 +6,25 @@ import 'package:thuongmaidientu/features/review/domain/entities/review.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 
-class ReviewItemWidget extends StatelessWidget {
+class ReviewItemWidget extends StatefulWidget {
   final Review? review;
   const ReviewItemWidget({super.key, required this.review});
 
   @override
+  State<ReviewItemWidget> createState() => _ReviewItemWidgetState();
+}
+
+class _ReviewItemWidgetState extends State<ReviewItemWidget> {
+  bool isExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
+    final review = widget.review;
+    final images = review?.imageUrls ?? [];
+
+    final displayedImages = isExpanded ? images : images.take(3).toList();
+    final showExpandButton = images.length > 3;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
@@ -27,18 +40,26 @@ class ReviewItemWidget extends StatelessWidget {
                 width: 40,
               ),
               10.w,
+              Expanded(
+                child: Text(
+                  review?.user?.fullname ?? "",
+                  style: AppTextStyles.textSize14(),
+                ),
+              ),
               Text(
-                review?.user?.fullname ?? "",
+                DateFormat("dd/MM/yyyy")
+                    .format(review?.createdAt ?? DateTime.now()),
                 style: AppTextStyles.textSize14(),
-              )
+              ),
             ],
           ),
           10.h,
           Row(
             children: List.generate(
-                review?.rating ?? 0,
-                (_) => const Icon(Icons.star,
-                    color: AppColor.yellowColor, size: 14)).toList(),
+              review?.rating ?? 0,
+              (_) =>
+                  const Icon(Icons.star, color: AppColor.yellowColor, size: 14),
+            ),
           ),
           20.h,
           Text(
@@ -50,9 +71,38 @@ class ReviewItemWidget extends StatelessWidget {
             review?.content ?? "",
             style: AppTextStyles.textSize14(),
           ),
-          const Wrap(
-            children: [],
-          )
+          10.h,
+          if (images.isNotEmpty) ...[
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: displayedImages.map((url) {
+                return GestureDetector(
+                  onTap: () {},
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: CustomCacheImageNetwork(
+                      imageUrl: url,
+                      height: 110,
+                      width: 110,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            if (showExpandButton)
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    isExpanded = !isExpanded;
+                  });
+                },
+                child: Text(
+                  isExpanded ? "Thu gọn" : "Xem thêm",
+                  style: const TextStyle(color: AppColor.primary),
+                ),
+              ),
+          ],
         ],
       ),
     );

@@ -3,4 +3,6 @@ class AppAssets {
   static String chatIcon = "${assets}chat_icon.svg";
   static String cartIcon = "${assets}cart_icon.svg";
   static String arrowLeftIcon = "${assets}arrow_left_icon.svg";
+  static String deleteIcon = "${assets}delete_icon.svg";
+  static String cameraIcon = "${assets}camera_icon.svg";
 }

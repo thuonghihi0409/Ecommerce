@@ -29,30 +29,32 @@ class CustomTextField extends StatefulWidget {
   final Color? focusedBorderColor;
   final EdgeInsetsGeometry? contentPadding;
 
-  const CustomTextField({
-    super.key,
-    this.controller,
-    this.labelText,
-    this.hintText,
-    this.obscureText = false,
-    this.isPassword = false,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.validator,
-    this.onChanged,
-    this.onFieldSubmitted,
-    this.keyboardType = TextInputType.text,
-    this.textInputAction,
-    this.focusNode,
-    this.autoValidateMode,
-    this.textStyle,
-    this.labelStyle,
-    this.hintStyle,
-    this.fillColor,
-    this.borderColor,
-    this.focusedBorderColor,
-    this.contentPadding,
-  });
+  final int? maxLine;
+
+  const CustomTextField(
+      {super.key,
+      this.controller,
+      this.labelText,
+      this.hintText,
+      this.obscureText = false,
+      this.isPassword = false,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.validator,
+      this.onChanged,
+      this.onFieldSubmitted,
+      this.keyboardType = TextInputType.text,
+      this.textInputAction,
+      this.focusNode,
+      this.autoValidateMode,
+      this.textStyle,
+      this.labelStyle,
+      this.hintStyle,
+      this.fillColor,
+      this.borderColor,
+      this.focusedBorderColor,
+      this.contentPadding,
+      this.maxLine = 1});
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -96,6 +98,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           height: 2,
         ),
         TextFormField(
+          maxLines: widget.maxLine,
           controller: widget.controller,
           obscureText: _obscure,
           keyboardType: widget.keyboardType,

@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
+import 'package:thuongmaidientu/shared/service/navigator_service.dart';
+import 'package:thuongmaidientu/shared/service/picker_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Toast type
@@ -290,5 +294,60 @@ class Helper {
     } catch (e) {
       return "";
     }
+  }
+
+  static void showImagePickerDialog(BuildContext context,
+      {Function(String?)? onPicker,
+      Function(List<String>?)? onPickers,
+      Function(String?)? onCamera,
+      bool? isOne = false}) {
+    PickerService pickerService = PickerService();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: const Text('Chọn từ thư viện'),
+                  leading: const Icon(Icons.photo_library),
+                  onTap: () async {
+                    NavigationService.instance.goBack();
+                    if (isOne == true) {
+                      final path =
+                          await pickerService.pickSingleImageFromGallery();
+                      log(" path = $path");
+                      onPicker?.call(path);
+                    } else {
+                      final paths =
+                          await pickerService.pickMultipleImagesFromGallery();
+                      onPickers?.call(paths);
+                    }
+                  },
+                ),
+                const SizedBox(height: 20),
+                ListTile(
+                  title: const Text('Mở camera'),
+                  leading: const Icon(Icons.camera_alt_outlined),
+                  onTap: () async {
+                    NavigationService.instance.goBack();
+                    final path = await pickerService.captureImageFromCamera();
+                    onCamera?.call(path);
+                  },
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

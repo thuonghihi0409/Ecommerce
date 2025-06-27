@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
@@ -5,7 +7,7 @@ import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page
 import 'package:thuongmaidientu/features/profile/presentation/page/purchase_history_screen.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/setting_screen.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
-import 'package:thuongmaidientu/shared/service/picker_service.dart';
+import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 
@@ -35,20 +37,34 @@ class _AccountScreenState extends State<AccountScreen> {
               Stack(
                 children: [
                   InkWell(
+                    onTap: () {},
                     child: CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.deepPurple,
-                      backgroundImage:
-                          _avt.isEmpty ? NetworkImage(_avt) : AssetImage(_avt),
+                      backgroundImage: _avt.isNotEmpty
+                          ? FileImage(File(_avt))
+                          : (_avt.isNotEmpty ? NetworkImage(_avt) : null),
                     ),
-                    onTap: () {},
                   ),
                   Positioned(
                       bottom: 0,
                       right: 0,
                       child: IconButton(
                           onPressed: () {
-                            _showImagePickerDialog(context);
+                            Helper.showImagePickerDialog(
+                              isOne: true,
+                              context,
+                              onPicker: (path) {
+                                setState(() {
+                                  _avt = path ?? "";
+                                });
+                              },
+                              onCamera: (path) {
+                                setState(() {
+                                  _avt = path ?? "";
+                                });
+                              },
+                            );
                           },
                           icon: const Icon(
                             Icons.camera_alt_outlined,
@@ -118,51 +134,6 @@ class _AccountScreenState extends State<AccountScreen> {
       trailing:
           const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
       onTap: onTap,
-    );
-  }
-
-  void _showImagePickerDialog(BuildContext context) {
-    PickerService pickerService = PickerService();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  title: const Text('Chọn từ thư viện'),
-                  leading: const Icon(Icons.photo_library),
-                  onTap: () async {
-                    NavigationService.instance.goBack();
-                    final path =
-                        await pickerService.pickSingleImageFromGallery();
-                    setState(() {
-                      _avt = path ?? "";
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                ListTile(
-                  title: const Text('Mở camera'),
-                  leading: const Icon(Icons.camera_alt_outlined),
-                  onTap: () {
-                    NavigationService.instance.goBack();
-                    pickerService.captureImageFromCamera();
-                  },
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }
