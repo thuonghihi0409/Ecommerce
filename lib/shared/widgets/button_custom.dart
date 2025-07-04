@@ -14,10 +14,12 @@ class CustomButton extends StatelessWidget {
   final double? height;
   final Widget? icon;
   final bool isLoading;
+  final bool isEnable;
 
   const CustomButton({
     super.key,
     required this.text,
+    this.isEnable = true,
     this.onPressed,
     this.borderColor,
     this.textStyle,
@@ -63,7 +65,7 @@ class CustomButton extends StatelessWidget {
       width: width ?? double.infinity,
       height: height,
       child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
+        onPressed: (isLoading || !isEnable) ? null : onPressed,
         style: ElevatedButton.styleFrom(
           padding: padding ??
               const EdgeInsets.symmetric(horizontal: 24, vertical: 14),

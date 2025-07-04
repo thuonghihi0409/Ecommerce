@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 
 /// Show loader when waiting for something
@@ -22,7 +22,7 @@ class CustomLoading extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: Container(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withAlpha(120),
                 ),
               ),
               Positioned.fill(
@@ -31,8 +31,7 @@ class CustomLoading extends StatelessWidget {
                     width: 100,
                     height: 100,
                     decoration: BoxDecoration(
-                      color: const Color(0xff262626),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                     padding: const EdgeInsets.all(20),
                     alignment: Alignment.center,
@@ -60,10 +59,9 @@ class _Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SpinKitSpinningLines(
-      color: AppColor.primary,
-      duration: Duration(milliseconds: 2500),
-      itemCount: 20,
-    );
+    return LoadingAnimationWidget.flickr(
+        leftDotColor: AppColor.greenColor,
+        rightDotColor: AppColor.secondary,
+        size: 50);
   }
 }

@@ -1,12 +1,8 @@
-import 'package:thuongmaidientu/features/auth/data/models/user_model.dart';
 import 'package:thuongmaidientu/features/chat/data/models/conversation_model.dart';
-
 import 'package:thuongmaidientu/features/chat/domain/entities/message.dart';
- 
-
+import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 
 class MessageModel extends Message {
- 
   MessageModel({
     required super.messageId,
     required super.content,
@@ -36,7 +32,7 @@ class MessageModel extends Message {
       messageStatus: json['messageStatus'],
       timesend: DateTime.parse(json['timesend']).toUtc(),
       conversation: ConversationModel.fromJson(json['conversation']),
-      user: UserModel.fromJson(json['user']),
+      user: ProfileEntityModel.fromJson(json['user']),
     );
   }
 }

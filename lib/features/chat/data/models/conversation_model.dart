@@ -1,10 +1,7 @@
-
-import 'package:thuongmaidientu/features/auth/data/models/user_model.dart';
-import 'package:thuongmaidientu/features/auth/domain/entities/user.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation.dart';
+import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 
-class ConversationModel  extends Conversation{
-  
+class ConversationModel extends Conversation {
   ConversationModel({
     required super.conversationId,
     required super.user1,
@@ -15,8 +12,8 @@ class ConversationModel  extends Conversation{
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
       conversationId: json['conversationId'],
-      user1: UserModel.fromJson(json['user1']),
-      user2: UserModel.fromJson(json['user2']),
+      user1: ProfileEntityModel.fromJson(json['user1']),
+      user2: ProfileEntityModel.fromJson(json['user2']),
     );
   }
 

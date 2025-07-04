@@ -4,8 +4,8 @@ import 'package:equatable/equatable.dart';
 part 'profile_event.dart';
 part 'profile_state.dart';
 
-class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  ProfileBloc() : super(ProfileInitial()) {
+class ChatBloc extends Bloc<ProfileEvent, ProfileState> {
+  ChatBloc() : super(ProfileInitial()) {
     on<ProfileEvent>((event, emit) {
       // TODO: implement event handler
     });

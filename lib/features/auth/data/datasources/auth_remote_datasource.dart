@@ -1,28 +1,51 @@
-import '../models/user_model.dart';
+import 'dart:developer';
 
-import 'package:dio/dio.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<UserModel> login(String email, String password);
+  Future<User?> login(String email, String password);
+  Future<void> logout();
+  Future<User?> register(String email, String password);
+  Future<void> sendVerifyEmail(String email);
+  Future<void> createUser({String? id, String? name, String? email});
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final Dio dio;
-
-  AuthRemoteDataSourceImpl(this.dio);
+  AuthRemoteDataSourceImpl();
 
   @override
-  Future<UserModel> login(String email, String password) async {
-    final response = await dio.post(
-      '/login',
-      data: {'email': email, 'password': password},
-    );
+  Future<User?> login(String email, String password) async {
+    final user = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
 
-    if (response.statusCode == 200) {
-      return UserModel.fromJson(response.data);
-    } else {
-      throw Exception('Login failed');
-    }
+    return user.user;
+  }
+
+  @override
+  Future<void> logout() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  @override
+  Future<User?> register(String email, String password) async {
+    final user = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
+    return user.user;
+  }
+
+  @override
+  Future<void> sendVerifyEmail(String email) async {
+    await FirebaseAuth.instance.currentUser?.sendEmailVerification();
+  }
+
+  @override
+  Future<void> createUser({String? id, String? name, String? email}) async {
+    log("on createuser");
+    await supabase.from("Users").insert({
+      'name': name,
+      'email': email,
+      'role': "is_custommer",
+    });
   }
 }

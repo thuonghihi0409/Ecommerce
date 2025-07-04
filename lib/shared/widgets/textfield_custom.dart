@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 
+enum ValidType { email, password, notEmpty, none }
+
 class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
   final String? labelText;
@@ -12,14 +14,14 @@ class CustomTextField extends StatefulWidget {
   final bool isPassword;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
-  final String? Function(String?)? validator;
+  final void Function(bool?)? validator;
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
   final TextInputType keyboardType;
   final TextInputAction? textInputAction;
   final FocusNode? focusNode;
   final AutovalidateMode? autoValidateMode;
-
+  final ValidType validType;
   // Style custom thêm
   final TextStyle? textStyle;
   final TextStyle? labelStyle;
@@ -30,9 +32,12 @@ class CustomTextField extends StatefulWidget {
   final EdgeInsetsGeometry? contentPadding;
 
   final int? maxLine;
+  final bool isShowErrorMessage;
+  final String? errorMessage;
 
   const CustomTextField(
       {super.key,
+      this.validType = ValidType.none,
       this.controller,
       this.labelText,
       this.hintText,
@@ -54,7 +59,9 @@ class CustomTextField extends StatefulWidget {
       this.borderColor,
       this.focusedBorderColor,
       this.contentPadding,
-      this.maxLine = 1});
+      this.maxLine = 1,
+      this.errorMessage,
+      this.isShowErrorMessage = false});
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -62,7 +69,7 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   late bool _obscure;
-
+  String error = "";
   @override
   void initState() {
     super.initState();
@@ -104,40 +111,116 @@ class _CustomTextFieldState extends State<CustomTextField> {
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,
           focusNode: widget.focusNode,
-          autovalidateMode: widget.autoValidateMode,
-          validator: widget.validator,
-          onChanged: widget.onChanged,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          // validator:
+          onChanged: (val) async {
+            await Future.delayed(const Duration(milliseconds: 200));
+            switch (widget.validType) {
+              case ValidType.email:
+                if (val.isEmpty) {
+                  widget.validator?.call(false);
+                  if (!mounted) return;
+                  error = "Địa chỉ email không hợp lệ";
+                  setState(() {});
+                  break;
+                }
+
+                final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+
+                if (!emailRegex.hasMatch(val)) {
+                  widget.validator?.call(false);
+                  if (!mounted) return;
+                  error = "Địa chỉ email không hợp lệ";
+                  setState(() {});
+                  break;
+                }
+
+                widget.validator?.call(true);
+                error = "";
+                setState(() {});
+                break;
+              case ValidType.password:
+                if ((val).length >= 8) {
+                  if (!mounted) return;
+                  widget.validator?.call(true);
+                  error = "";
+                  setState(() {});
+                  break;
+                }
+                widget.validator?.call(false);
+                if (!mounted) return;
+                error = "Mật khẩu phải có ít nhất 8 ký tự";
+                setState(() {});
+                break;
+              case ValidType.notEmpty:
+                if ((val).isNotEmpty) {
+                  widget.validator?.call(true);
+                  error = "";
+                  setState(() {});
+                  break;
+                }
+                widget.validator?.call(false);
+                if (!mounted) return;
+                error = "Không được bỏ trống";
+                setState(() {});
+                break;
+              case ValidType.none:
+                widget.validator?.call(true);
+                error = "";
+                setState(() {});
+                break;
+            }
+
+            widget.onChanged?.call(val);
+          },
           onFieldSubmitted: widget.onFieldSubmitted,
           style: widget.textStyle ?? const TextStyle(fontSize: 16),
           decoration: InputDecoration(
-            labelStyle: widget.labelStyle,
-            hintText: widget.hintText,
-            hintStyle: widget.hintStyle,
-            prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.isPassword
-                ? IconButton(
-                    icon: Icon(
-                        _obscure ? Icons.visibility_off : Icons.visibility),
-                    onPressed: _toggleVisibility,
-                  )
-                : widget.suffixIcon,
-            filled: widget.fillColor != null,
-            fillColor: widget.fillColor,
-            contentPadding: defaultPadding,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: defaultBorderColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: defaultBorderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  BorderSide(color: defaultFocusedBorderColor, width: 1),
-            ),
-          ),
+              errorText: widget.isShowErrorMessage &&
+                      (widget.errorMessage != null || error.isNotEmpty)
+                  ? (widget.errorMessage ?? error)
+                  : null,
+              errorStyle: AppTextStyles.textSize12(color: Colors.redAccent),
+              labelStyle: widget.labelStyle,
+              hintText: widget.hintText,
+              hintStyle: widget.hintStyle ??
+                  AppTextStyles.textSize14(color: AppColor.greyColor),
+              prefixIcon: widget.prefixIcon,
+              suffixIcon: widget.isPassword
+                  ? IconButton(
+                      icon: Icon(
+                          _obscure ? Icons.visibility_off : Icons.visibility),
+                      onPressed: _toggleVisibility,
+                    )
+                  : widget.suffixIcon,
+              filled: widget.fillColor != null,
+              fillColor: widget.fillColor,
+              contentPadding: defaultPadding,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: defaultBorderColor, width: 1),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: defaultBorderColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide:
+                    BorderSide(color: defaultFocusedBorderColor, width: 1),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(
+                    color: Colors.redAccent,
+                    width: 1,
+                  )),
+              errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(
+                    color: Colors.redAccent,
+                    width: 1,
+                  ))),
         ),
       ],
     );

@@ -181,6 +181,7 @@ class Helper {
   }
 
   /// Show toast message
+  static OverlayEntry? _toastOverlay;
   static void showToastBottom({
     required String message,
     ToastType type = ToastType.error,

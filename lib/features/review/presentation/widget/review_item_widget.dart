@@ -42,7 +42,7 @@ class _ReviewItemWidgetState extends State<ReviewItemWidget> {
               10.w,
               Expanded(
                 child: Text(
-                  review?.user?.fullname ?? "",
+                  review?.user?.name ?? "",
                   style: AppTextStyles.textSize14(),
                 ),
               ),

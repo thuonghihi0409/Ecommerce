@@ -1,5 +1,5 @@
-import 'package:thuongmaidientu/features/auth/domain/entities/user.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/profile.dart';
 
 class Message {
   String messageId;
@@ -7,7 +7,7 @@ class Message {
   String messageStatus;
   DateTime timesend;
   Conversation conversation;
-  User user;
+  ProfileEntity user;
 
   Message({
     required this.messageId,

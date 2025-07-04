@@ -60,12 +60,6 @@ class _ForgotPasswordScreenState extends State<ForgotPassword> {
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Email không được để trống";
-                }
-                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                  return "Email không hợp lệ";
-                }
                 return null;
               },
             ),
