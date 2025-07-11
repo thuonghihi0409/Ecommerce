@@ -1,159 +1,166 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:thuongmaidientu/core/app_assets.dart';
+import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
+import 'package:thuongmaidientu/shared/utils/extension.dart';
+import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
+
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  final _formKey = GlobalKey<FormState>();
-  String? oldPassword;
-  String? newPassword;
-  String? confirmPassword;
+  late TextEditingController _oldPasswordController;
+  late TextEditingController _passwordController;
+  late TextEditingController _confirmPasswordController;
 
-  // Biến lưu trạng thái ẩn/hiện mật khẩu
-  bool _isOldPasswordVisible = false;
-  bool _isNewPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
+  late FocusNode _oldPasswordNode;
+  late FocusNode _passwordNode;
+  late FocusNode _confirmPasswordNode;
+
+  bool _isValidEmail = false, _isValidPassword = false, _isValidName = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _oldPasswordController = TextEditingController();
+    _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
+
+    _oldPasswordNode = FocusNode();
+    _passwordNode = FocusNode();
+    _confirmPasswordNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _oldPasswordController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+
+    _oldPasswordNode.dispose();
+    _passwordNode.dispose();
+    _confirmPasswordNode.dispose();
+    super.dispose();
+  }
+
+  void _submit() {}
+
+  _enableButton() {
+    return _isValidEmail &&
+        _isValidPassword &&
+        _isValidName &&
+        (_passwordController.text == _confirmPasswordController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Đổi mật khẩu'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
+    return OverlayLoadingCustom(
+      loadingWidget:
+          BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+        return CustomLoading(
+          isLoading: state.isLoading,
+          isOverlay: true,
+        );
+      }),
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: "key_change_password".tr(),
+        ),
+        body: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Mật khẩu cũ
-                TextFormField(
-                  obscureText: !_isOldPasswordVisible,
-                  decoration: InputDecoration(
-                    labelText: 'Mật khẩu cũ',
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isOldPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isOldPasswordVisible = !_isOldPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Vui lòng nhập mật khẩu cũ';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => oldPassword = value,
+                30.h,
+                SvgPicture.asset(
+                  AppAssets.addUserIcon,
+                  height: 80,
+                  width: 80,
                 ),
-                SizedBox(height: 16),
-
-                // Mật khẩu mới
-                TextFormField(
-                  obscureText: !_isNewPasswordVisible,
-                  decoration: InputDecoration(
-                    labelText: 'Mật khẩu mới',
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isNewPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isNewPasswordVisible = !_isNewPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Vui lòng nhập mật khẩu mới';
-                    }
-                    if (value.length < 6) {
-                      return 'Mật khẩu mới phải có ít nhất 6 ký tự';
-                    }
-                    return null;
+                15.h,
+                CustomTextField(
+                    hintText: "key_old_password".tr(),
+                    validType: ValidType.password,
+                    isPassword: true,
+                    isShowErrorMessage: true,
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    labelText: "key_old_password".tr(),
+                    controller: _oldPasswordController,
+                    focusNode: _oldPasswordNode,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (p0) {
+                      _passwordNode.requestFocus();
+                    },
+                    validator: (value) {
+                      setState(() {
+                        _isValidEmail = value ?? false;
+                      });
+                    }),
+                15.h,
+                CustomTextField(
+                  hintText: "key_password".tr(),
+                  isPassword: true,
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  validType: ValidType.password,
+                  isShowErrorMessage: true,
+                  labelText: "key_password".tr(),
+                  controller: _passwordController,
+                  focusNode: _passwordNode,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (p0) {
+                    _confirmPasswordNode.requestFocus();
                   },
-                  onSaved: (value) => newPassword = value,
-                ),
-                SizedBox(height: 16),
-
-                // Xác nhận mật khẩu mới
-                TextFormField(
-                  obscureText: !_isConfirmPasswordVisible,
-                  decoration: InputDecoration(
-                    labelText: 'Xác nhận mật khẩu mới',
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isConfirmPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Vui lòng xác nhận mật khẩu mới';
-                    }
-                    if (value != newPassword) {
-                      return 'Mật khẩu xác nhận không khớp';
-                    }
-                    return null;
+                    setState(() {
+                      _isValidPassword = value ?? false;
+                    });
                   },
-                  onSaved: (value) => confirmPassword = value,
                 ),
-                SizedBox(height: 24),
-
-                // Nút Đổi mật khẩu
-                ElevatedButton(
+                15.h,
+                CustomTextField(
+                  hintText: "key_password".tr(),
+                  validType: ValidType.notEmpty,
+                  isShowErrorMessage: _passwordController.text !=
+                      _confirmPasswordController.text,
+                  errorMessage: "Mật khẩu không khớp",
+                  isPassword: true,
+                  prefixIcon: const Icon(Icons.lock_outlined),
+                  labelText: "key_confirm_password".tr(),
+                  controller: _confirmPasswordController,
+                  focusNode: _confirmPasswordNode,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (p0) {
+                    _submit();
+                  },
+                  validator: (value) {
+                    setState(() {});
+                    return;
+                  },
+                ),
+                50.h,
+                CustomButton(
+                  isEnable: _enableButton(),
+                  text: "key_change_password".tr(),
                   onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      _formKey.currentState?.save();
-                      // Giả sử bạn sẽ gọi API để đổi mật khẩu ở đây
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Đổi mật khẩu thành công')),
-                      );
-                    }
+                    _submit();
                   },
-                  child: Text('Đổi mật khẩu'),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                    // primary: Colors.blueAccent,
-                    textStyle: TextStyle(fontSize: 16),
-                  ),
-                ),
+                )
               ],
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

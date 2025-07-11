@@ -12,10 +12,10 @@ class CategoryModel extends Category {
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      id: json['id'] as String,
-      cover: json['cover'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String,
+      id: json['id'] ?? 0,
+      cover: json['cover'],
+      name: json['name'],
+      description: json['description'],
     );
   }
 

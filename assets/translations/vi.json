@@ -36,5 +36,19 @@
     "key_resend":"Gửi lại",
     "key_verify_email":"Xác thực email",
     "key_check_your_email" : "Chúng tôi sẽ gửi một đường dẫn để xác thực về địa chỉ ",
-    "key_cancel": "Hủy"
+    "key_cancel": "Hủy",
+    "key_update_persional_profile": "Cập nhật thông tin cá nhân",
+    "key_update": "Cập nhật",
+    "key_address" : "Địa chỉ",
+    "key_phone": "Số điện thoại",
+    "key_province" : "Tỉnh",
+    "key_ward": "Xã",
+    "key_phone_number": "Số điện thoại",
+    "key_add_location":"Thêm địa chỉ",
+    "key_choose_province" : "Chọn tỉnh",
+    "key_choose_ward" : "Chọn xã",
+    "key_add": "Thêm",
+    "key_change_password": "Đổi mật khẩu",
+    "key_update_information":"Cập nhật thông tin",
+    "key_old_password" : "Mật khẩu cũ"
 }

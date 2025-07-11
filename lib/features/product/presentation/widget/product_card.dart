@@ -42,7 +42,7 @@ class ProductCard extends StatelessWidget {
 
             // Product Name
             Text(
-              product.productName,
+              product.productName ?? "",
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 14,
@@ -71,7 +71,7 @@ class ProductCard extends StatelessWidget {
                     style: AppTextStyles.textSize14(color: AppColor.primary)),
                 Text(
                   "${"key_solded".tr()} ${Helper.formatNumber(
-                    product.totalSold,
+                    product.totalSold ?? 0,
                   )}",
                   style: AppTextStyles.textSize12(
                       color: AppColor.greyColor, fontWeight: FontWeight.bold),

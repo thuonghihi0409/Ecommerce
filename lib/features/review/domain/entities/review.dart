@@ -1,6 +1,6 @@
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
 
-import '../../../profile/domain/entities/profile.dart';
+import '../../../profile/domain/entities/profile_entity.dart';
 
 class Review {
   final String id;

@@ -130,6 +130,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       () {
                     // Xử lý nhấn vào
                   }),
+                  _buildAccountOption(Icons.location_on, "key_address".tr(),
+                      () {
+                    // Xử lý nhấn vào
+                  }),
                   _buildAccountOption(Icons.help_outline, "key_help".tr(), () {
                     NavigationService.instance.push(const GeminiChatPage());
                   }),
@@ -138,6 +142,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     text: "key_logout".tr(),
                     onPressed: _onLogout,
                   ),
+                  20.h,
                 ],
               ),
             ),

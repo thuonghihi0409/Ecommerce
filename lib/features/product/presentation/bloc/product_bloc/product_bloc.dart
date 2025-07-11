@@ -39,7 +39,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   void _getListProduct(GetListProduct event, Emitter<ProductState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await Future.delayed(const Duration(seconds: 1));
+
       final listProduct = await _getListProductUseCase.call();
       emit(state.copyWith(isLoading: false, listProduct: listProduct));
     } catch (e) {
@@ -47,6 +47,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           isLoading: false,
           listProduct: state.listProduct
               .copyWith(errorMessage: ParseError.fromJson(e).message)));
+      log(e.toString());
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
   }

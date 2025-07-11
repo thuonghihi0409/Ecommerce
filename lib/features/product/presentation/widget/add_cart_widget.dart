@@ -27,7 +27,7 @@ class _AddCartWidgetState extends State<AddCartWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomCacheImageNetwork(
-              imageUrl: widget.productDetail?.variants[_selectedIndex].cover,
+              imageUrl: widget.productDetail?.variants?[_selectedIndex].cover,
               height: 120,
               width: 120,
               borderRadius: 5,
@@ -49,12 +49,12 @@ class _AddCartWidgetState extends State<AddCartWidget> {
                     ],
                   ),
                   Text(
-                    "${widget.productDetail?.variants[_selectedIndex].price ?? 0} VND",
+                    "${widget.productDetail?.variants?[_selectedIndex].price ?? 0} VND",
                     style: AppTextStyles.textSize20(color: AppColor.primary),
                   ),
                   10.h,
                   Text(
-                      "${"key_stock".tr()}:${widget.productDetail?.variants[_selectedIndex].stock ?? 0}")
+                      "${"key_stock".tr()}:${widget.productDetail?.variants?[_selectedIndex].stock ?? 0}")
                 ],
               ),
             )

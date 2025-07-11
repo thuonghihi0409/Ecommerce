@@ -1,8 +1,15 @@
 import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/province_entity.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/ward_entity.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 
 abstract class ProfileRemoteDatasource {
   Future<ProfileEntityModel> getProfile(String email);
+  Future<List<AddressEntity>> getAddress(int id);
+  Future<List<ProvinceEntity>> getProvince();
+  Future<List<WardEntity>> getWard(String id);
+  Future<AddressEntity> addAddress(AddressEntity addAddress, int UserId);
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
@@ -12,5 +19,58 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
         await supabase.from("Users").select().eq("email", email).single();
 
     return ProfileEntityModel.fromJson(profile);
+  }
+
+  @override
+  Future<List<AddressEntity>> getAddress(int id) async {
+    final address = await supabase.from('Address').select('''
+      id, 
+      name,
+      phone,
+      address,
+      province:Provinces (code, name),
+      ward:Wards (code, name)
+    ''').eq('user', id);
+
+    return address.map((e) => AddressEntity.fromJson(e)).toList();
+  }
+
+  @override
+  Future<List<ProvinceEntity>> getProvince() async {
+    final address = await supabase.from("Provinces").select();
+
+    return address.map((e) => ProvinceEntity.fromJson(e)).toList();
+  }
+
+  @override
+  Future<List<WardEntity>> getWard(String id) async {
+    final address = await supabase.from("Wards").select().eq("parent_code", id);
+
+    return address.map((e) => WardEntity.fromJson(e)).toList();
+  }
+
+  @override
+  Future<AddressEntity> addAddress(AddressEntity addAddress, int userId) async {
+    final result = await supabase
+        .from("Address")
+        .insert({
+          "user": userId,
+          "name": addAddress.name,
+          "phone": addAddress.phone,
+          "address": addAddress.address,
+          "province": addAddress.province?.code,
+          "ward": addAddress.ward?.code
+        })
+        .select()
+        .single();
+    final address = await supabase.from('Address').select('''
+      id, 
+      name,
+      phone,
+      address,
+      province:Provinces (code, name),
+      ward:Wards (code, name)
+    ''').eq('id', result['id']).single();
+    return AddressEntity.fromJson(address);
   }
 }

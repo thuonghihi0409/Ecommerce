@@ -2,7 +2,8 @@ import 'package:equatable/equatable.dart';
 
 class ListModel<T> extends Equatable {
   final int? count;
-
+  final int page;
+  final int limit;
   final String? next;
 
   final String? previous;
@@ -11,13 +12,14 @@ class ListModel<T> extends Equatable {
 
   final String errorMessage;
 
-  const ListModel({
-    this.count,
-    this.next,
-    this.previous,
-    this.results,
-    this.errorMessage = '',
-  });
+  const ListModel(
+      {this.count,
+      this.next,
+      this.previous,
+      this.results,
+      this.errorMessage = '',
+      this.page = 1,
+      this.limit = 20});
 
   factory ListModel.fromJson(
       Map<String, dynamic> json, T Function(Map<String, dynamic> json) convert,

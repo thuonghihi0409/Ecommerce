@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,7 +21,21 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await dotenv.load();
-  await Firebase.initializeApp();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+          apiKey: dotenv.env["FIREBASE_KEY"]!,
+          authDomain: "timtro-f9635.firebaseapp.com",
+          projectId: "timtro-f9635",
+          storageBucket: "timtro-f9635.appspot.com",
+          messagingSenderId: "932058865237",
+          appId: "1:932058865237:web:b9d460f351c9ed037c7edc",
+          measurementId: "G-9GX3B2VG6P" // Optional
+          ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
   await Supabase.initialize(
       anonKey: dotenv.env["SUPABASE_KEY"]!, url: dotenv.env["SUPABASE_URL"]!);
   await init();
@@ -59,7 +74,7 @@ class MyApp extends StatelessWidget {
         supportedLocales: context.supportedLocales,
         localizationsDelegates: context.localizationDelegates,
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Ecommerce',
         navigatorKey: NavigationService.instance.navigatorKey,
         theme: ThemeData(
           useMaterial3: true, //

@@ -1,5 +1,13 @@
-import '../entities/profile.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/province_entity.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/ward_entity.dart';
+
+import '../entities/profile_entity.dart';
 
 abstract class ProfileRepository {
   Future<ProfileEntity> getProfile(String email);
+  Future<List<AddressEntity>> getAddress(int id);
+  Future<List<ProvinceEntity>> getProvince();
+  Future<List<WardEntity>> getWard(String id);
+  Future<AddressEntity> addAddress(AddressEntity addAddress, int userId);
 }

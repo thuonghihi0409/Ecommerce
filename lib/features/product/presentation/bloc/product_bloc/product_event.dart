@@ -22,6 +22,6 @@ class GetListCategory extends ProductEvent {
 }
 
 class GetProductDetail extends ProductEvent {
-  final String productId;
+  final int productId;
   const GetProductDetail({required this.productId});
 }

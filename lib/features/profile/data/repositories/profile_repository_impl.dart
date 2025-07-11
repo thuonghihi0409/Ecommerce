@@ -1,4 +1,8 @@
-import '../../domain/entities/profile.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/province_entity.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/ward_entity.dart';
+
+import '../../domain/entities/profile_entity.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../datasources/profile_remote_datasource.dart';
 
@@ -11,5 +15,32 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<ProfileEntity> getProfile(String email) async {
     final profile = await remoteDataSource.getProfile(email);
     return profile;
+  }
+
+  @override
+  Future<List<AddressEntity>> getAddress(int id) async {
+    final address = await remoteDataSource.getAddress(id);
+
+    return address;
+  }
+
+  @override
+  Future<List<ProvinceEntity>> getProvince() async {
+    final address = await remoteDataSource.getProvince();
+
+    return address;
+  }
+
+  @override
+  Future<List<WardEntity>> getWard(String id) async {
+    final address = await remoteDataSource.getWard(id);
+
+    return address;
+  }
+
+  @override
+  Future<AddressEntity> addAddress(AddressEntity addAddress, int userId) async {
+    final address = await remoteDataSource.addAddress(addAddress, userId);
+    return address;
   }
 }

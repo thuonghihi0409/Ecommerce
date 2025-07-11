@@ -123,7 +123,7 @@ class _ProductPageState extends State<ProductPage> {
                                         isShowLoading: false,
                                       ),
                                       Text(
-                                        e.value.name,
+                                        e.value.name ?? "",
                                         style: AppTextStyles.textSize12(),
                                         overflow: TextOverflow.ellipsis,
                                       )

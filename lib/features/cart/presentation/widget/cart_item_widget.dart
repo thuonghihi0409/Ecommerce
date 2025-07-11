@@ -58,12 +58,12 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.cartItem.store.name,
+                    widget.cartItem.store.name ?? "",
                     style: AppTextStyles.textSize20(),
                   ),
                   5.h,
                   Text(
-                    widget.cartItem.store.address,
+                    widget.cartItem.store.address ?? "",
                     style: AppTextStyles.textSize12(),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -106,7 +106,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            entrie.value.productDetail.productName,
+                            entrie.value.productDetail.productName ?? "",
                             style: AppTextStyles.textSize20(),
                           ),
                           10.h,

@@ -1,4 +1,4 @@
-import '../../domain/entities/profile.dart';
+import '../../domain/entities/profile_entity.dart';
 
 class ProfileEntityModel extends ProfileEntity {
   ProfileEntityModel({

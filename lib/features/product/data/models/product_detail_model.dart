@@ -8,8 +8,6 @@ class ProductDetailModel extends ProductDetail {
       required super.price,
       required super.storeId,
       required super.categoryId,
-      required super.createdAt,
-      required super.updatedAt,
       required super.images,
       required super.variants,
       required super.avgRating,
@@ -27,8 +25,6 @@ class ProductDetailModel extends ProductDetail {
       price: (json['price'] as num).toDouble(),
       storeId: json['store_id'],
       categoryId: json['category_id'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
       images:
           (json['images'] as List).map((e) => ImageModel.fromJson(e)).toList(),
       variants: (json['variants'] as List)
@@ -45,8 +41,6 @@ class ProductDetailModel extends ProductDetail {
       'price': price,
       'store_id': storeId,
       'category_id': categoryId,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
       'total_rating': totalRating,
       'total_sold': totalSold,
       'avg_rating': avgRating

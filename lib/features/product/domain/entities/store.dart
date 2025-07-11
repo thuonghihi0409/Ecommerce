@@ -1,10 +1,10 @@
 class Store {
-  final String id;
-  final String name;
-  final String logoUrl;
-  final String address;
-  final double averageRating;
-  final int totalProducts;
+  final int id;
+  final String? name;
+  final String? logoUrl;
+  final String? address;
+  final double? averageRating;
+  final int? totalProducts;
 
   const Store({
     required this.id,

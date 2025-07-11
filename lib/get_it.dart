@@ -24,7 +24,11 @@ import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/
 import 'package:thuongmaidientu/features/profile/data/datasources/profile_remote_datasource.dart';
 import 'package:thuongmaidientu/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:thuongmaidientu/features/profile/domain/repositories/profile_repository.dart';
+import 'package:thuongmaidientu/features/profile/domain/usecases/add_address_usecase.dart';
+import 'package:thuongmaidientu/features/profile/domain/usecases/get_address_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:thuongmaidientu/features/profile/domain/usecases/get_provinces_usecase.dart';
+import 'package:thuongmaidientu/features/profile/domain/usecases/get_wards_usecase.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/data/datasources/review_remote_datasource.dart';
 import 'package:thuongmaidientu/features/review/data/repositories/review_repository_impl.dart';
@@ -44,7 +48,7 @@ Future<void> init() async {
 
   sl.registerFactory(() => ReviewBloc(sl()));
 
-  sl.registerFactory(() => ProfileBloc(sl()));
+  sl.registerFactory(() => ProfileBloc(sl(), sl(), sl(), sl(), sl()));
 
   // UseCase
   //// Auth UseCase
@@ -55,6 +59,10 @@ Future<void> init() async {
 
   //// Profile UseCase
   sl.registerLazySingleton(() => GetProfileUsecase(sl()));
+  sl.registerLazySingleton(() => GetProvincesUsecase(sl()));
+  sl.registerLazySingleton(() => GetAddressUsecase(sl()));
+  sl.registerLazySingleton(() => GetWardsUsecase(sl()));
+  sl.registerLazySingleton(() => AddAddressUsecase(sl()));
 
   //// Product UseCase
   sl.registerLazySingleton(() => GetListProductUseCase(sl()));

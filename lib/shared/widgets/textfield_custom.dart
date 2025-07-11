@@ -34,6 +34,7 @@ class CustomTextField extends StatefulWidget {
   final int? maxLine;
   final bool isShowErrorMessage;
   final String? errorMessage;
+  final bool? readOnly;
 
   const CustomTextField(
       {super.key,
@@ -61,6 +62,7 @@ class CustomTextField extends StatefulWidget {
       this.contentPadding,
       this.maxLine = 1,
       this.errorMessage,
+      this.readOnly,
       this.isShowErrorMessage = false});
 
   @override
@@ -105,8 +107,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
           height: 2,
         ),
         TextFormField(
+          readOnly: widget.readOnly ?? false,
           maxLines: widget.maxLine,
           controller: widget.controller,
+
           obscureText: _obscure,
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,

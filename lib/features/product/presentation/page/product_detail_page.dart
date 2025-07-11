@@ -106,12 +106,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 height: 80,
                                 child: ListView.separated(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: state.productDetailModel?.variants
-                                          .length ??
-                                      0,
+                                  itemCount:
+                                      (state.productDetailModel?.variants ?? [])
+                                          .length,
                                   itemBuilder: (context, index) {
-                                    final variant = state
-                                        .productDetailModel!.variants[index];
+                                    final variant =
+                                        (state.productDetailModel!.variants ??
+                                            [])[index];
                                     return CustomCacheImageNetwork(
                                       borderRadius: 5,
                                       imageUrl: variant.cover,

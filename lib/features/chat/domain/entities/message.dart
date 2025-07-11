@@ -1,5 +1,5 @@
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation.dart';
-import 'package:thuongmaidientu/features/profile/domain/entities/profile.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.dart';
 
 class Message {
   String messageId;
