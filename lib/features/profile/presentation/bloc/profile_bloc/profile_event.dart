@@ -13,7 +13,7 @@ class GetProfile extends ProfileEvent {
 }
 
 class GetAddress extends ProfileEvent {
-  final int id;
+  final String id;
   const GetAddress({required this.id});
 }
 
@@ -27,7 +27,7 @@ class GetWards extends ProfileEvent {
 }
 
 class AddAddress extends ProfileEvent {
-  final int id;
+  final String id;
   final AddressEntity addressEntity;
   final Function? onSuccess;
   const AddAddress(

@@ -2,7 +2,7 @@ import 'package:thuongmaidientu/features/profile/domain/entities/province_entity
 import 'package:thuongmaidientu/features/profile/domain/entities/ward_entity.dart';
 
 class AddressEntity {
-  final int? id;
+  final String? id;
   final ProvinceEntity? province;
   final WardEntity? ward;
   final String address;

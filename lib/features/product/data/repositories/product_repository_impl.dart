@@ -19,8 +19,8 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<ProductDetail> getProductDetail() async {
-    final productdetail = await remoteDataSource.getProductDetail();
+  Future<ProductDetail> getProductDetail(String id) async {
+    final productdetail = await remoteDataSource.getProductDetail(id);
     return productdetail;
   }
 
@@ -31,8 +31,9 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<List<Product>> getListProductSummerice() async {
-    final productModels = await remoteDataSource.getListProductSummerice();
+  Future<List<Product>> getListProductSummerice(String categoryId) async {
+    final productModels =
+        await remoteDataSource.getListProductSummerice(categoryId);
     return productModels;
   }
 

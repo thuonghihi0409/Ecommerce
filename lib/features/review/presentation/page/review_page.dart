@@ -36,7 +36,9 @@ class _ReviewPageState extends State<ReviewPage> {
   }
 
   _getDate() async {
-    context.read<ReviewBloc>().add(const GetListReview());
+    context
+        .read<ReviewBloc>()
+        .add(GetListReview(id: widget.productDetail?.productId ?? ""));
   }
 
   void _onRefresh() {}

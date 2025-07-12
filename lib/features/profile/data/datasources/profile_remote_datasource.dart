@@ -6,10 +6,10 @@ import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 
 abstract class ProfileRemoteDatasource {
   Future<ProfileEntityModel> getProfile(String email);
-  Future<List<AddressEntity>> getAddress(int id);
+  Future<List<AddressEntity>> getAddress(String id);
   Future<List<ProvinceEntity>> getProvince();
   Future<List<WardEntity>> getWard(String id);
-  Future<AddressEntity> addAddress(AddressEntity addAddress, int UserId);
+  Future<AddressEntity> addAddress(AddressEntity addAddress, String UserId);
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
@@ -22,7 +22,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
   }
 
   @override
-  Future<List<AddressEntity>> getAddress(int id) async {
+  Future<List<AddressEntity>> getAddress(String id) async {
     final address = await supabase.from('Address').select('''
       id, 
       name,
@@ -30,7 +30,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
       address,
       province:Provinces (code, name),
       ward:Wards (code, name)
-    ''').eq('user', id);
+    ''').eq('user_id', id);
 
     return address.map((e) => AddressEntity.fromJson(e)).toList();
   }
@@ -50,11 +50,12 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
   }
 
   @override
-  Future<AddressEntity> addAddress(AddressEntity addAddress, int userId) async {
+  Future<AddressEntity> addAddress(
+      AddressEntity addAddress, String userId) async {
     final result = await supabase
         .from("Address")
         .insert({
-          "user": userId,
+          "user_id": userId,
           "name": addAddress.name,
           "phone": addAddress.phone,
           "address": addAddress.address,

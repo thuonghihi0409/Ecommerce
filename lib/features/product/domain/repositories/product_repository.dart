@@ -7,8 +7,8 @@ import '../entities/product.dart';
 
 abstract class ProductRepository {
   Future<ListModel<Product>> getListProduct();
-  Future<ProductDetail> getProductDetail();
+  Future<ProductDetail> getProductDetail(String id);
   Future<Store> getStore();
-  Future<List<Product>> getListProductSummerice();
+  Future<List<Product>> getListProductSummerice(String categoryId);
   Future<List<Category>> getListCategory();
 }

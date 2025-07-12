@@ -18,7 +18,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<List<AddressEntity>> getAddress(int id) async {
+  Future<List<AddressEntity>> getAddress(String id) async {
     final address = await remoteDataSource.getAddress(id);
 
     return address;
@@ -39,7 +39,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<AddressEntity> addAddress(AddressEntity addAddress, int userId) async {
+  Future<AddressEntity> addAddress(
+      AddressEntity addAddress, String userId) async {
     final address = await remoteDataSource.addAddress(addAddress, userId);
     return address;
   }

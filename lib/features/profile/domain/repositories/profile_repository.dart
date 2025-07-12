@@ -6,8 +6,8 @@ import '../entities/profile_entity.dart';
 
 abstract class ProfileRepository {
   Future<ProfileEntity> getProfile(String email);
-  Future<List<AddressEntity>> getAddress(int id);
+  Future<List<AddressEntity>> getAddress(String id);
   Future<List<ProvinceEntity>> getProvince();
   Future<List<WardEntity>> getWard(String id);
-  Future<AddressEntity> addAddress(AddressEntity addAddress, int userId);
+  Future<AddressEntity> addAddress(AddressEntity addAddress, String userId);
 }

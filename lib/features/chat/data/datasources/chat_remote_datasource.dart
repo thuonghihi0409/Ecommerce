@@ -1,16 +1,15 @@
-import '../models/conversation_model.dart';
-
 import 'package:dio/dio.dart';
 
+import '../models/conversation_model.dart';
 
 abstract class ChatRemoteDataSource {
   Future<ConversationModel> login(String email, String password);
 }
 
-class AuthRemoteDataSourceImpl implements ChatRemoteDataSource {
+class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   final Dio dio;
 
-  AuthRemoteDataSourceImpl(this.dio);
+  ChatRemoteDataSourceImpl(this.dio);
 
   @override
   Future<ConversationModel> login(String email, String password) async {

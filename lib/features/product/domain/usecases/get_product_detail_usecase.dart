@@ -6,7 +6,7 @@ class GetProductDetailUsecase {
 
   GetProductDetailUsecase(this.repository);
 
-  Future<ProductDetail?> call() {
-    return repository.getProductDetail();
+  Future<ProductDetail?> call(String id) {
+    return repository.getProductDetail(id);
   }
 }

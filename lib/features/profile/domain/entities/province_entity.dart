@@ -1,5 +1,5 @@
 class ProvinceEntity {
-  final code;
+  final String code;
   final String name;
 
   ProvinceEntity({

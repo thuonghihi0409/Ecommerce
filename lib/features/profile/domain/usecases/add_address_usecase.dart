@@ -6,7 +6,7 @@ class AddAddressUsecase {
 
   AddAddressUsecase(this.repository);
   Future<AddressEntity> call(
-      {required AddressEntity addAddress, required int id}) {
+      {required AddressEntity addAddress, required String id}) {
     return repository.addAddress(addAddress, id);
   }
 }

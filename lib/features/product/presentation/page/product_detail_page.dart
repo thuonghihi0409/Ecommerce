@@ -9,6 +9,7 @@ import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_b
 import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
+import 'package:thuongmaidientu/features/product/presentation/page/store_detail.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/add_cart_widget.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
 import 'package:thuongmaidientu/features/review/presentation/page/review_page.dart';
@@ -38,9 +39,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   _getDate() async {
-    context
-        .read<ProductBloc>()
-        .add(GetProductDetail(productId: widget.product.productId));
+    context.read<ProductBloc>().add(GetProductDetail(
+        productId: widget.product.productId,
+        categoryId: widget.product.categoryId ?? ""));
   }
 
   @override
@@ -250,7 +251,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         height: 40,
                                         text: "key_view_store".tr(),
                                         textStyle: AppTextStyles.textSize10(),
-                                        backgroundColor: AppColor.whiteColor,
+                                        backgroundColor:
+                                            AppColor.greyColor.withAlpha(150),
+                                        onPressed: () {
+                                          NavigationService.instance
+                                              .push(const StoreDetail());
+                                        },
                                       ))
                                 ],
                               ),

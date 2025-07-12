@@ -58,7 +58,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                             children: [
                               Expanded(
                                 child: Image.network(
-                                  widget.imageUrls[index].url,
+                                  widget.imageUrls[index].url ?? "",
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   loadingBuilder:
@@ -85,7 +85,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                                 ),
                               ),
                               Text(
-                                widget.imageUrls[index].alt,
+                                widget.imageUrls[index].alt ?? "",
                                 style: AppTextStyles.textSize12(),
                               ),
                             ],

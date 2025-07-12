@@ -101,7 +101,7 @@ class _AddCartWidgetState extends State<AddCartWidget> {
                           ),
                           5.w,
                           Text(
-                            item.value.name,
+                            item.value.name ?? "",
                             style: AppTextStyles.textSize12(),
                           )
                         ],

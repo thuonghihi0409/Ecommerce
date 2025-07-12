@@ -26,9 +26,7 @@ class ProfileEntityModel extends ProfileEntity {
 
   static ProfileEntityModel fromJson(Map<String, dynamic> json) {
     return ProfileEntityModel(
-      id: json['id'] is int
-          ? json['id']
-          : int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      id: json['id'],
       name: json['name']?.toString() ?? "",
       email: json['email']?.toString(),
       phone: json['phone']?.toString(),

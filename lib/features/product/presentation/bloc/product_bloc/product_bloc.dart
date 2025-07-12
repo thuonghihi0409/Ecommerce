@@ -55,7 +55,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   void _getListCategory(
       GetListCategory event, Emitter<ProductState> emit) async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
       final listCategory = await _getListCategoryUseCase.call();
       log("bloc ${(listCategory ?? []).length}");
       emit(state.copyWith(listCategory: listCategory));
@@ -72,10 +71,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       GetProductDetail event, Emitter<ProductState> emit) async {
     try {
       emit(state.copyWith(isGetDetail: true));
-      final product = await _getProductDetailUsecase.call();
+      final product = await _getProductDetailUsecase.call(event.productId);
+      log(event.productId.toString());
       final store = await _getStoreUsecase.call();
-      final listSummerice = await _getListProductSummericeUseCase.call();
-      await Future.delayed(const Duration(seconds: 1));
+      final listSummerice =
+          await _getListProductSummericeUseCase.call(event.categoryId);
+
       emit(state.copyWith(
           isGetDetail: false,
           productDetailModel: product,
@@ -86,6 +87,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(state.copyWith(
           isGetDetail: false,
           getProductDetailError: ParseError.fromJson(e).message));
+      log(ParseError.fromJson(e).message);
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
   }

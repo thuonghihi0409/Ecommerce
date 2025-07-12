@@ -1,28 +1,32 @@
-import 'package:thuongmaidientu/features/chat/domain/entities/conversation.dart';
+import 'package:thuongmaidientu/features/chat/data/models/message_model.dart';
+import 'package:thuongmaidientu/features/chat/domain/entities/conversation_entity.dart';
+import 'package:thuongmaidientu/features/product/data/models/store_model.dart';
 import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 
-class ConversationModel extends Conversation {
-  ConversationModel({
-    required super.conversationId,
-    required super.user1,
-    required super.user2,
-  });
+class ConversationModel extends ConversationEntity {
+  ConversationModel(
+      {required super.id,
+      required super.user,
+      required super.store,
+      required super.lastMessage});
 
   // From JSON
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      conversationId: json['conversationId'],
-      user1: ProfileEntityModel.fromJson(json['user1']),
-      user2: ProfileEntityModel.fromJson(json['user2']),
+      id: json['conversation_id'],
+      user: ProfileEntityModel.fromJson(json['user']),
+      store: StoreModel.fromJson(json['store']),
+      lastMessage: MessageModel.fromJson(json['last_message']),
     );
   }
 
   // To JSON
   Map<String, dynamic> toJson() {
     return {
-      'conversationId': conversationId,
-      'user1Id': user1.id,
-      'user2Id': user2.id,
+      'conversation_id': id,
+      'user_id': user.id,
+      'store_id': store.id,
+      'last_message_id': lastMessage?.id ?? ""
     };
   }
 }

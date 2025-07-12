@@ -17,12 +17,12 @@ class ProductDetailModel extends ProductDetail {
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
     return ProductDetailModel(
       totalRating: json['total_rating'],
-      avgRating: json['avg_rating'],
+      avgRating: json['avg_rating'].toDouble(),
       totalSold: json['total_sold'],
-      productId: json['product_id'],
+      productId: json['id'],
       productName: json['product_name'],
       description: json['description'],
-      price: (json['price'] as num).toDouble(),
+      price: json['price'],
       storeId: json['store_id'],
       categoryId: json['category_id'],
       images:
@@ -35,7 +35,7 @@ class ProductDetailModel extends ProductDetail {
 
   Map<String, dynamic> toJson() {
     return {
-      'product_id': productId,
+      'id': productId,
       'product_name': productName,
       'description': description,
       'price': price,
@@ -84,7 +84,7 @@ class VariantModel extends Variant {
     return VariantModel(
         id: json['id'],
         name: json['name'],
-        price: (json['price'] as num).toDouble(),
+        price: json['price'],
         stock: json['stock'] ?? 0,
         cover: json['cover'] ?? "");
   }

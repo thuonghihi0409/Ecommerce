@@ -19,7 +19,8 @@ class ReviewModel extends Review {
     return ReviewModel(
       id: json['id'] ?? '',
       content: json['content'] ?? '',
-      imageUrls: List<String>.from(json['image_urls'] ?? []),
+      imageUrls: List<String>.from(
+          json['image_urls'].map((item) => item["url"]).toList() ?? []),
       rating: json['rating'] ?? 0,
       likesCount: json['likes_count'] ?? 0,
       user: ProfileEntityModel.fromJson(json['user'] ?? ''),

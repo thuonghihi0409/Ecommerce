@@ -1,12 +1,12 @@
 class Product {
-  final int productId;
+  final String productId;
   final String? cover;
-  final int? storeId;
-  final int? categoryId;
+  final String? storeId;
+  final String? categoryId;
   final String? productName;
   final String? description;
 
-  final double? price;
+  final int? price;
   final double? avgRating;
   final int? totalSold;
 

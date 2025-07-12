@@ -51,7 +51,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   _getDate() async {
-    _bloc.add(GetAddress(id: _bloc.state.profile?.id ?? 00));
+    _bloc.add(GetAddress(id: _bloc.state.profile?.id ?? ""));
   }
 
   @override

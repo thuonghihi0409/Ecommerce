@@ -63,7 +63,7 @@ class _AddAddressState extends State<AddAddressPage> {
         onSuccess: () {
           NavigationService.instance.goBack();
         },
-        id: _bloc.state.profile?.id ?? 00,
+        id: _bloc.state.profile?.id ?? "",
         addressEntity: AddressEntity(
             province: provinceEntity,
             ward: wardEntity,

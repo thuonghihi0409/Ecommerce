@@ -6,7 +6,7 @@ class GetListProductSummericeUseCase {
 
   GetListProductSummericeUseCase(this.repository);
 
-  Future<List<Product>?> call() {
-    return repository.getListProductSummerice();
+  Future<List<Product>?> call(String categoryId) {
+    return repository.getListProductSummerice(categoryId);
   }
 }

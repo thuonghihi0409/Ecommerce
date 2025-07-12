@@ -1,17 +1,18 @@
 import '../../domain/entities/store.dart';
 
 class StoreModel extends Store {
-  const StoreModel({
-    required super.id,
-    required super.name,
-    required super.logoUrl,
-    required super.address,
-    required super.averageRating,
-    required super.totalProducts,
-  });
+  const StoreModel(
+      {required super.id,
+      required super.name,
+      required super.logoUrl,
+      required super.address,
+      required super.averageRating,
+      required super.totalProducts,
+      required super.backgroundUrl});
 
   factory StoreModel.fromJson(Map<String, dynamic> json) {
     return StoreModel(
+      backgroundUrl: json["background_url"],
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       logoUrl: json['logo_url'] ?? '',
@@ -29,6 +30,7 @@ class StoreModel extends Store {
       'address': address,
       'average_rating': averageRating,
       'total_products': totalProducts,
+      'background_url': backgroundUrl
     };
   }
 }

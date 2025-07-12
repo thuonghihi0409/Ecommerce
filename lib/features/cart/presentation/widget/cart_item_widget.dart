@@ -120,7 +120,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    entrie.value.variant.name,
+                                    entrie.value.variant.name ?? "",
                                     style: AppTextStyles.textSize12(),
                                   ),
                                   5.w,

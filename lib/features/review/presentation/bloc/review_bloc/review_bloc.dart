@@ -22,7 +22,7 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
     try {
       emit(state.copyWith(isLoading: true));
       await Future.delayed(const Duration(seconds: 1));
-      final listReview = await _getListReviewUseCase.call();
+      final listReview = await _getListReviewUseCase.call(event.id ?? "");
       emit(state.copyWith(isLoading: false, listReview: listReview));
     } catch (e) {
       emit(state.copyWith(

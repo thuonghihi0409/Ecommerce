@@ -1,11 +1,10 @@
 class ProductDetail {
-  final int productId;
+  final String productId;
   final String? productName;
   final String? description;
-  final double? price;
-  final int? storeId;
-  final int? categoryId;
-
+  final int? price;
+  final String? storeId;
+  final String? categoryId;
   final List<ImageItem>? images;
   final List<Variant>? variants;
   final double? avgRating;
@@ -28,8 +27,8 @@ class ProductDetail {
 
 class ImageItem {
   final String id;
-  final String url;
-  final String alt;
+  final String? url;
+  final String? alt;
 
   ImageItem({
     required this.id,
@@ -40,10 +39,10 @@ class ImageItem {
 
 class Variant {
   final String id;
-  final String cover;
-  final String name;
-  final double price;
-  final int stock;
+  final String? cover;
+  final String? name;
+  final int? price;
+  final int? stock;
 
   Variant(
       {required this.id,
