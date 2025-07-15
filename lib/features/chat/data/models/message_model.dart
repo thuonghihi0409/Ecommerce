@@ -8,7 +8,8 @@ class MessageModel extends MessageEntity {
       required super.timesend,
       required super.conversationId,
       required super.senderId,
-      required super.messageType});
+      required super.messageType,
+      required super.receiverId});
 
   // Phương thức chuyển đổi đối tượng Message thành JSON
   Map<String, dynamic> toJson() {
@@ -18,6 +19,7 @@ class MessageModel extends MessageEntity {
       'is_read': isRead,
       'conversation_id': conversationId,
       'sender_id': senderId ?? "",
+      'receiver_id': receiverId ?? "",
       'message_type': convertMessageTypeToString(messageType)
     };
   }
@@ -25,13 +27,13 @@ class MessageModel extends MessageEntity {
   // Phương thức tạo đối tượng Message từ JSON
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
-      messageType: convertStringToMessageType(json["message_type"]),
-      id: json['id'],
-      content: json['content'],
-      isRead: json['is_read'],
-      timesend: DateTime.parse(json['create_at']).toUtc(),
-      conversationId: json['conversation_id'],
-      senderId: json['sender_id'],
-    );
+        messageType: convertStringToMessageType(json["message_type"]),
+        id: json['id'],
+        content: json['content'],
+        isRead: json['is_read'],
+        timesend: DateTime.parse(json['create_at']).toUtc(),
+        conversationId: json['conversation_id'],
+        senderId: json['sender_id'],
+        receiverId: json['receiver_id']);
   }
 }

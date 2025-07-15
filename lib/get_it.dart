@@ -12,6 +12,15 @@ import 'package:thuongmaidientu/features/cart/data/datasources/product_remote_da
 import 'package:thuongmaidientu/features/cart/data/repositories/product_repository_impl.dart';
 import 'package:thuongmaidientu/features/cart/domain/repositories/cart_repository.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
+import 'package:thuongmaidientu/features/chat/data/datasources/chat_remote_datasource.dart';
+import 'package:thuongmaidientu/features/chat/data/repositories/chat_repository_impl.dart';
+import 'package:thuongmaidientu/features/chat/domain/repositories/chat_repository.dart';
+import 'package:thuongmaidientu/features/chat/domain/usecases/create_conversation_usecase.dart';
+import 'package:thuongmaidientu/features/chat/domain/usecases/find_conversation_usecase.dart';
+import 'package:thuongmaidientu/features/chat/domain/usecases/get_list_conversation_usecase.dart';
+import 'package:thuongmaidientu/features/chat/domain/usecases/get_message_usecase.dart';
+import 'package:thuongmaidientu/features/chat/domain/usecases/send_message_usecase.dart';
+import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/product/data/datasources/product_remote_datasource.dart';
 import 'package:thuongmaidientu/features/product/data/repositories/product_repository_impl.dart';
 import 'package:thuongmaidientu/features/product/domain/repositories/product_repository.dart';
@@ -50,6 +59,8 @@ Future<void> init() async {
 
   sl.registerFactory(() => ProfileBloc(sl(), sl(), sl(), sl(), sl()));
 
+  sl.registerFactory(() => ChatBloc(sl(), sl(), sl(), sl(), sl()));
+
   // UseCase
   //// Auth UseCase
   sl.registerLazySingleton(() => LoginUseCase(sl()));
@@ -77,6 +88,13 @@ Future<void> init() async {
   //// Review UseCase
   sl.registerLazySingleton(() => GetListReviewUseCase(sl()));
 
+  //// Chat UseCase
+  sl.registerLazySingleton(() => GetListConversationUseCase(sl()));
+  sl.registerLazySingleton(() => CreateConversationUsecase(sl()));
+  sl.registerLazySingleton(() => SendMessageUsecase(sl()));
+  sl.registerLazySingleton(() => GetMessageUseCase(sl()));
+  sl.registerLazySingleton(() => FindConversationUsecase(sl()));
+
   // Repository
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
 
@@ -89,6 +107,8 @@ Future<void> init() async {
   sl.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(sl()));
 
   sl.registerLazySingleton<ReviewRepository>(() => ReviewRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(sl()));
 
   // DataSource
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -103,4 +123,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ReviewRemoteDatasource>(
       () => ReviewRemoteDataSourceImpl());
+
+  sl.registerLazySingleton<ChatRemoteDataSource>(
+      () => ChatRemoteDataSourceImpl());
 }

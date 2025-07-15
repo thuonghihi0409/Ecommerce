@@ -8,6 +8,7 @@ import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/add_cart_widget.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/page/create_review_page.dart';
 import 'package:thuongmaidientu/features/review/presentation/widget/review_item_widget.dart';
@@ -54,8 +55,9 @@ class _ReviewPageState extends State<ReviewPage> {
           actions: [
             IconButton(
                 onPressed: () {
+                  final id = context.read<ProfileBloc>().state.profile?.id;
                   NavigationService.instance
-                      .push(const ConversationPage(currentUserId: ""));
+                      .push(ConversationPage(currentUserId: id ?? ""));
                 },
                 icon: SvgPicture.asset(
                   AppAssets.chatIcon,

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:video_player/video_player.dart';
@@ -24,46 +26,57 @@ class _VideosScreenState extends State<VideosScreen> {
     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     'https://www.w3schools.com/html/mov_bbb.mp4',
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColor.blackColor,
-      extendBodyBehindAppBar: true,
-      appBar: CustomAppBar(
-        backgroundColor: Colors.transparent,
-        showLeading: false,
-        actions: [
-          IconButton(
-              onPressed: () {
-                NavigationService.instance
-                    .push(const ConversationPage(currentUserId: ""));
-              },
-              icon: SvgPicture.asset(
-                AppAssets.chatIcon,
-                height: 25,
-                width: 25,
-              )),
-          IconButton(
-              onPressed: () {
-                NavigationService.instance.push(const CartPage());
-              },
-              icon: SvgPicture.asset(
-                AppAssets.cartIcon,
-                height: 25,
-                width: 25,
-              )),
-        ],
-      ),
-      body: PageView.builder(
-        controller: _pageController,
-        scrollDirection: Axis.vertical,
-        itemCount: videoUrls.length,
-        itemBuilder: (context, index) {
-          return VideoPlayerWidget(videoUrl: videoUrls[index]);
-        },
-      ),
-    );
+    return BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
+      return Scaffold(
+        backgroundColor: AppColor.blackColor,
+        extendBodyBehindAppBar: true,
+        appBar: CustomAppBar(
+          backgroundColor: Colors.transparent,
+          showLeading: false,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  if (mounted) {
+                    return;
+                  }
+                  final id = context.read<ProfileBloc>().state.profile?.id;
+                  NavigationService.instance
+                      .push(ConversationPage(currentUserId: id ?? ""));
+                },
+                icon: SvgPicture.asset(
+                  AppAssets.chatIcon,
+                  height: 25,
+                  width: 25,
+                )),
+            IconButton(
+                onPressed: () {
+                  NavigationService.instance.push(const CartPage());
+                },
+                icon: SvgPicture.asset(
+                  AppAssets.cartIcon,
+                  height: 25,
+                  width: 25,
+                )),
+          ],
+        ),
+        body: PageView.builder(
+          controller: _pageController,
+          scrollDirection: Axis.vertical,
+          itemCount: videoUrls.length,
+          itemBuilder: (context, index) {
+            return VideoPlayerWidget(videoUrl: videoUrls[index]);
+          },
+        ),
+      );
+    });
   }
 }
 

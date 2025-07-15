@@ -1,43 +1,117 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/chat_detail_page.dart';
+import 'package:thuongmaidientu/shared/utils/helper.dart';
+import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
 
-class ConversationPage extends StatelessWidget {
+class ConversationPage extends StatefulWidget {
   final String currentUserId;
 
   const ConversationPage({super.key, required this.currentUserId});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
-      return Scaffold(
-          appBar: AppBar(title: const Text('Danh sách hội thoại')),
-          body: Container(
-            child: ListView.builder(
-              itemCount: 2,
-              itemBuilder: (context, index) {
-                final room = state.listConversation?.results?[index];
+  State<ConversationPage> createState() => _ConversationPageState();
+}
 
-                return ListTile(
-                  title: Text(room?.store.name ?? ""),
-                  //subtitle: Text('Thành viên: ${members.join(', ')}'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ChatDetailPage(
-                          roomId: room?.id ?? "",
-                          currentUserId: currentUserId,
-                          peerId: "",
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
+class _ConversationPageState extends State<ConversationPage> {
+  late ChatBloc _chatBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _chatBloc = context.read<ChatBloc>();
+    _getData();
+  }
+
+  _getData() async {
+    _chatBloc.add(GetListConversation(userId: widget.currentUserId));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayLoadingCustom(
+      loadingWidget:
+          BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+        return CustomLoading(
+          isLoading: state.isLoading,
+          isOverlay: true,
+        );
+      }),
+      child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+        return Scaffold(
+            appBar: CustomAppBar(
+              title: "key_conversation".tr(),
             ),
-          ));
-    });
+            body: Builder(builder: (context) {
+              if (state.listConversation?.results == null ||
+                  state.listConversation!.results!.isEmpty) {
+                return const Center(
+                  child: Text('No conversation'),
+                );
+              }
+              return ListView.builder(
+                itemCount: (state.listConversation?.results ?? []).length,
+                itemBuilder: (context, index) {
+                  final conversation = state.listConversation?.results?[index];
+
+                  return ListTile(
+                    title: Text(conversation?.store?.name ?? ""),
+                    //subtitle: Text('Thành viên: ${members.join(', ')}'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChatDetailPage(
+                            conversationEntity: conversation,
+                          ),
+                        ),
+                      );
+                    },
+                    leading: CircleAvatar(
+                      child: CustomCacheImageNetwork(
+                          imageUrl: conversation?.store?.logoUrl ?? ""),
+                    ),
+
+                    subtitle: Text(
+                      conversation?.lastMessage?.content ?? "[Media]",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (conversation?.lastMessage != null)
+                          Text(
+                              Helper.timeAgo(
+                                  conversation?.lastMessage?.timesend ??
+                                      DateTime.now()),
+                              style: AppTextStyles.textSize12()),
+                        if ((conversation?.unreadCount ?? 0) > 0)
+                          Container(
+                            margin: const EdgeInsets.only(top: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text("${conversation?.unreadCount}",
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 10)),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }));
+      }),
+    );
   }
 }

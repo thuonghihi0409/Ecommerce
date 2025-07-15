@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:thuongmaidientu/features/chat/data/models/message_model.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation_entity.dart';
 import 'package:thuongmaidientu/features/product/data/models/store_model.dart';
@@ -8,15 +10,20 @@ class ConversationModel extends ConversationEntity {
       {required super.id,
       required super.user,
       required super.store,
+      required super.unreadCount,
       required super.lastMessage});
 
   // From JSON
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
+    log(json.toString());
     return ConversationModel(
-      id: json['conversation_id'],
+      id: json['id'],
       user: ProfileEntityModel.fromJson(json['user']),
       store: StoreModel.fromJson(json['store']),
-      lastMessage: MessageModel.fromJson(json['last_message']),
+      lastMessage: json['last_message'] != null
+          ? MessageModel.fromJson(json['last_message'])
+          : null,
+      unreadCount: json['unread_count'] ?? 0,
     );
   }
 
@@ -24,9 +31,10 @@ class ConversationModel extends ConversationEntity {
   Map<String, dynamic> toJson() {
     return {
       'conversation_id': id,
-      'user_id': user.id,
-      'store_id': store.id,
-      'last_message_id': lastMessage?.id ?? ""
+      'user_id': user?.id,
+      'store_id': store?.id,
+      'last_message_id': lastMessage?.id ?? "",
+      'unread_count': unreadCount
     };
   }
 }

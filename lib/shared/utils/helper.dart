@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -350,5 +351,14 @@ class Helper {
         );
       },
     );
+  }
+
+  static String timeAgo(DateTime time) {
+    // Viết theo nhu cầu: '2 phút trước', 'hôm qua',...
+    return DateFormat.Hm().format(time);
+  }
+
+  static String formatTime(DateTime time) {
+    return DateFormat('HH:mm dd/MM').format(time);
   }
 }

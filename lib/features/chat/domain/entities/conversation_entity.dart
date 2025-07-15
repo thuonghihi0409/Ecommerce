@@ -4,13 +4,15 @@ import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.
 
 class ConversationEntity {
   String id;
-  ProfileEntity user;
-  Store store;
+  ProfileEntity? user;
+  Store? store;
   MessageEntity? lastMessage;
+  int unreadCount;
   // Constructor
   ConversationEntity(
       {required this.id,
-      required this.user,
-      required this.store,
-      required this.lastMessage});
+      this.user,
+      this.store,
+      this.lastMessage,
+      required this.unreadCount});
 }

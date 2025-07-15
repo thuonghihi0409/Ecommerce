@@ -7,11 +7,14 @@ import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
+import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
+import 'package:thuongmaidientu/features/chat/presentation/page/chat_detail_page.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/store_detail.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/add_cart_widget.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/page/review_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
@@ -292,6 +295,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       child: CustomButton(
                         text: "key_chat".tr(),
                         borderRadius: 0,
+                        onPressed: () {
+                          final user =
+                              context.read<ProfileBloc>().state.profile;
+                          context.read<ChatBloc>().add(CreateConversation(
+                              user: user!,
+                              store: state.store!,
+                              onSuccess: (conversation) {
+                                NavigationService.instance.push(ChatDetailPage(
+                                  conversationEntity: conversation,
+                                ));
+                              }));
+                        },
                       ),
                     ),
                     2.w,

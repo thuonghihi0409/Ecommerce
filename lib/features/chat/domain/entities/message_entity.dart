@@ -29,6 +29,7 @@ class MessageEntity {
   DateTime? timesend;
   String? conversationId;
   String? senderId;
+  String receiverId;
   MessageType messageType;
 
   MessageEntity(
@@ -38,5 +39,6 @@ class MessageEntity {
       required this.timesend,
       required this.conversationId,
       required this.senderId,
-      required this.messageType});
+      required this.messageType,
+      required this.receiverId});
 }

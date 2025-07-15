@@ -9,6 +9,7 @@ import 'package:thuongmaidientu/features/chat/presentation/page/conversation_pag
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/product_detail_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
@@ -54,8 +55,9 @@ class _ProductPageState extends State<ProductPage> {
           actions: [
             IconButton(
                 onPressed: () {
+                  final id = context.read<ProfileBloc>().state.profile?.id;
                   NavigationService.instance
-                      .push(const ConversationPage(currentUserId: ""));
+                      .push(ConversationPage(currentUserId: id ?? ""));
                 },
                 icon: SvgPicture.asset(
                   AppAssets.chatIcon,

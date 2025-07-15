@@ -4,19 +4,20 @@ class ChatState extends Equatable {
   final ListModel<ConversationEntity>? listConversation;
   final ListModel<MessageEntity>? listMessage;
   final ConversationEntity? conversation;
+  final bool isNewConversation;
 
   final bool isLoading;
   final bool isLoadingMore;
   final bool isRefreshing;
 
-  const ChatState({
-    required this.listConversation,
-    this.listMessage,
-    this.conversation,
-    this.isLoading = false,
-    this.isLoadingMore = false,
-    this.isRefreshing = false,
-  });
+  const ChatState(
+      {required this.listConversation,
+      this.listMessage,
+      this.conversation,
+      this.isLoading = false,
+      this.isLoadingMore = false,
+      this.isRefreshing = false,
+      this.isNewConversation = false});
 
   factory ChatState.empty() {
     return const ChatState(
@@ -24,6 +25,7 @@ class ChatState extends Equatable {
         isLoading: false,
         isLoadingMore: false,
         isRefreshing: false,
+        isNewConversation: false,
         conversation: null,
         listMessage: ListModel());
   }
@@ -33,6 +35,7 @@ class ChatState extends Equatable {
       bool? isLoading,
       bool? isLoadingMore,
       bool? isRefreshing,
+      bool? isNewConversation,
       ListModel<MessageEntity>? listMessage,
       ConversationEntity? conversation}) {
     return ChatState(
@@ -41,6 +44,7 @@ class ChatState extends Equatable {
         isLoadingMore: isLoadingMore ?? this.isLoadingMore,
         isRefreshing: isRefreshing ?? this.isRefreshing,
         listMessage: listMessage ?? this.listMessage,
+        isNewConversation: isNewConversation ?? this.isNewConversation,
         conversation: conversation ?? this.conversation);
   }
 
@@ -51,6 +55,7 @@ class ChatState extends Equatable {
         isLoadingMore,
         isRefreshing,
         listMessage,
-        conversation
+        conversation,
+        isNewConversation
       ];
 }
