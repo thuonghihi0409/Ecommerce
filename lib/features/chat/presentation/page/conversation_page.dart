@@ -64,12 +64,12 @@ class _ConversationPageState extends State<ConversationPage> {
                     title: Text(conversation?.store?.name ?? ""),
                     //subtitle: Text('Thành viên: ${members.join(', ')}'),
                     onTap: () {
+                      _chatBloc.add(
+                          OpenConversation(conversationEntity: conversation));
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ChatDetailPage(
-                            conversationEntity: conversation,
-                          ),
+                          builder: (_) => const ChatDetailPage(),
                         ),
                       );
                     },

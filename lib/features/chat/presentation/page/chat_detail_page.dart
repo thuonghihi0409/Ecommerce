@@ -4,14 +4,15 @@ import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation_entity.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
+import 'package:thuongmaidientu/features/chat/presentation/widgets/product_message_widget.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 
 class ChatDetailPage extends StatefulWidget {
-  final ConversationEntity? conversationEntity;
-  final String? currentId;
-  const ChatDetailPage(
-      {super.key, required this.conversationEntity, this.currentId});
+  final String? productId;
+
+  const ChatDetailPage({super.key, this.productId});
 
   @override
   State<ChatDetailPage> createState() => _ChatDetailPageState();
@@ -21,19 +22,25 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _textController = TextEditingController();
   bool _showJumpToBottom = false;
+  late String _currentId;
+  late ConversationEntity? _conversationEntity;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    context
-        .read<ChatBloc>()
-        .add(GetMessage(conversationId: widget.conversationEntity?.id ?? ""));
+
+    context.read<ChatBloc>().add(const GetMessage());
+
+    _conversationEntity = context.read<ChatBloc>().state.conversation;
+    _currentId = context.read<ProfileBloc>().state.profile?.id ?? "";
+    if (widget.productId != null) {
+      _sendMessage(widget.productId ?? "", MessageType.product);
+    }
   }
 
   void _onScroll() {
-    if (_scrollController.offset <
-        _scrollController.position.maxScrollExtent - 200) {
+    if (_scrollController.offset > 200) {
       if (!_showJumpToBottom) {
         setState(() => _showJumpToBottom = true);
       }
@@ -43,10 +50,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       }
     }
 
-    if (_scrollController.position.pixels <= 100) {
-      context
-          .read<ChatBloc>()
-          .add(GetMessage(conversationId: widget.conversationEntity?.id ?? ""));
+    if (_scrollController.position.pixels >
+        _scrollController.position.maxScrollExtent - 200) {
+      context.read<ChatBloc>().add(const GetMessage());
     }
   }
 
@@ -54,11 +60,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     context.read<ChatBloc>().add(SendMessage(
         messageType: messageType,
         content: content,
-        receiverId: (widget.conversationEntity?.user?.id == widget.currentId
-                ? widget.conversationEntity?.store?.id
-                : widget.conversationEntity?.user?.id) ??
+        receiverId: (_conversationEntity?.user?.id == _currentId
+                ? _conversationEntity?.store?.id
+                : _conversationEntity?.user?.id) ??
             "",
-        senderId: widget.currentId ?? ""));
+        senderId: _currentId));
     _textController.clear();
     _scrollToBottom();
   }
@@ -66,7 +72,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
+        0,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
@@ -78,9 +84,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return Scaffold(
       appBar: AppBar(title: BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
-          return Text((widget.conversationEntity?.user?.id == widget.currentId
-                  ? widget.conversationEntity?.store?.name
-                  : widget.conversationEntity?.user?.name) ??
+          return Text((_conversationEntity?.user?.id == _currentId
+                  ? _conversationEntity?.store?.name
+                  : _conversationEntity?.user?.name) ??
               "Đang chat");
         },
       )),
@@ -99,15 +105,17 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       itemBuilder: (context, index) {
                         final msg = messages?.results?[index];
                         return Align(
-                          alignment: msg?.senderId == widget.currentId
+                          alignment: msg?.senderId == _currentId
                               ? Alignment.centerRight
                               : Alignment.centerLeft,
                           child: Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 4),
-                            padding: const EdgeInsets.all(10),
+                            padding: msg?.messageType == MessageType.message
+                                ? const EdgeInsets.all(10)
+                                : EdgeInsets.zero,
                             decoration: BoxDecoration(
-                              color: msg?.senderId == widget.currentId
+                              color: msg?.senderId == _currentId
                                   ? Colors.blue
                                   : Colors.grey.shade300,
                               borderRadius: BorderRadius.circular(8),
@@ -119,7 +127,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                   Text(msg?.content ?? "",
                                       style: AppTextStyles.textSize14()),
                                 if (msg?.messageType == MessageType.media)
-                                  Image.network(msg?.content ?? ""),
+                                  Image.asset(msg?.content ?? ""),
+                                if (msg?.messageType == MessageType.product)
+                                  ProductMessageWidget(
+                                      product: msg?.product, onTap: () {}),
                                 const SizedBox(height: 4),
                                 Text(
                                   Helper.formatTime(

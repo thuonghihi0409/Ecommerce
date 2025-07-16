@@ -38,7 +38,9 @@ void main() async {
     await Firebase.initializeApp();
   }
   await Supabase.initialize(
-      anonKey: dotenv.env["SUPABASE_KEY"]!, url: dotenv.env["SUPABASE_URL"]!);
+      anonKey: dotenv.env["SUPABASE_KEY"]!,
+      url: dotenv.env["SUPABASE_URL"]!,
+      debug: true);
   await init();
 
   runApp(EasyLocalization(

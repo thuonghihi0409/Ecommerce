@@ -13,7 +13,7 @@ class GetListConversation extends ChatEvent {
 }
 
 class CreateConversation extends ChatEvent {
-  final Function(ConversationEntity)? onSuccess;
+  final Function(ConversationEntity, bool)? onSuccess;
   final ProfileEntity user;
   final Store store;
   const CreateConversation(
@@ -21,11 +21,11 @@ class CreateConversation extends ChatEvent {
 }
 
 class GetMessage extends ChatEvent {
-  final String conversationId;
-  const GetMessage({required this.conversationId});
+  const GetMessage();
 }
 
 class SendMessage extends ChatEvent {
+  final bool isNew;
   final String content;
   final String senderId;
   final String receiverId;
@@ -34,7 +34,13 @@ class SendMessage extends ChatEvent {
       {required this.content,
       required this.receiverId,
       required this.senderId,
-      required this.messageType});
+      required this.messageType,
+      this.isNew = false});
+}
+
+class OpenConversation extends ChatEvent {
+  final ConversationEntity? conversationEntity;
+  const OpenConversation({required this.conversationEntity});
 }
 
 class ReceiveMessage extends ChatEvent {

@@ -301,9 +301,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           context.read<ChatBloc>().add(CreateConversation(
                               user: user!,
                               store: state.store!,
-                              onSuccess: (conversation) {
+                              onSuccess: (conversation, isNew) {
                                 NavigationService.instance.push(ChatDetailPage(
-                                  conversationEntity: conversation,
+                                  productId:
+                                      state.productDetailModel?.productId,
                                 ));
                               }));
                         },

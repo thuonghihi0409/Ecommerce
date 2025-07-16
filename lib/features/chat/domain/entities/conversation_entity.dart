@@ -3,7 +3,7 @@ import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.dart';
 
 class ConversationEntity {
-  String id;
+  String? id;
   ProfileEntity? user;
   Store? store;
   MessageEntity? lastMessage;

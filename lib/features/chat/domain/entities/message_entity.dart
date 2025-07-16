@@ -1,3 +1,5 @@
+import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
+
 enum MessageType { message, product, media }
 
 String convertMessageTypeToString(MessageType type) {
@@ -30,6 +32,7 @@ class MessageEntity {
   String? conversationId;
   String? senderId;
   String receiverId;
+  Product? product;
   MessageType messageType;
 
   MessageEntity(
@@ -40,5 +43,6 @@ class MessageEntity {
       required this.conversationId,
       required this.senderId,
       required this.messageType,
-      required this.receiverId});
+      required this.receiverId,
+      required this.product});
 }

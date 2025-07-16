@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation_entity.dart';
@@ -35,6 +33,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<CreateConversation>(createConversation);
     on<SendMessage>(sendMessage);
     on<GetMessage>(getMessage);
+    on<OpenConversation>(openConversation);
   }
 
   Future<void> getListConversation(
@@ -53,35 +52,34 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           listConversation: state.listConversation
               ?.copyWith(errorMessage: ParseError.fromJson(e).message)));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
-      log(ParseError.fromJson(e).message);
     }
   }
 
   Future<void> createConversation(
       CreateConversation event, Emitter<ChatState> emit) async {
     try {
-      emit(state.copyWith(isLoading: true));
+      emit(
+        state.copyWith(isLoading: true, listMessage: const ListModel()),
+      );
       final response =
           await findConversationUsecase.call(event.user.id, event.store.id);
       if (response == null) {
         emit(state.copyWith(
-            isLoading: false,
-            conversation: ConversationEntity(
-                id: "", user: event.user, store: event.store, unreadCount: 0),
-            isNewConversation: true));
-        event.onSuccess?.call(
-          ConversationEntity(
+          isLoading: false,
+          conversation: ConversationEntity(
               id: "", user: event.user, store: event.store, unreadCount: 0),
-        );
+        ));
+        event.onSuccess?.call(
+            ConversationEntity(
+                id: "", user: event.user, store: event.store, unreadCount: 0),
+            true);
+      } else {
+        event.onSuccess?.call(response, false);
+        emit(state.copyWith(isLoading: false, conversation: response));
       }
-      event.onSuccess?.call(response ??
-          ConversationEntity(
-              id: "", user: event.user, store: event.store, unreadCount: 0));
-      emit(state.copyWith(isLoading: false));
     } catch (e) {
       emit(state.copyWith(isLoading: false));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
-      log(ParseError.fromJson(e).message);
     }
   }
 
@@ -89,24 +87,32 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       emit(state.copyWith(isLoading: true));
 
-      if (state.isNewConversation) {
+      if (state.conversation?.id == null ||
+          (state.conversation?.id ?? "").isEmpty) {
         final conversation = await createConversationUsecase.call(
-            state.conversation?.user?.id ?? "",
-            state.conversation?.store?.id ?? "");
-        state.copyWith(conversation: conversation, isNewConversation: false);
+            state.conversation?.user?.id ?? "hi",
+            state.conversation?.store?.id ?? "ha");
+
+        emit(state.copyWith(
+          conversation: conversation,
+        ));
       }
-      // final response = await sendMessageUsecase.call(
-      //     event.senderId,
-      //     event.receiverId,
-      //     event.content,
-      //     state.conversation?.id ?? "",
-      //     convertMessageTypeToString(event.messageType));
-      // final newList =
-      //     List<MessageEntity>.from(state.listMessage?.results ?? []);
-      // newList.add(response!);
-      // emit(state.copyWith(
-      //     isLoading: false,
-      //     listMessage: state.listMessage?.copyWith(results: newList)));
+
+      final response = await sendMessageUsecase.call(
+          event.senderId,
+          event.receiverId,
+          event.content,
+          state.conversation?.id ?? "",
+          convertMessageTypeToString(event.messageType));
+      final newList =
+          List<MessageEntity>.from(state.listMessage?.results ?? []);
+      newList.insert(0, response!);
+      final listmodel = ListModel(results: newList);
+      emit(state.copyWith(
+        isLoading: false,
+        listMessage: listmodel,
+      ));
+      GetListConversation(userId: event.senderId);
     } catch (e) {
       emit(state.copyWith(isLoading: false));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
@@ -116,12 +122,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> getMessage(GetMessage event, Emitter<ChatState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      if (state.isNewConversation) return;
-      final response = await getMessageUseCase.call(event.conversationId);
+      if (state.conversation?.id == null ||
+          (state.conversation?.id ?? "").isEmpty) return;
+
+      final response =
+          await getMessageUseCase.call(state.conversation?.id ?? "");
       emit(state.copyWith(isLoading: false, listMessage: response));
     } catch (e) {
       emit(state.copyWith(isLoading: false));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
+  }
+
+  Future<void> openConversation(
+      OpenConversation event, Emitter<ChatState> emit) async {
+    emit(state.copyWith(
+        conversation: event.conversationEntity,
+        listMessage: const ListModel()));
   }
 }

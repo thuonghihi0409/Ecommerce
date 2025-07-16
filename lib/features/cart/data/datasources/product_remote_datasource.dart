@@ -10,11 +10,6 @@ class CartRemoteDataSourceImpl implements CartRemoteDatasource {
 
   @override
   Future<ListModel<CartItemModel>> getListCart() async {
-    // final response = await dio.post(
-    //   '/login',
-    //   data: {'email': email, 'password': password},
-    // );
-
     final data = {
       "count": 5,
       "next": null,

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:thuongmaidientu/features/chat/data/models/message_model.dart';
+import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
@@ -41,8 +44,10 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         *,
         user: Users(*),
         store:Stores(*),
+       
         last_message:Messages!Conversations_last_message_id_fkey(*)
         ''').single();
+    log("conversation$conversation");
     return ConversationModel.fromJson(conversation);
   }
 
@@ -63,9 +68,14 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   @override
   Future<ListModel<MessageModel>> getMessage(String conversationId) async {
-    final result = await supabase.from('Messages').select('''
-    *
-    ''').eq('conversation_id', conversationId);
+    final result = await supabase
+        .from('Messages')
+        .select('''
+    *,
+    product: Products(*)
+    ''')
+        .eq('conversation_id', conversationId)
+        .order('created_at', ascending: false);
 
     final listConversation = result
         .map((conversation) => MessageModel.fromJson(conversation))
@@ -76,18 +86,22 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override
   Future<MessageModel> sendMessage(String senderId, String receiverId,
       String message, String conversationId, String type) async {
-    final result = await supabase
-        .from('Messages')
-        .insert({
-          "sender_id": senderId,
-          "recaiver_id": receiverId,
-          "conversation_id": conversationId,
-          "content": message,
-          "type": type
-        })
-        .select()
-        .single();
+    final result = await supabase.from('Messages').insert({
+      "sender_id": senderId,
+      "receiver_id": receiverId,
+      "conversation_id": conversationId,
+      "content": message,
+      "message_type": type,
+      "product_id": convertStringToMessageType(type) == MessageType.product
+          ? message
+          : null
+    }).select('''
+      *,
+      product: Products(*)
+      ''').single();
 
+    await supabase.from("Conversations").update(
+        {"last_message_id": result["id"]}).eq("id", result["conversation_id"]);
     return MessageModel.fromJson(result);
   }
 }
