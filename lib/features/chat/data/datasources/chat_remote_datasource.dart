@@ -72,7 +72,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         .from('Messages')
         .select('''
     *,
-    product: Products(*)
+    product: Products(*,store : Stores(*))
     ''')
         .eq('conversation_id', conversationId)
         .order('created_at', ascending: false);
@@ -97,7 +97,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
           : null
     }).select('''
       *,
-      product: Products(*)
+      product: Products(*,store : Stores(*))
       ''').single();
 
     await supabase.from("Conversations").update(

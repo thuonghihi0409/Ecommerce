@@ -11,6 +11,9 @@ import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_b
 import 'package:thuongmaidientu/features/cart/data/datasources/cart_remote_datasource.dart';
 import 'package:thuongmaidientu/features/cart/data/repositories/cart_repository_impl.dart';
 import 'package:thuongmaidientu/features/cart/domain/repositories/cart_repository.dart';
+import 'package:thuongmaidientu/features/cart/domain/usecases/add_to_cart_usecase.dart';
+import 'package:thuongmaidientu/features/cart/domain/usecases/delete_cart_usecase.dart';
+import 'package:thuongmaidientu/features/cart/domain/usecases/update_cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/chat/data/datasources/chat_remote_datasource.dart';
 import 'package:thuongmaidientu/features/chat/data/repositories/chat_repository_impl.dart';
@@ -53,7 +56,7 @@ Future<void> init() async {
 
   sl.registerFactory(() => ProductBloc(sl(), sl(), sl(), sl(), sl()));
 
-  sl.registerFactory(() => CartBloc(sl()));
+  sl.registerFactory(() => CartBloc(sl(), sl(), sl(), sl()));
 
   sl.registerFactory(() => ReviewBloc(sl()));
 
@@ -84,6 +87,9 @@ Future<void> init() async {
 
   //// Cart UseCase
   sl.registerLazySingleton(() => GetListCartUseCase(sl()));
+  sl.registerLazySingleton(() => AddToCartUsecase(sl()));
+  sl.registerLazySingleton(() => UpdateCartUsecase(sl()));
+  sl.registerLazySingleton(() => DeleteCartUsecase(sl()));
 
   //// Review UseCase
   sl.registerLazySingleton(() => GetListReviewUseCase(sl()));

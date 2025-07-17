@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
+import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/chat_detail_page.dart';
@@ -18,7 +19,7 @@ import 'package:thuongmaidientu/features/review/presentation/page/review_page.da
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
-import 'package:thuongmaidientu/shared/widgets/add_cart_widget.dart';
+import 'package:thuongmaidientu/shared/widgets/add_to_cart_widget.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
@@ -322,7 +323,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           headerCustom: AddCartWidget(
                             productDetail: state.productDetailModel,
                             lableButton: 'key_add_to_cart'.tr(),
-                            onTap: (productItem) {},
+                            onTap: (productItem, index, quantity) {
+                              final userId = context
+                                      .read<ProfileBloc>()
+                                      .state
+                                      .profile
+                                      ?.id ??
+                                  "";
+                              context.read<CartBloc>().add(AddToCart(
+                                  userId: userId,
+                                  productId: widget.product.productId,
+                                  storeId: state.store?.id ?? "",
+                                  variantId: state.productDetailModel
+                                          ?.variants?[index].id ??
+                                      "",
+                                  quantity: quantity));
+                            },
                           ),
                           context: context,
                         );
@@ -338,7 +354,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           headerCustom: AddCartWidget(
                             productDetail: state.productDetailModel,
                             lableButton: "key_buy_now".tr(),
-                            onTap: (productItem) {},
+                            onTap: (productItem, index, quantity) {},
                           ),
                           context: context,
                         );

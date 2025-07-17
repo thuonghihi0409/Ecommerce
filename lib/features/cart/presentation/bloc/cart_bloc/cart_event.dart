@@ -15,34 +15,38 @@ class GetListCart extends CartEvent {
 }
 
 class AddToCart extends CartEvent {
-  final String? id;
+  final String userId;
   final String productId;
   final String storeId;
   final String variantId;
+  final int quantity;
 
   const AddToCart(
-      {this.id,
+      {required this.userId,
       required this.productId,
       required this.storeId,
-      required this.variantId});
+      required this.variantId,
+      required this.quantity});
 }
 
 class UpdateCart extends CartEvent {
-  final String? id;
+  final String? userId;
   final ProductItem productItem;
 
   const UpdateCart({
-    this.id,
+    this.userId,
     required this.productItem,
   });
 }
 
 class DeleteCart extends CartEvent {
-  final String? id;
-  final ProductItem productItem;
+  final String userId;
+  final String cartId;
+  final String productItemId;
 
   const DeleteCart({
-    this.id,
-    required this.productItem,
+    required this.cartId,
+    required this.userId,
+    required this.productItemId,
   });
 }

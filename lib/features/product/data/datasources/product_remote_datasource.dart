@@ -21,7 +21,8 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
 
   @override
   Future<ListModel<ProductModel>> getListProduct() async {
-    final data = await supabase.from("Products").select('''*''');
+    final data =
+        await supabase.from("Products").select('''*,store : Stores(*)''');
 
     final result = ListModel(
         results:
@@ -33,10 +34,11 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
   @override
   Future<ProductDetailModel> getProductDetail(String id) async {
     final data = await supabase.from("Products").select('''
-*,
-images : Images(*),
-variants : Variants(*)
-     ''').eq("id", id).single();
+      *,
+      images : Images(*),
+      variants : Variants(*),
+      store : Stores(*)
+      ''').eq("id", id).single();
 
     return ProductDetailModel.fromJson(data);
   }
@@ -52,7 +54,7 @@ variants : Variants(*)
   Future<List<ProductModel>> getListProductSummerice(String categoryId) async {
     final data = await supabase
         .from("Products")
-        .select('''*''').eq("category_id", categoryId);
+        .select('''*,store : Stores(*)''').eq("category_id", categoryId);
 
     return data.map((product) => ProductModel.fromJson(product)).toList();
   }

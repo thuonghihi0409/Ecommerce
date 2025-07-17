@@ -6,6 +6,9 @@ import 'package:equatable/equatable.dart';
 import 'package:thuongmaidientu/features/Cart/domain/usecases/get_list_Cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
+import 'package:thuongmaidientu/features/cart/domain/usecases/add_to_cart_usecase.dart';
+import 'package:thuongmaidientu/features/cart/domain/usecases/delete_cart_usecase.dart';
+import 'package:thuongmaidientu/features/cart/domain/usecases/update_cart_usecase.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
@@ -15,11 +18,14 @@ part 'cart_event.dart';
 part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-  final GetListCartUseCase _getListCartUseCase;
+  final GetListCartUseCase getListCartUseCase;
+  final AddToCartUsecase addToCartUsecase;
+  final UpdateCartUsecase updateCartUsecase;
+  final DeleteCartUsecase deleteCartUsecase;
 
-  CartBloc(
-    this._getListCartUseCase,
-  ) : super(CartState.empty()) {
+  CartBloc(this.getListCartUseCase, this.addToCartUsecase,
+      this.deleteCartUsecase, this.updateCartUsecase)
+      : super(CartState.empty()) {
     on<GetListCart>(_getListCart);
     on<AddToCart>(_addToCart);
   }
@@ -28,7 +34,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       emit(state.copyWith(isLoading: true));
 
-      final listCart = await _getListCartUseCase.call(event.id ?? "");
+      final listCart = await getListCartUseCase.call(event.id ?? "");
       emit(state.copyWith(isLoading: false, listCart: listCart));
     } catch (e) {
       emit(state.copyWith(
@@ -43,8 +49,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   void _addToCart(AddToCart event, Emitter<CartState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await Future.delayed(const Duration(seconds: 2));
-
+      await addToCartUsecase.call(event.userId, event.productId, event.storeId,
+          event.variantId, event.quantity);
       emit(state.copyWith(
         isLoading: false,
       ));

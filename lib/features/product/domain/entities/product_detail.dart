@@ -1,9 +1,11 @@
+import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+
 class ProductDetail {
   final String productId;
   final String? productName;
   final String? description;
   final int? price;
-  final String? storeId;
+  final Store? store;
   final String? categoryId;
   final List<ImageItem>? images;
   final List<Variant>? variants;
@@ -16,7 +18,7 @@ class ProductDetail {
       required this.productName,
       required this.description,
       required this.price,
-      required this.storeId,
+      required this.store,
       required this.categoryId,
       required this.images,
       required this.variants,

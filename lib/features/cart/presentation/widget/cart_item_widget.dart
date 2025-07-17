@@ -4,7 +4,7 @@ import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
-import 'package:thuongmaidientu/shared/widgets/add_cart_widget.dart';
+import 'package:thuongmaidientu/shared/widgets/add_to_cart_widget.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/quantity_selector_widget.dart';
 
@@ -93,7 +93,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           });
                         }),
                     CustomCacheImageNetwork(
-                      imageUrl: entrie.value.variant.cover,
+                      imageUrl: entrie.value.variant?.cover,
                       height: 80,
                       width: 80,
                       boxFit: BoxFit.fill,
@@ -104,7 +104,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            entrie.value.productDetail.productName ?? "",
+                            entrie.value.productDetail?.productName ?? "",
                             style: AppTextStyles.textSize20(),
                           ),
                           10.h,
@@ -118,7 +118,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    entrie.value.variant.name ?? "",
+                                    entrie.value.variant?.name ?? "",
                                     style: AppTextStyles.textSize12(),
                                   ),
                                   5.w,
@@ -133,7 +133,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                                     AddCartWidget(
                                       productDetail: entrie.value.productDetail,
                                       lableButton: 'key_confirm',
-                                      onTap: (productItem) {},
+                                      onTap: (productItem, index, quantity) {},
                                     ),
                                   ],
                                 ),
@@ -146,7 +146,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                (entrie.value.variant.price ?? 0).toString(),
+                                (entrie.value.variant?.price ?? 0).toString(),
                                 style: AppTextStyles.textSize12(),
                                 overflow: TextOverflow.ellipsis,
                               ),

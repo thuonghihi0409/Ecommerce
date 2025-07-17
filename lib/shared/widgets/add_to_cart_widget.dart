@@ -1,13 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
-import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
-import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
-import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
@@ -16,13 +12,15 @@ import 'package:thuongmaidientu/shared/widgets/quantity_selector_widget.dart';
 
 class AddCartWidget extends StatefulWidget {
   final ProductDetail? productDetail;
+  final ProductItem? productItem;
   final String lableButton;
-  final Function(ProductItem) onTap;
+  final Function(ProductItem product, int index, int quantity) onTap;
   const AddCartWidget(
       {super.key,
       required this.productDetail,
       required this.lableButton,
-      required this.onTap});
+      required this.onTap,
+      this.productItem});
 
   @override
   State<AddCartWidget> createState() => _AddCartWidgetState();
@@ -30,14 +28,7 @@ class AddCartWidget extends StatefulWidget {
 
 class _AddCartWidgetState extends State<AddCartWidget> {
   int _selectedIndex = 0;
-  late String _userId;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _userId = context.read<ProfileBloc>().state.profile?.id ?? "";
-  }
-
+  int quantity = 1;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -144,7 +135,9 @@ class _AddCartWidgetState extends State<AddCartWidget> {
                   "key_quantity".tr(),
                   style: AppTextStyles.textSize12(),
                 ),
-                QuantitySelector(onChanged: (number) {})
+                QuantitySelector(onChanged: (number) {
+                  quantity = number;
+                })
               ],
             ),
             20.h,
@@ -153,13 +146,17 @@ class _AddCartWidgetState extends State<AddCartWidget> {
         CustomButton(
           text: widget.lableButton,
           onPressed: () {
-            widget.onTap;
-            BlocProvider.of<CartBloc>(context).add(AddToCart(
-                productId: widget.productDetail?.productId ?? "",
-                variantId:
-                    widget.productDetail?.variants?[_selectedIndex].id ?? "",
-                id: _userId,
-                storeId: context.read<ProductBloc>().state.store?.id ?? ""));
+            widget.onTap.call(
+                widget.productItem ??
+                    ProductItem(
+                        id: "",
+                        productDetail: widget.productDetail,
+                        variant:
+                            widget.productDetail?.variants?[_selectedIndex],
+                        number: quantity),
+                _selectedIndex,
+                quantity);
+
             NavigationService.instance.goBack();
           },
         ),

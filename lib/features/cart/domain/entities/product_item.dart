@@ -2,8 +2,8 @@ import 'package:thuongmaidientu/features/product/domain/entities/product_detail.
 
 class ProductItem {
   final String id;
-  final ProductDetail productDetail;
-  final Variant variant;
+  final ProductDetail? productDetail;
+  final Variant? variant;
   final int number;
 
   ProductItem(

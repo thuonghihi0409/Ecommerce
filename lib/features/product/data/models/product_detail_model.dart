@@ -1,3 +1,4 @@
+import 'package:thuongmaidientu/features/product/data/models/store_model.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
 
 class ProductDetailModel extends ProductDetail {
@@ -6,7 +7,7 @@ class ProductDetailModel extends ProductDetail {
       required super.productName,
       required super.description,
       required super.price,
-      required super.storeId,
+      required super.store,
       required super.categoryId,
       required super.images,
       required super.variants,
@@ -23,7 +24,7 @@ class ProductDetailModel extends ProductDetail {
       productName: json['product_name'],
       description: json['description'],
       price: json['price'],
-      storeId: json['store_id'],
+      store: StoreModel.fromJson(json['store']),
       categoryId: json['category_id'],
       images:
           (json['images'] as List).map((e) => ImageModel.fromJson(e)).toList(),
@@ -39,7 +40,7 @@ class ProductDetailModel extends ProductDetail {
       'product_name': productName,
       'description': description,
       'price': price,
-      'store_id': storeId,
+      'store_id': store?.id,
       'category_id': categoryId,
       'total_rating': totalRating,
       'total_sold': totalSold,

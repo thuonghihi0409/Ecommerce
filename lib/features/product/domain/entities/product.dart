@@ -1,7 +1,9 @@
+import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+
 class Product {
   final String productId;
   final String? cover;
-  final String? storeId;
+  final Store? store;
   final String? categoryId;
   final String? productName;
   final String? description;
@@ -13,7 +15,7 @@ class Product {
   Product(
       {required this.productId,
       this.cover,
-      this.storeId,
+      this.store,
       this.categoryId,
       this.productName,
       this.description,
