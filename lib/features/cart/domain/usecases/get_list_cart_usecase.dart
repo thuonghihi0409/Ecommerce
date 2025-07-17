@@ -7,7 +7,7 @@ class GetListCartUseCase {
 
   GetListCartUseCase(this.repository);
 
-  Future<ListModel<CartItem>?> call() {
-    return repository.getListCart();
+  Future<ListModel<CartItem>?> call(String userId) {
+    return repository.getListCart(userId);
   }
 }

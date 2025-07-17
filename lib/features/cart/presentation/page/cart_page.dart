@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/cart/presentation/widget/cart_item_widget.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
@@ -25,7 +26,8 @@ class _CartPageState extends State<CartPage> {
   }
 
   _getDate() async {
-    context.read<CartBloc>().add(const GetListCart());
+    final id = context.read<ProfileBloc>().state.profile?.id;
+    context.read<CartBloc>().add(GetListCart(id: id ?? ""));
   }
 
   void _onRefresh() {}
@@ -36,7 +38,7 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
       return Scaffold(
-        backgroundColor: AppColor.greyColor,
+        backgroundColor: AppColor.whiteColor,
         appBar: CustomAppBar(
           title: "key_cart".tr(),
         ),

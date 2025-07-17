@@ -16,8 +16,33 @@ class GetListCart extends CartEvent {
 
 class AddToCart extends CartEvent {
   final String? id;
+  final String productId;
+  final String storeId;
+  final String variantId;
 
-  const AddToCart({
+  const AddToCart(
+      {this.id,
+      required this.productId,
+      required this.storeId,
+      required this.variantId});
+}
+
+class UpdateCart extends CartEvent {
+  final String? id;
+  final ProductItem productItem;
+
+  const UpdateCart({
     this.id,
+    required this.productItem,
+  });
+}
+
+class DeleteCart extends CartEvent {
+  final String? id;
+  final ProductItem productItem;
+
+  const DeleteCart({
+    this.id,
+    required this.productItem,
   });
 }

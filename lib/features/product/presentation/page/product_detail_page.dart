@@ -5,20 +5,20 @@ import 'package:flutter_svg/svg.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/chat_detail_page.dart';
+import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/store_detail.dart';
-import 'package:thuongmaidientu/features/product/presentation/widget/add_cart_widget.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/page/review_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
+import 'package:thuongmaidientu/shared/widgets/add_cart_widget.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
@@ -67,7 +67,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 onPressed: () {}, icon: const Icon(Icons.share_outlined)),
             IconButton(
                 onPressed: () {
-                  NavigationService.instance.push(const CartPage());
+                  final id = context.read<ProfileBloc>().state.profile?.id;
+                  NavigationService.instance
+                      .push(ConversationPage(currentUserId: id ?? ""));
                 },
                 icon: SvgPicture.asset(
                   AppAssets.chatIcon,
@@ -317,20 +319,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       borderRadius: 0,
                       onPressed: () {
                         Helper.showCustomBottomSheet(
-                          headerCustom: Column(
-                            children: [
-                              AddCartWidget(
-                                  productDetail: state.productDetailModel),
-                              CustomButton(
-                                text: "key_add_to_cart".tr(),
-                                onPressed: () {
-                                  BlocProvider.of<CartBloc>(context)
-                                      .add(const AddToCart());
-                                  NavigationService.instance.goBack();
-                                },
-                              ),
-                              10.h
-                            ],
+                          headerCustom: AddCartWidget(
+                            productDetail: state.productDetailModel,
+                            lableButton: 'key_add_to_cart'.tr(),
+                            onTap: (productItem) {},
                           ),
                           context: context,
                         );
@@ -343,20 +335,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       borderRadius: 0,
                       onPressed: () {
                         Helper.showCustomBottomSheet(
-                          headerCustom: Column(
-                            children: [
-                              AddCartWidget(
-                                  productDetail: state.productDetailModel),
-                              CustomButton(
-                                text: "key_buy_now".tr(),
-                                onPressed: () {
-                                  BlocProvider.of<CartBloc>(context)
-                                      .add(const AddToCart());
-                                  NavigationService.instance.goBack();
-                                },
-                              ),
-                              10.h
-                            ],
+                          headerCustom: AddCartWidget(
+                            productDetail: state.productDetailModel,
+                            lableButton: "key_buy_now".tr(),
+                            onTap: (productItem) {},
                           ),
                           context: context,
                         );

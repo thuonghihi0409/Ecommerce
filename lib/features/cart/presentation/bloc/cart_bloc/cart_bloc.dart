@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:thuongmaidientu/features/Cart/domain/usecases/get_list_Cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
+import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
@@ -24,8 +27,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   void _getListCart(GetListCart event, Emitter<CartState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await Future.delayed(const Duration(seconds: 2));
-      final listCart = await _getListCartUseCase.call();
+
+      final listCart = await _getListCartUseCase.call(event.id ?? "");
       emit(state.copyWith(isLoading: false, listCart: listCart));
     } catch (e) {
       emit(state.copyWith(
@@ -33,6 +36,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           listCart: state.listCart
               .copyWith(errorMessage: ParseError.fromJson(e).message)));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
+      log(ParseError.fromJson(e).message);
     }
   }
 

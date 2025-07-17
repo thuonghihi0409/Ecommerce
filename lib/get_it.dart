@@ -8,8 +8,8 @@ import 'package:thuongmaidientu/features/auth/domain/usecases/logout_usecase.dar
 import 'package:thuongmaidientu/features/auth/domain/usecases/register_usecase.dart';
 import 'package:thuongmaidientu/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
-import 'package:thuongmaidientu/features/cart/data/datasources/product_remote_datasource.dart';
-import 'package:thuongmaidientu/features/cart/data/repositories/product_repository_impl.dart';
+import 'package:thuongmaidientu/features/cart/data/datasources/cart_remote_datasource.dart';
+import 'package:thuongmaidientu/features/cart/data/repositories/cart_repository_impl.dart';
 import 'package:thuongmaidientu/features/cart/domain/repositories/cart_repository.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/chat/data/datasources/chat_remote_datasource.dart';

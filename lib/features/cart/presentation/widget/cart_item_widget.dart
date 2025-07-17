@@ -1,15 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
-import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
-import 'package:thuongmaidientu/features/product/presentation/widget/add_cart_widget.dart';
-import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
-import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/add_cart_widget.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/quantity_selector_widget.dart';
 
@@ -34,11 +29,14 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-            color: AppColor.greyColor.withAlpha(10),
-            offset: const Offset(0, 4)),
-      ], borderRadius: BorderRadius.circular(8), color: AppColor.whiteColor),
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: AppColor.greyColor.withAlpha(10),
+                offset: const Offset(0, 4)),
+          ],
+          borderRadius: BorderRadius.circular(8),
+          color: AppColor.greyColor.withAlpha(50)),
       child: Column(
         children: [
           Row(
@@ -133,17 +131,10 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                                 headerCustom: Column(
                                   children: [
                                     AddCartWidget(
-                                        productDetail:
-                                            entrie.value.productDetail),
-                                    CustomButton(
-                                      text: "key_confirm".tr(),
-                                      onPressed: () {
-                                        BlocProvider.of<CartBloc>(context)
-                                            .add(const AddToCart());
-                                        NavigationService.instance.goBack();
-                                      },
+                                      productDetail: entrie.value.productDetail,
+                                      lableButton: 'key_confirm',
+                                      onTap: (productItem) {},
                                     ),
-                                    10.h
                                   ],
                                 ),
                                 context: context,

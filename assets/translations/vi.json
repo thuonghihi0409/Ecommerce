@@ -50,5 +50,7 @@
     "key_add": "Thêm",
     "key_change_password": "Đổi mật khẩu",
     "key_update_information":"Cập nhật thông tin",
-    "key_old_password" : "Mật khẩu cũ"
+    "key_old_password" : "Mật khẩu cũ",
+    "key_conversation": "Tin nhắn",
+    "key_quantity" : "Số lượng"
 }

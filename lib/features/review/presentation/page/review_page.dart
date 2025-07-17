@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
-import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
-import 'package:thuongmaidientu/features/product/presentation/widget/add_cart_widget.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/page/create_review_page.dart';
@@ -15,6 +13,7 @@ import 'package:thuongmaidientu/features/review/presentation/widget/review_item_
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
+import 'package:thuongmaidientu/shared/widgets/add_cart_widget.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
@@ -119,19 +118,10 @@ class _ReviewPageState extends State<ReviewPage> {
                     borderRadius: 0,
                     onPressed: () {
                       Helper.showCustomBottomSheet(
-                        headerCustom: Column(
-                          children: [
-                            AddCartWidget(productDetail: widget.productDetail),
-                            CustomButton(
-                              text: "key_add_to_cart".tr(),
-                              onPressed: () {
-                                BlocProvider.of<CartBloc>(context)
-                                    .add(const AddToCart());
-                                NavigationService.instance.goBack();
-                              },
-                            ),
-                            10.h
-                          ],
+                        headerCustom: AddCartWidget(
+                          productDetail: widget.productDetail,
+                          lableButton: 'key_add_to_cart'.tr(),
+                          onTap: (productItem) {},
                         ),
                         context: context,
                       );
@@ -144,19 +134,10 @@ class _ReviewPageState extends State<ReviewPage> {
                     borderRadius: 0,
                     onPressed: () {
                       Helper.showCustomBottomSheet(
-                        headerCustom: Column(
-                          children: [
-                            AddCartWidget(productDetail: widget.productDetail),
-                            CustomButton(
-                              text: "key_buy_now".tr(),
-                              onPressed: () {
-                                BlocProvider.of<CartBloc>(context)
-                                    .add(const AddToCart());
-                                NavigationService.instance.goBack();
-                              },
-                            ),
-                            10.h
-                          ],
+                        headerCustom: AddCartWidget(
+                          productDetail: widget.productDetail,
+                          lableButton: 'key_buy_now'.tr(),
+                          onTap: (productItem) {},
                         ),
                         context: context,
                       );
