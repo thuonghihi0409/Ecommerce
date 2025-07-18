@@ -52,5 +52,7 @@
     "key_update_information":"Cập nhật thông tin",
     "key_old_password" : "Mật khẩu cũ",
     "key_conversation": "Tin nhắn",
-    "key_quantity" : "Số lượng"
+    "key_quantity" : "Số lượng",
+    "key_update_cart_success": "Cập nhật thành công",
+    "key_add_to_cart_success": "Đã thêm vào giỏ hàng"
 }

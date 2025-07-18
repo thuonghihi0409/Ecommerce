@@ -26,7 +26,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       *,
       user: Users(*),
       store:Stores(*),
-      last_message: Messages!Conversations_last_message_id_fkey(*)
+      last_message: Messages!Conversations_last_message_id_fkey(*, product: Products(*,store : Stores(*)))
       ''').eq('user_id', userId);
 
     final listConversation = result

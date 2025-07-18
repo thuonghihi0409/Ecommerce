@@ -6,6 +6,7 @@ import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart'
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
+import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/quantity_selector_widget.dart';
@@ -27,8 +28,19 @@ class AddCartWidget extends StatefulWidget {
 }
 
 class _AddCartWidgetState extends State<AddCartWidget> {
-  int _selectedIndex = 0;
-  int quantity = 1;
+  late int _selectedIndex;
+  late int quantity;
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = (widget.productItem?.productDetail?.variants ?? [])
+        .indexWhere((item) => item.id == widget.productItem?.variant?.id);
+    if (_selectedIndex < 0) {
+      _selectedIndex = 0;
+    }
+    quantity = widget.productItem?.number ?? 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -63,7 +75,8 @@ class _AddCartWidgetState extends State<AddCartWidget> {
                         ],
                       ),
                       Text(
-                        "${widget.productDetail?.variants?[_selectedIndex].price ?? 0} VND",
+                        Helper.formatCurrencyVND(widget
+                            .productDetail?.variants?[_selectedIndex].price),
                         style:
                             AppTextStyles.textSize20(color: AppColor.primary),
                       ),
@@ -135,9 +148,12 @@ class _AddCartWidgetState extends State<AddCartWidget> {
                   "key_quantity".tr(),
                   style: AppTextStyles.textSize12(),
                 ),
-                QuantitySelector(onChanged: (number) {
-                  quantity = number;
-                })
+                QuantitySelector(
+                  onChanged: (number) {
+                    quantity = number;
+                  },
+                  initialValue: quantity,
+                )
               ],
             ),
             20.h,
@@ -146,16 +162,16 @@ class _AddCartWidgetState extends State<AddCartWidget> {
         CustomButton(
           text: widget.lableButton,
           onPressed: () {
-            widget.onTap.call(
-                widget.productItem ??
-                    ProductItem(
-                        id: "",
-                        productDetail: widget.productDetail,
-                        variant:
-                            widget.productDetail?.variants?[_selectedIndex],
-                        number: quantity),
-                _selectedIndex,
-                quantity);
+            final item = widget.productItem == null
+                ? ProductItem(
+                    id: "",
+                    productDetail: widget.productDetail,
+                    variant: widget.productDetail?.variants?[_selectedIndex],
+                    number: quantity)
+                : widget.productItem!.copyWith(
+                    number: quantity,
+                    variant: widget.productDetail?.variants?[_selectedIndex]);
+            widget.onTap.call(item, _selectedIndex, quantity);
 
             NavigationService.instance.goBack();
           },

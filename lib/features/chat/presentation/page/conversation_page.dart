@@ -79,7 +79,7 @@ class _ConversationPageState extends State<ConversationPage> {
                     ),
 
                     subtitle: Text(
-                      conversation?.lastMessage?.content ?? "[Media]",
+                      Helper.convertLastMessage(conversation?.lastMessage),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

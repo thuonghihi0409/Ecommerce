@@ -133,7 +133,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               ),
                               10.h,
                               Text(
-                                "${state.productDetailModel?.price ?? 0} VND",
+                                Helper.formatCurrencyVND(
+                                    state.productDetailModel?.price),
                                 style: AppTextStyles.textSize20(
                                     color: AppColor.primary),
                               ),
@@ -221,7 +222,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   CircleAvatar(
                                     radius: 20,
                                     child: CustomCacheImageNetwork(
-                                      imageUrl: state.store?.logoUrl,
+                                      imageUrl: state
+                                          .productDetailModel?.store?.logoUrl,
                                       height: 80,
                                       width: 80,
                                       boxFit: BoxFit.fill,
@@ -235,12 +237,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          state.store?.name ?? "",
+                                          state.productDetailModel?.store
+                                                  ?.name ??
+                                              "",
                                           style: AppTextStyles.textSize20(),
                                         ),
                                         5.h,
                                         Text(
-                                          state.store?.address ?? "",
+                                          state.productDetailModel?.store
+                                                  ?.address ??
+                                              "",
                                           style: AppTextStyles.textSize12(),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -261,7 +267,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             AppColor.greyColor.withAlpha(150),
                                         onPressed: () {
                                           NavigationService.instance
-                                              .push(const StoreDetail());
+                                              .push(StoreDetail(
+                                            store:
+                                                state.productDetailModel?.store,
+                                          ));
                                         },
                                       ))
                                 ],
@@ -303,7 +312,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               context.read<ProfileBloc>().state.profile;
                           context.read<ChatBloc>().add(CreateConversation(
                               user: user!,
-                              store: state.store!,
+                              store: state.productDetailModel!.store!,
                               onSuccess: (conversation, isNew) {
                                 NavigationService.instance.push(ChatDetailPage(
                                   productId:
@@ -333,7 +342,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               context.read<CartBloc>().add(AddToCart(
                                   userId: userId,
                                   productId: widget.product.productId,
-                                  storeId: state.store?.id ?? "",
+                                  storeId:
+                                      state.productDetailModel?.store?.id ?? "",
                                   variantId: state.productDetailModel
                                           ?.variants?[index].id ??
                                       "",

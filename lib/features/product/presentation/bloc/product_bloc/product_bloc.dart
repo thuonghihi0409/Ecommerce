@@ -72,8 +72,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       emit(state.copyWith(isGetDetail: true));
       final product = await _getProductDetailUsecase.call(event.productId);
-      log(event.productId.toString());
-      final store = await _getStoreUsecase.call();
+
       final listSummerice =
           await _getListProductSummericeUseCase.call(event.categoryId);
 
@@ -81,7 +80,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           isGetDetail: false,
           productDetailModel: product,
           getProductDetailError: "",
-          store: store,
           listProductSummerice: listSummerice));
     } catch (e) {
       emit(state.copyWith(

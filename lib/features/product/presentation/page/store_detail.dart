@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/store_info_widget.dart';
@@ -8,7 +9,8 @@ import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
 
 class StoreDetail extends StatefulWidget {
-  const StoreDetail({super.key});
+  final Store? store;
+  const StoreDetail({super.key, required this.store});
 
   @override
   State<StoreDetail> createState() => _StoreDetailState();
@@ -69,7 +71,7 @@ class _StoreDetailState extends State<StoreDetail>
                 ),
                 flexibleSpace: FlexibleSpaceBar(
                   background: StoreInfoWidget(
-                    store: state.store,
+                    store: widget.store,
                   ), // Thông tin cửa hàng
                 ),
               ),

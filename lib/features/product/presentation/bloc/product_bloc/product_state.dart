@@ -4,7 +4,7 @@ class ProductState extends Equatable {
   final ListModel<Product> listProduct;
   final List<Category>? listCategory;
   final ProductDetail? productDetailModel;
-  final Store? store;
+
   final List<Product>? productSummerice;
   final bool isGetDetail;
   final String getProductDetailError;
@@ -12,17 +12,17 @@ class ProductState extends Equatable {
   final bool isLoadingMore;
   final bool isRefreshing;
 
-  const ProductState(
-      {required this.listProduct,
-      this.productDetailModel,
-      this.listCategory,
-      this.getProductDetailError = '',
-      this.isGetDetail = false,
-      this.isLoading = false,
-      this.isLoadingMore = false,
-      this.isRefreshing = false,
-      this.productSummerice,
-      this.store});
+  const ProductState({
+    required this.listProduct,
+    this.productDetailModel,
+    this.listCategory,
+    this.getProductDetailError = '',
+    this.isGetDetail = false,
+    this.isLoading = false,
+    this.isLoadingMore = false,
+    this.isRefreshing = false,
+    this.productSummerice,
+  });
 
   factory ProductState.empty() {
     return const ProductState(
@@ -34,7 +34,6 @@ class ProductState extends Equatable {
         isLoadingMore: false,
         isRefreshing: false,
         productSummerice: null,
-        store: null,
         listCategory: null);
   }
 
@@ -59,7 +58,6 @@ class ProductState extends Equatable {
         getProductDetailError:
             getProductDetailError ?? this.getProductDetailError,
         productSummerice: listProductSummerice ?? productSummerice,
-        store: store ?? this.store,
         listCategory: listCategory ?? this.listCategory);
   }
 
@@ -73,7 +71,6 @@ class ProductState extends Equatable {
         productDetailModel,
         getProductDetailError,
         productSummerice,
-        store,
         listCategory
       ];
 }

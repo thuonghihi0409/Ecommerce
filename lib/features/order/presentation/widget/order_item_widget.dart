@@ -11,15 +11,15 @@ import 'package:thuongmaidientu/shared/widgets/add_to_cart_widget.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/quantity_selector_widget.dart';
 
-class CartItemWidget extends StatefulWidget {
+class OrderItemWidget extends StatefulWidget {
   final CartItem cartItem;
-  const CartItemWidget({super.key, required this.cartItem});
+  const OrderItemWidget({super.key, required this.cartItem});
 
   @override
-  State<CartItemWidget> createState() => _CartItemWidgetState();
+  State<OrderItemWidget> createState() => _OrderItemWidgetState();
 }
 
-class _CartItemWidgetState extends State<CartItemWidget> {
+class _OrderItemWidgetState extends State<OrderItemWidget> {
   bool _isSelectAll = false;
   List<bool> _isSelect = [];
   late String _userId;

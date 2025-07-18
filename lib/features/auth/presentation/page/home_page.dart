@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
+import 'package:thuongmaidientu/features/order/presentation/page/order_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/product_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/account_screen.dart';
 import 'package:thuongmaidientu/screen/Notification/notification_screen.dart';
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _screens = [
     const ProductPage(),
     const VideosScreen(),
+    const OrderPage(),
     const NotificationScreen(),
     const AccountScreen()
   ];
@@ -35,7 +37,7 @@ class _HomePageState extends State<HomePage> {
           // borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withAlpha(30),
               offset: const Offset(0, 4),
               blurRadius: 10,
             ),
@@ -65,13 +67,18 @@ class _HomePageState extends State<HomePage> {
               label: 'Video',
             ),
             _buildNavItem(
-              icon: Icons.notifications,
+              icon: Icons.receipt,
               index: 2,
+              label: 'Don Hang',
+            ),
+            _buildNavItem(
+              icon: Icons.notifications,
+              index: 3,
               label: 'Thong bao',
             ),
             _buildNavItem(
               icon: Icons.account_circle_outlined,
-              index: 3,
+              index: 4,
               label: 'Tai khoan',
             ),
           ],

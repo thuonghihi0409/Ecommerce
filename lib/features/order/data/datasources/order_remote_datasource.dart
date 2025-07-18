@@ -5,7 +5,7 @@ import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart'
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
-abstract class CartRemoteDatasource {
+abstract class OrderRemoteDatasource {
   Future<ListModel<CartItemModel>> getListCart(String userId);
   Future<void> addToCart(String userId, String productId, String storeId,
       String variantId, int quantity);
@@ -13,8 +13,8 @@ abstract class CartRemoteDatasource {
   Future<void> deleteCart(String cartId, String userId, String productItemId);
 }
 
-class CartRemoteDataSourceImpl implements CartRemoteDatasource {
-  CartRemoteDataSourceImpl();
+class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
+  OrderRemoteDataSourceImpl();
 
   @override
   Future<ListModel<CartItemModel>> getListCart(String userId) async {

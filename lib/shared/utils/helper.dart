@@ -6,6 +6,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
+import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -360,5 +361,33 @@ class Helper {
 
   static String formatTime(DateTime time) {
     return DateFormat('HH:mm dd/MM').format(time);
+  }
+
+  static String formatCurrencyVND(dynamic input) {
+    try {
+      final number = num.tryParse(input.toString());
+      if (number == null) return '0 ₫';
+
+      final formatter = NumberFormat.currency(
+        locale: 'vi_VN',
+        symbol: '₫',
+        decimalDigits: 0,
+      );
+
+      return formatter.format(number);
+    } catch (e) {
+      return '0 ₫';
+    }
+  }
+
+  static String convertLastMessage(MessageEntity? message) {
+    switch (message?.messageType ?? MessageType.message) {
+      case MessageType.message:
+        return message?.content ?? "";
+      case MessageType.media:
+        return message?.content ?? "";
+      case MessageType.product:
+        return "[${"key_product".tr()}] ${message?.product?.productName ?? ""}";
+    }
   }
 }

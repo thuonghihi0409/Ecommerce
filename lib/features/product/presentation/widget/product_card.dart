@@ -67,7 +67,7 @@ class ProductCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("${product.price} VND",
+                Text(Helper.formatCurrencyVND(product.price),
                     style: AppTextStyles.textSize14(color: AppColor.primary)),
                 Text(
                   "${"key_solded".tr()} ${Helper.formatNumber(

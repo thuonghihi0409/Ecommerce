@@ -150,13 +150,11 @@ class _ProductPageState extends State<ProductPage> {
                   itemBuilder: (context, index) {
                     final product = state.listProduct.results?[index];
                     return ProductCard(
-                      product: product!,
-                      onTap: () {
-                        NavigationService.instance.push(ProductDetailPage(
-                          product: product,
-                        ));
-                      },
-                    );
+                        product: product!,
+                        onTap: () {
+                          NavigationService.instance
+                              .push(ProductDetailPage(product: product));
+                        });
                   },
                 ),
               ),

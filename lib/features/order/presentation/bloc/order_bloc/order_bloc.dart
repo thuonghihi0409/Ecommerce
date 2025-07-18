@@ -14,25 +14,25 @@ import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
 
-part 'cart_event.dart';
-part 'cart_state.dart';
+part 'order_event.dart';
+part 'order_state.dart';
 
-class CartBloc extends Bloc<CartEvent, CartState> {
+class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final GetListCartUseCase getListCartUseCase;
   final AddToCartUsecase addToCartUsecase;
   final UpdateCartUsecase updateCartUsecase;
   final DeleteCartUsecase deleteCartUsecase;
 
-  CartBloc(this.getListCartUseCase, this.addToCartUsecase,
+  OrderBloc(this.getListCartUseCase, this.addToCartUsecase,
       this.deleteCartUsecase, this.updateCartUsecase)
-      : super(CartState.empty()) {
+      : super(OrderState.empty()) {
     on<GetListCart>(_getListCart);
     on<AddToCart>(_addToCart);
     on<UpdateCart>(_updateCart);
     on<DeleteCart>(_deleteCart);
   }
 
-  void _getListCart(GetListCart event, Emitter<CartState> emit) async {
+  void _getListCart(GetListCart event, Emitter<OrderState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
 
@@ -48,7 +48,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
-  void _addToCart(AddToCart event, Emitter<CartState> emit) async {
+  void _addToCart(AddToCart event, Emitter<OrderState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
       await addToCartUsecase.call(event.userId, event.productId, event.storeId,
@@ -67,7 +67,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
-  void _updateCart(UpdateCart event, Emitter<CartState> emit) async {
+  void _updateCart(UpdateCart event, Emitter<OrderState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
       await updateCartUsecase.call(event.userId ?? "", event.productItem);
@@ -87,7 +87,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
-  void _deleteCart(DeleteCart event, Emitter<CartState> emit) async {
+  void _deleteCart(DeleteCart event, Emitter<OrderState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
       await deleteCartUsecase.call(
