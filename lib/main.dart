@@ -10,6 +10,7 @@ import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_b
 import 'package:thuongmaidientu/features/auth/presentation/page/init_page.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
+import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
@@ -55,7 +56,8 @@ void main() async {
           BlocProvider(create: (_) => sl<CartBloc>()),
           BlocProvider(create: (_) => sl<ReviewBloc>()),
           BlocProvider(create: (_) => sl<ProfileBloc>()),
-          BlocProvider(create: (_) => sl<ChatBloc>())
+          BlocProvider(create: (_) => sl<ChatBloc>()),
+          BlocProvider(create: (_) => sl<OrderBloc>())
         ], child: const MyApp()),
       )));
 }

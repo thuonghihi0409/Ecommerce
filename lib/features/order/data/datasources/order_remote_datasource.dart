@@ -1,27 +1,27 @@
 import 'dart:developer';
 
-import 'package:thuongmaidientu/features/cart/data/models/cart_item_model.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
+import 'package:thuongmaidientu/features/order/data/models/order_item_model.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
 abstract class OrderRemoteDatasource {
-  Future<ListModel<CartItemModel>> getListCart(String userId);
-  Future<void> addToCart(String userId, String productId, String storeId,
+  Future<ListModel<OrderItemModel>> getListOrder(String userId, String status);
+  Future<void> createOrder(String userId, String productId, String storeId,
       String variantId, int quantity);
-  Future<void> updateCart(String userId, ProductItem productItem);
-  Future<void> deleteCart(String cartId, String userId, String productItemId);
+  Future<void> updateOrder(String userId, ProductItem productItem);
 }
 
 class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
   OrderRemoteDataSourceImpl();
 
   @override
-  Future<ListModel<CartItemModel>> getListCart(String userId) async {
-    final data = await supabase.from("Carts").select('''
+  Future<ListModel<OrderItemModel>> getListOrder(
+      String userId, String status) async {
+    final data = await supabase.from("Orders").select('''
       *,
       store: Stores(*),
-      product_carts: ProductCarts(
+      product_orders: ProductOrders(
       id,
       product: Products(*,
         images : Images(*),
@@ -29,17 +29,18 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
         store: Stores(*)),
       number,
       variant: Variants(*)
-      )
+      
+      ),address: Address(*)
       ''').eq('user_id', userId);
     log(data.toString());
     final result = ListModel(
-        results: data.map((item) => CartItemModel.fromJson(item)).toList());
+        results: data.map((item) => OrderItemModel.fromJson(item)).toList());
 
     return result;
   }
 
   @override
-  Future<void> addToCart(String userId, String productId, String storeId,
+  Future<void> createOrder(String userId, String productId, String storeId,
       String variantId, int quantity) async {
     //// get id and check cart avaiable
     final data = await supabase.from("Carts").select('''
@@ -85,24 +86,10 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
   }
 
   @override
-  Future<void> updateCart(String userId, productItem) async {
+  Future<void> updateOrder(String userId, productItem) async {
     await supabase.from('ProductCarts').update({
       'number': productItem.number,
       'variant_id': productItem.variant?.id
     }).eq('id', productItem.id);
-  }
-
-  @override
-  Future<void> deleteCart(
-      String cartId, String userId, String productItemId) async {
-    await supabase.from('ProductCarts').delete().eq('id', productItemId);
-    final result = await supabase
-        .from('ProductCarts')
-        .select('''*''')
-        .eq('cart_id', cartId)
-        .maybeSingle();
-    if (result == null) {
-      await supabase.from("Carts").delete().eq('id', cartId);
-    }
   }
 }

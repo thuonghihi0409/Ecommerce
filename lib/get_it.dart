@@ -24,6 +24,13 @@ import 'package:thuongmaidientu/features/chat/domain/usecases/get_list_conversat
 import 'package:thuongmaidientu/features/chat/domain/usecases/get_message_usecase.dart';
 import 'package:thuongmaidientu/features/chat/domain/usecases/send_message_usecase.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
+import 'package:thuongmaidientu/features/order/data/datasources/order_remote_datasource.dart';
+import 'package:thuongmaidientu/features/order/data/repositories/order_repository_impl.dart';
+import 'package:thuongmaidientu/features/order/domain/repositories/order_repository.dart';
+import 'package:thuongmaidientu/features/order/domain/usecases/create_order_usecase.dart';
+import 'package:thuongmaidientu/features/order/domain/usecases/get_list_order_usecase.dart';
+import 'package:thuongmaidientu/features/order/domain/usecases/update_order_usecase.dart';
+import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/product/data/datasources/product_remote_datasource.dart';
 import 'package:thuongmaidientu/features/product/data/repositories/product_repository_impl.dart';
 import 'package:thuongmaidientu/features/product/domain/repositories/product_repository.dart';
@@ -64,6 +71,8 @@ Future<void> init() async {
 
   sl.registerFactory(() => ChatBloc(sl(), sl(), sl(), sl(), sl()));
 
+  sl.registerFactory(() => OrderBloc(sl(), sl(), sl()));
+
   // UseCase
   //// Auth UseCase
   sl.registerLazySingleton(() => LoginUseCase(sl()));
@@ -101,6 +110,11 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetMessageUseCase(sl()));
   sl.registerLazySingleton(() => FindConversationUsecase(sl()));
 
+  //// Order UseCase
+  sl.registerLazySingleton(() => GetListOrderUseCase(sl()));
+  sl.registerLazySingleton(() => CreateOrderUsecase(sl()));
+  sl.registerLazySingleton(() => UpdateOrderUsecase(sl()));
+
   // Repository
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
 
@@ -115,6 +129,8 @@ Future<void> init() async {
   sl.registerLazySingleton<ReviewRepository>(() => ReviewRepositoryImpl(sl()));
 
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<OrderRepository>(() => OrderRepositoryImpl(sl()));
 
   // DataSource
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -132,4 +148,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ChatRemoteDataSource>(
       () => ChatRemoteDataSourceImpl());
+
+  sl.registerLazySingleton<OrderRemoteDatasource>(
+      () => OrderRemoteDataSourceImpl());
 }

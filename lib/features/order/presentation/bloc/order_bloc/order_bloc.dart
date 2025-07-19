@@ -3,13 +3,11 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
-import 'package:thuongmaidientu/features/Cart/domain/usecases/get_list_Cart_usecase.dart';
-import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
-import 'package:thuongmaidientu/features/cart/domain/usecases/add_to_cart_usecase.dart';
-import 'package:thuongmaidientu/features/cart/domain/usecases/delete_cart_usecase.dart';
-import 'package:thuongmaidientu/features/cart/domain/usecases/update_cart_usecase.dart';
-import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/order/domain/usecases/create_order_usecase.dart';
+import 'package:thuongmaidientu/features/order/domain/usecases/get_list_order_usecase.dart';
+import 'package:thuongmaidientu/features/order/domain/usecases/update_order_usecase.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
@@ -18,96 +16,120 @@ part 'order_event.dart';
 part 'order_state.dart';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
-  final GetListCartUseCase getListCartUseCase;
-  final AddToCartUsecase addToCartUsecase;
-  final UpdateCartUsecase updateCartUsecase;
-  final DeleteCartUsecase deleteCartUsecase;
+  final GetListOrderUseCase getListOrderUseCase;
+  final CreateOrderUsecase createOrderUsecase;
+  final UpdateOrderUsecase updateOrderUsecase;
 
-  OrderBloc(this.getListCartUseCase, this.addToCartUsecase,
-      this.deleteCartUsecase, this.updateCartUsecase)
+  OrderBloc(this.createOrderUsecase, this.getListOrderUseCase,
+      this.updateOrderUsecase)
       : super(OrderState.empty()) {
-    on<GetListCart>(_getListCart);
-    on<AddToCart>(_addToCart);
-    on<UpdateCart>(_updateCart);
-    on<DeleteCart>(_deleteCart);
+    on<GetListOrder>(_getListOrder);
+    on<CreateOrder>(_createOrder);
+    on<UpdateOrder>(_updateOrder);
   }
 
-  void _getListCart(GetListCart event, Emitter<OrderState> emit) async {
-    try {
-      emit(state.copyWith(isLoading: true));
+  void _getListOrder(GetListOrder event, Emitter<OrderState> emit) async {
+    final userId = event.id ?? "";
+    final status = event.orderStatus;
 
-      final listCart = await getListCartUseCase.call(event.id ?? "");
-      emit(state.copyWith(isLoading: false, listCart: listCart));
+    try {
+      // Bắt đầu loading cho đúng danh sách theo status
+      emit(_setLoadingState(status, isLoading: true));
+
+      final result =
+          await getListOrderUseCase.call(userId, orderStatusToString(status));
+
+      // Cập nhật danh sách sau khi lấy xong
+      emit(_setListOrderByStatus(status, result));
     } catch (e) {
-      emit(state.copyWith(
-          isLoading: false,
-          listCart: state.listCart
-              .copyWith(errorMessage: ParseError.fromJson(e).message)));
-      Helper.showToastBottom(message: ParseError.fromJson(e).message);
-      log(ParseError.fromJson(e).message);
+      emit(_setLoadingState(status, isLoading: false));
+
+      final message = ParseError.fromJson(e).message;
+      Helper.showToastBottom(message: message);
+      log(message);
     }
   }
 
-  void _addToCart(AddToCart event, Emitter<OrderState> emit) async {
+  OrderState _setLoadingState(OrderStatus status, {required bool isLoading}) {
+    switch (status) {
+      case OrderStatus.pending:
+        return state.copyWith(
+          listOrderPending:
+              state.listOrderPending.copyWith(isLoading: isLoading),
+        );
+      case OrderStatus.awaiting:
+        return state.copyWith(
+          listOrderWaiting:
+              state.listOrderWaiting.copyWith(isLoading: isLoading),
+        );
+      case OrderStatus.delivering:
+        return state.copyWith(
+          listOrderDelivering:
+              state.listOrderDelivering.copyWith(isLoading: isLoading),
+        );
+      case OrderStatus.delivered:
+        return state.copyWith(
+          listOrderDelivered:
+              state.listOrderDelivered.copyWith(isLoading: isLoading),
+        );
+      case OrderStatus.cancelled:
+        return state.copyWith(
+          listOrderCancelled:
+              state.listOrderCancelled.copyWith(isLoading: isLoading),
+        );
+      case OrderStatus.reviewed:
+        return state.copyWith(
+          listOrderReviewed:
+              state.listOrderReviewed.copyWith(isLoading: isLoading),
+        );
+    }
+  }
+
+  OrderState _setListOrderByStatus(
+      OrderStatus status, ListModel<OrderItem>? data) {
+    switch (status) {
+      case OrderStatus.pending:
+        return state.copyWith(listOrderPending: data);
+      case OrderStatus.awaiting:
+        return state.copyWith(listOrderWaiting: data);
+      case OrderStatus.delivering:
+        return state.copyWith(listOrderDelivering: data);
+      case OrderStatus.delivered:
+        return state.copyWith(listOrderDelivered: data);
+      case OrderStatus.cancelled:
+        return state.copyWith(listOrderCancelled: data);
+      case OrderStatus.reviewed:
+        return state.copyWith(listOrderReviewed: data);
+    }
+  }
+
+  void _createOrder(CreateOrder event, Emitter<OrderState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await addToCartUsecase.call(event.userId, event.productId, event.storeId,
-          event.variantId, event.quantity);
+      await createOrderUsecase.call(event.userId, event.productId,
+          event.storeId, event.variantId, event.quantity);
       emit(state.copyWith(
         isLoading: false,
       ));
       Helper.showToastBottom(
           message: "key_add_to_cart_success".tr(), type: ToastType.success);
     } catch (e) {
-      emit(state.copyWith(
-          isLoading: false,
-          listCart: state.listCart
-              .copyWith(errorMessage: ParseError.fromJson(e).message)));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
   }
 
-  void _updateCart(UpdateCart event, Emitter<OrderState> emit) async {
+  void _updateOrder(UpdateOrder event, Emitter<OrderState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await updateCartUsecase.call(event.userId ?? "", event.productItem);
+      await updateOrderUsecase.call(event.userId ?? "", event.productItem);
       emit(state.copyWith(
         isLoading: false,
       ));
-      add(GetListCart(id: event.userId));
+      add(GetListOrder(id: event.userId));
 
       // Helper.showToastBottom(
       //     message: "key_update_cart_success".tr(), type: ToastType.success);
     } catch (e) {
-      emit(state.copyWith(
-          isLoading: false,
-          listCart: state.listCart
-              .copyWith(errorMessage: ParseError.fromJson(e).message)));
-      Helper.showToastBottom(message: ParseError.fromJson(e).message);
-    }
-  }
-
-  void _deleteCart(DeleteCart event, Emitter<OrderState> emit) async {
-    try {
-      emit(state.copyWith(isLoading: true));
-      await deleteCartUsecase.call(
-          event.cartId, event.userId, event.productItemId);
-
-      final newlist = state.listCart.results ?? [];
-      newlist.removeWhere((item) => item.id == event.productItemId);
-      emit(state.copyWith(
-        isLoading: false,
-        listCart: state.listCart.copyWith(results: newlist),
-      ));
-      //   add(GetListCart(id: event.userId));
-
-      Helper.showToastBottom(
-          message: "key_delete_cart_success".tr(), type: ToastType.success);
-    } catch (e) {
-      emit(state.copyWith(
-          isLoading: false,
-          listCart: state.listCart
-              .copyWith(errorMessage: ParseError.fromJson(e).message)));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
   }

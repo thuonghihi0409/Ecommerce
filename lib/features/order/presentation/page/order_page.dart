@@ -5,6 +5,8 @@ import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
+import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/order/presentation/page/order_list_tab.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
@@ -18,13 +20,14 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
-  final List<String> _tabs = [
-    "Chờ duyệt",
-    "Chuẩn bị hàng",
-    "Đang giao",
-    "Đã giao",
-    "Đã hủy",
-    "Đánh giá"
+  late OrderBloc _bloc;
+  final List<OrderStatus> _tabs = [
+    OrderStatus.pending,
+    OrderStatus.awaiting,
+    OrderStatus.delivering,
+    OrderStatus.delivered,
+    OrderStatus.cancelled,
+    OrderStatus.reviewed
   ];
 
   late final TabController _tabController;
@@ -33,6 +36,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
   void initState() {
     _tabController = TabController(length: _tabs.length, vsync: this);
     super.initState();
+    _bloc = BlocProvider.of<OrderBloc>(context);
   }
 
   @override
@@ -78,7 +82,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               labelColor: AppColor.primary,
               unselectedLabelColor: Colors.grey,
               labelStyle: const TextStyle(fontWeight: FontWeight.w600),
-              tabs: _tabs.map((e) => Tab(text: e)).toList(),
+              tabs: _tabs.map((e) => Tab(text: orderStatusToText(e))).toList(),
             ),
           ),
           Expanded(

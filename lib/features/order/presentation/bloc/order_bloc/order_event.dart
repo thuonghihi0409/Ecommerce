@@ -7,21 +7,27 @@ class OrderEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetListCart extends OrderEvent {
+class GetListOrder extends OrderEvent {
   final String? id;
+  final Function(OrderState)? onSuccess;
+  final OrderStatus orderStatus;
   final bool isLoadingMore, isRefreshing;
-  const GetListCart(
-      {this.id, this.isLoadingMore = false, this.isRefreshing = false});
+  const GetListOrder(
+      {this.id,
+      this.orderStatus = OrderStatus.pending,
+      this.isLoadingMore = false,
+      this.isRefreshing = false,
+      this.onSuccess});
 }
 
-class AddToCart extends OrderEvent {
+class CreateOrder extends OrderEvent {
   final String userId;
   final String productId;
   final String storeId;
   final String variantId;
   final int quantity;
 
-  const AddToCart(
+  const CreateOrder(
       {required this.userId,
       required this.productId,
       required this.storeId,
@@ -29,24 +35,12 @@ class AddToCart extends OrderEvent {
       required this.quantity});
 }
 
-class UpdateCart extends OrderEvent {
+class UpdateOrder extends OrderEvent {
   final String? userId;
   final ProductItem productItem;
 
-  const UpdateCart({
+  const UpdateOrder({
     this.userId,
     required this.productItem,
-  });
-}
-
-class DeleteCart extends OrderEvent {
-  final String userId;
-  final String cartId;
-  final String productItemId;
-
-  const DeleteCart({
-    required this.cartId,
-    required this.userId,
-    required this.productItemId,
   });
 }
