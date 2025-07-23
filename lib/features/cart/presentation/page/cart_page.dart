@@ -1,12 +1,19 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
+import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/cart/presentation/widget/cart_item_widget.dart';
+import 'package:thuongmaidientu/features/order/presentation/page/create_order_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
+import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 
 class CartPage extends StatefulWidget {
@@ -18,6 +25,8 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final ScrollController _scrollController = ScrollController();
+  late List<CartItem?> _listCarts;
+  int _total = 0;
 
   @override
   void initState() {
@@ -27,12 +36,14 @@ class _CartPageState extends State<CartPage> {
 
   _getDate() async {
     final id = context.read<ProfileBloc>().state.profile?.id;
-    context.read<CartBloc>().add(GetListCart(id: id ?? ""));
+    context.read<CartBloc>().add(GetListCart(
+        id: id ?? "",
+        onSuccess: () {
+          _listCarts = List.generate(
+              (context.read<CartBloc>().state.listCart.results ?? []).length,
+              (_) => null);
+        }));
   }
-
-  void _onRefresh() {}
-
-  void _onLoading() {}
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +72,49 @@ class _CartPageState extends State<CartPage> {
                       final product = state.listCart.results?[index];
                       return CartItemWidget(
                         cartItem: product!,
+                        onChangeSelect: (item) {
+                          setState(() {
+                            _total = 0;
+                            log("haha${_listCarts.length}");
+                            _listCarts[index] = item;
+                            log(index.toString());
+                            log(_listCarts[index].toString());
+                            for (var item in _listCarts) {
+                              log("hihi");
+                              if (item != null) {
+                                for (var product in item.productItem) {
+                                  _total += (product.variant?.price ?? 0);
+                                }
+                              }
+                            }
+                          });
+                        },
                       );
                     },
                   ),
                 ),
+                Row(
+                  children: [
+                    Text(
+                        "${"key_sum".tr()}: ${Helper.formatCurrencyVND(_total)}"),
+                    10.w,
+                    Expanded(
+                        child: CustomButton(
+                      text: "key_buy_now".tr(),
+                      borderRadius: 0,
+                      onPressed: () {
+                        NavigationService.instance.push(
+                          CreateOrderPage(
+                            cartItems: _listCarts
+                                .where((item) => item != null)
+                                .toList(),
+                            total: _total,
+                          ),
+                        );
+                      },
+                    ))
+                  ],
+                )
               ],
             ),
           );

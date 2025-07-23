@@ -1,3 +1,4 @@
+import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
@@ -81,4 +82,18 @@ class OrderItem {
       required this.address,
       required this.subtotal,
       required this.total});
+  factory OrderItem.copyFromCartItem(
+    CartItem item,
+  ) {
+    return OrderItem(
+        store: item.store,
+        productItem: item.productItem,
+        id: "",
+        status: OrderStatus.pending,
+        address: null,
+        subtotal: item.productItem
+            .fold(0, (sum, item) => sum + (item.variant?.price ?? 0)),
+        total: item.productItem
+            .fold(0, (sum, item) => sum + (item.variant?.price ?? 0)));
+  }
 }

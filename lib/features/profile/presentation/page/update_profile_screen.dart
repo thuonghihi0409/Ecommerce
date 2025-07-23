@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/add_address.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
@@ -10,6 +9,7 @@ import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/location_widget.dart';
 import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
 
@@ -47,11 +47,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
     _phoneNode = FocusNode();
     _confirmPasswordNode = FocusNode();
-    _getDate();
-  }
-
-  _getDate() async {
-    _bloc.add(GetAddress(id: _bloc.state.profile?.id ?? ""));
   }
 
   @override
@@ -144,7 +139,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   10.h,
                   ...(state.address ?? [])
-                      .map((address) => _locationWidget(address)),
+                      .map((address) => LocationWidget(address: address)),
                   20.h,
                   InkWell(
                     onTap: () {
@@ -175,22 +170,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           ),
         );
       }),
-    );
-  }
-
-  Widget _locationWidget(AddressEntity address) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          const Icon(Icons.location_on),
-          15.w,
-          Text(
-            address.address,
-            style: AppTextStyles.textSize18(),
-          )
-        ],
-      ),
     );
   }
 }

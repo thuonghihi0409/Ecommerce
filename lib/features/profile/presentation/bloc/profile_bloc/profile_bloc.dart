@@ -38,6 +38,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(isLoading: true));
       final profile = await getProfileUsecase.call(email: event.email);
       emit(state.copyWith(isLoading: false, profile: profile));
+      add(GetAddress(id: state.profile?.id ?? ""));
     } catch (e) {
       emit(state.copyWith(isLoading: false));
       log("error ====${ParseError.fromJson(e).message}");

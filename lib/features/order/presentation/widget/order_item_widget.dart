@@ -1,106 +1,60 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
-import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
-import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
-import 'package:thuongmaidientu/shared/widgets/add_to_cart_widget.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
-import 'package:thuongmaidientu/shared/widgets/quantity_selector_widget.dart';
 
 class OrderItemWidget extends StatefulWidget {
-  final CartItem cartItem;
-  const OrderItemWidget({super.key, required this.cartItem});
+  final OrderItem orderItem;
+  final bool isCreating;
+  const OrderItemWidget(
+      {super.key, required this.orderItem, this.isCreating = false});
 
   @override
   State<OrderItemWidget> createState() => _OrderItemWidgetState();
 }
 
 class _OrderItemWidgetState extends State<OrderItemWidget> {
-  bool _isSelectAll = false;
-  List<bool> _isSelect = [];
-  late String _userId;
   @override
   void initState() {
-    _isSelect = List.generate(widget.cartItem.productItem.length, (_) => false);
-    _userId = context.read<ProfileBloc>().state.profile?.id ?? "";
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: AppColor.greyColor.withAlpha(10),
-                offset: const Offset(0, 4)),
-          ],
           borderRadius: BorderRadius.circular(8),
-          color: AppColor.greyColor.withAlpha(50)),
+          color: AppColor.primary.withAlpha(30)),
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Checkbox(
-                  value: _isSelectAll,
-                  onChanged: (val) {
-                    setState(() {
-                      _isSelectAll = val!;
-                      for (int i = 0; i < _isSelect.length; i++) {
-                        _isSelect[i] = _isSelectAll;
-                      }
-                    });
-                  }),
-              10.w,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.cartItem.store.name ?? "",
-                    style: AppTextStyles.textSize20(),
-                  ),
-                  5.h,
-                  Text(
-                    widget.cartItem.store.address ?? "",
-                    style: AppTextStyles.textSize12(),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+              Text(
+                widget.orderItem.store.name ?? "",
+                style: AppTextStyles.textSize20(),
               ),
+              if (!widget.isCreating)
+                Text(orderStatusToText(widget.orderItem.status))
             ],
           ),
-          10.h,
           const Divider(),
-          10.h,
-          ...widget.cartItem.productItem.asMap().entries.map((entrie) =>
+          5.h,
+          ...widget.orderItem.productItem.asMap().entries.map((entrie) =>
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Row(
                   children: [
-                    Checkbox(
-                        value:
-                            _isSelectAll ? _isSelectAll : _isSelect[entrie.key],
-                        onChanged: (val) {
-                          setState(() {
-                            _isSelect[entrie.key] = val!;
-
-                            if (_isSelect
-                                .any((selected) => selected == false)) {
-                              _isSelectAll = false;
-                            } else {
-                              _isSelectAll = true;
-                            }
-                          });
-                        }),
                     CustomCacheImageNetwork(
+                      borderRadius: 5,
                       imageUrl: entrie.value.variant?.cover,
-                      height: 80,
-                      width: 80,
+                      height: 60,
+                      width: 60,
                       boxFit: BoxFit.fill,
                     ),
                     20.w,
@@ -110,72 +64,32 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                         children: [
                           Text(
                             entrie.value.productDetail?.productName ?? "",
-                            style: AppTextStyles.textSize20(),
+                            style: AppTextStyles.textSize18(),
                           ),
-                          10.h,
-                          InkWell(
-                            child: Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  color: AppColor.greyColor.withAlpha(120),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    entrie.value.variant?.name ?? "",
-                                    style: AppTextStyles.textSize12(),
-                                  ),
-                                  5.w,
-                                  const Icon(Icons.expand_more)
-                                ],
+                          8.h,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                entrie.value.variant?.name ?? "",
+                                style: AppTextStyles.textSize14(),
                               ),
-                            ),
-                            onTap: () {
-                              Helper.showCustomBottomSheet(
-                                headerCustom: Column(
-                                  children: [
-                                    AddCartWidget(
-                                      productItem: entrie.value,
-                                      productDetail: entrie.value.productDetail,
-                                      lableButton: 'key_confirm',
-                                      onTap: (productItem, index, quantity) {
-                                        context.read<CartBloc>().add(UpdateCart(
-                                            productItem: productItem,
-                                            userId: _userId));
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                context: context,
-                              );
-                            },
+                              Text(
+                                "x ${entrie.value.number}",
+                                style: AppTextStyles.textSize14(),
+                              )
+                            ],
                           ),
                           5.h,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                (entrie.value.variant?.price ?? 0).toString(),
+                                Helper.formatCurrencyVND(
+                                    (entrie.value.variant?.price ?? 0)),
                                 style: AppTextStyles.textSize12(),
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              QuantitySelector(
-                                min: 0,
-                                onChanged: (val) {
-                                  if (val < 1) {
-                                    context.read<CartBloc>().add(DeleteCart(
-                                        cartId: widget.cartItem.id,
-                                        userId: _userId,
-                                        productItemId: entrie.value.id));
-                                  }
-                                  context.read<CartBloc>().add(UpdateCart(
-                                      productItem:
-                                          entrie.value.copyWith(number: val),
-                                      userId: _userId));
-                                },
-                                initialValue: entrie.value.number,
-                              )
                             ],
                           ),
                         ],
@@ -183,7 +97,15 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                     ),
                   ],
                 ),
-              ))
+              )),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                  "${"key_total_currency".tr()}: ${Helper.formatCurrencyVND(widget.orderItem.total)}")
+            ],
+          )
         ],
       ),
     );

@@ -31,7 +31,7 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
       variant: Variants(*)
       
       ),address: Address(*)
-      ''').eq('user_id', userId);
+      ''').eq('user_id', userId).eq('status', status);
     log(data.toString());
     final result = ListModel(
         results: data.map((item) => OrderItemModel.fromJson(item)).toList());
@@ -42,24 +42,15 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
   @override
   Future<void> createOrder(String userId, String productId, String storeId,
       String variantId, int quantity) async {
-    //// get id and check cart avaiable
-    final data = await supabase.from("Carts").select('''
-      id
-      ''').eq('user_id', userId).eq("store_id", storeId).maybeSingle();
-    String id = "";
-    if (data == null) {
-      final newdata = await supabase
-          .from("Carts")
-          .insert({
-            'user_id': userId,
-            'store_id': storeId,
-          })
-          .select()
-          .single();
-      id = newdata["id"];
-    } else {
-      id = data["id"];
-    }
+    final newdata = await supabase
+        .from("Carts")
+        .insert({
+          'user_id': userId,
+          'store_id': storeId,
+        })
+        .select()
+        .single();
+    final id = newdata["id"];
 
     final result = await supabase.from("ProductCarts").select('''
       *

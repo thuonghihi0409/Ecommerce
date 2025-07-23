@@ -37,7 +37,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       emit(state.copyWith(isLoading: true));
 
       final listCart = await getListCartUseCase.call(event.id ?? "");
+
       emit(state.copyWith(isLoading: false, listCart: listCart));
+      event.onSuccess?.call();
     } catch (e) {
       emit(state.copyWith(
           isLoading: false,

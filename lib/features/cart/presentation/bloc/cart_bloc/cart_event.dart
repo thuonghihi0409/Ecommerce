@@ -10,8 +10,12 @@ class CartEvent extends Equatable {
 class GetListCart extends CartEvent {
   final String? id;
   final bool isLoadingMore, isRefreshing;
+  final Function? onSuccess;
   const GetListCart(
-      {this.id, this.isLoadingMore = false, this.isRefreshing = false});
+      {this.id,
+      this.isLoadingMore = false,
+      this.isRefreshing = false,
+      this.onSuccess});
 }
 
 class AddToCart extends CartEvent {

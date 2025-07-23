@@ -54,5 +54,14 @@
     "key_conversation": "Tin nhắn",
     "key_quantity" : "Số lượng",
     "key_update_cart_success": "Cập nhật thành công",
-    "key_add_to_cart_success": "Đã thêm vào giỏ hàng"
+    "key_add_to_cart_success": "Đã thêm vào giỏ hàng",
+    "key_ordering": "Đặt hàng",
+    "key_address_delivery": "Địa chỉ giao hàng",
+    "key_sum": "Tổng",
+    "key_total_currency": "Tổng số tiền",
+    "key_pending": "Chờ duyệt",
+    "key_awaiting": "Chuẩn bị hàng",
+    "key_delivering" :"Đang giao",
+    "key_delivered": "Đã giao",
+    "key_reviewed": "Đánh giá"
 }

@@ -13,7 +13,9 @@ import 'package:thuongmaidientu/shared/widgets/quantity_selector_widget.dart';
 
 class CartItemWidget extends StatefulWidget {
   final CartItem cartItem;
-  const CartItemWidget({super.key, required this.cartItem});
+  final Function(CartItem?)? onChangeSelect;
+  const CartItemWidget(
+      {super.key, required this.cartItem, this.onChangeSelect});
 
   @override
   State<CartItemWidget> createState() => _CartItemWidgetState();
@@ -35,13 +37,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: AppColor.greyColor.withAlpha(10),
-                offset: const Offset(0, 4)),
-          ],
           borderRadius: BorderRadius.circular(8),
-          color: AppColor.greyColor.withAlpha(50)),
+          color: AppColor.primary.withAlpha(30)),
       child: Column(
         children: [
           Row(
@@ -55,6 +52,11 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                         _isSelect[i] = _isSelectAll;
                       }
                     });
+                    if (_isSelectAll) {
+                      widget.onChangeSelect?.call(widget.cartItem);
+                    } else {
+                      widget.onChangeSelect?.call(null);
+                    }
                   }),
               10.w,
               Column(
@@ -95,9 +97,27 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             } else {
                               _isSelectAll = true;
                             }
+
+                            // call function
+                            if (_isSelectAll) {
+                              widget.onChangeSelect?.call(widget.cartItem);
+                            }
+                            if (_isSelect.any((selected) => selected == true)) {
+                              final list = widget.cartItem.productItem
+                                  .asMap()
+                                  .entries
+                                  .where((item) => _isSelect[item.key] == true)
+                                  .map((item) => item.value)
+                                  .toList();
+                              widget.onChangeSelect?.call(
+                                  widget.cartItem.copyWith(productItem: list));
+                            } else {
+                              widget.onChangeSelect?.call(null);
+                            }
                           });
                         }),
                     CustomCacheImageNetwork(
+                      borderRadius: 5,
                       imageUrl: entrie.value.variant?.cover,
                       height: 80,
                       width: 80,
@@ -156,7 +176,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                (entrie.value.variant?.price ?? 0).toString(),
+                                Helper.formatCurrencyVND(
+                                    (entrie.value.variant?.price ?? 0)),
                                 style: AppTextStyles.textSize12(),
                                 overflow: TextOverflow.ellipsis,
                               ),

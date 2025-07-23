@@ -15,7 +15,8 @@ import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
 
 class AddAddressPage extends StatefulWidget {
-  const AddAddressPage({super.key});
+  final Function? onSuccess;
+  const AddAddressPage({super.key, this.onSuccess});
 
   @override
   State<AddAddressPage> createState() => _AddAddressState();
@@ -62,6 +63,7 @@ class _AddAddressState extends State<AddAddressPage> {
     _bloc.add(AddAddress(
         onSuccess: () {
           NavigationService.instance.goBack();
+          widget.onSuccess?.call();
         },
         id: _bloc.state.profile?.id ?? "",
         addressEntity: AddressEntity(

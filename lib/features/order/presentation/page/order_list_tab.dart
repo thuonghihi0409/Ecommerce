@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
+import 'package:thuongmaidientu/features/order/presentation/widget/list_order_empty_widget.dart';
+import 'package:thuongmaidientu/features/order/presentation/widget/order_item_widget.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
@@ -52,6 +53,11 @@ class _OrderListTabState extends State<OrderListTab> {
           _data = state.listOrderReviewed;
           break;
       }
+      if ((_data.results ?? []).isEmpty) {
+        return const Center(
+          child: ListOrderEmptyWidget(),
+        );
+      }
 
       return ListView.separated(
         padding: const EdgeInsets.all(12),
@@ -59,42 +65,7 @@ class _OrderListTabState extends State<OrderListTab> {
         separatorBuilder: (_, __) => 12.h,
         itemBuilder: (context, index) {
           final order = (_data.results ?? [])[index];
-          return Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColor.whiteColor,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black..withAlpha(10),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                )
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  order.toString(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                8.h,
-                const Text("Chi tiết đơn hàng hiển thị ở đây..."),
-                12.h,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text("Xem chi tiết"),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          );
+          return OrderItemWidget(orderItem: order);
         },
       );
     });
