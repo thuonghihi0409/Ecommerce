@@ -183,7 +183,7 @@ class Helper {
   }
 
   /// Show toast message
-  static OverlayEntry? _toastOverlay;
+
   static void showToastBottom({
     required String message,
     ToastType type = ToastType.error,
@@ -225,7 +225,7 @@ class Helper {
         ),
         elevation: 0,
         background: color,
-        duration: duration ?? const Duration(milliseconds: 3000),
+        duration: duration ?? const Duration(milliseconds: 1500),
         position: NotificationPosition.top,
         autoDismiss: true,
         slideDismissDirection: DismissDirection.up);

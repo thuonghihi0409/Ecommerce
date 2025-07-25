@@ -47,6 +47,7 @@ class _ConversationPageState extends State<ConversationPage> {
         return Scaffold(
             appBar: CustomAppBar(
               title: "key_conversation".tr(),
+              isShowChatIcon: false,
             ),
             body: Builder(builder: (context) {
               if (state.listConversation?.results == null ||

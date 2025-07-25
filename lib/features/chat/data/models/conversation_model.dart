@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:thuongmaidientu/features/chat/data/models/message_model.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation_entity.dart';
 import 'package:thuongmaidientu/features/product/data/models/store_model.dart';
@@ -15,7 +13,6 @@ class ConversationModel extends ConversationEntity {
 
   // From JSON
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
-    log(json.toString());
     return ConversationModel(
       id: json['id'],
       user: ProfileEntityModel.fromJson(json['user']),

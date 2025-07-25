@@ -43,6 +43,14 @@ class UpdateCart extends CartEvent {
   });
 }
 
+class GetCountCart extends CartEvent {
+  final String? userId;
+
+  const GetCountCart({
+    required this.userId,
+  });
+}
+
 class DeleteCart extends CartEvent {
   final String userId;
   final String cartId;

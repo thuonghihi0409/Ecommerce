@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
-import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
-import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/order/presentation/page/order_list_tab.dart';
-import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
-import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 
 class OrderPage extends StatefulWidget {
@@ -43,31 +37,9 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.whiteColor,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: "Đơn hàng",
         showLeading: false,
-        actions: [
-          IconButton(
-              onPressed: () {
-                final id = context.read<ProfileBloc>().state.profile?.id;
-                NavigationService.instance
-                    .push(ConversationPage(currentUserId: id ?? ""));
-              },
-              icon: SvgPicture.asset(
-                AppAssets.chatIcon,
-                height: 25,
-                width: 25,
-              )),
-          IconButton(
-              onPressed: () {
-                NavigationService.instance.push(const CartPage());
-              },
-              icon: SvgPicture.asset(
-                AppAssets.cartIcon,
-                height: 25,
-                width: 25,
-              )),
-        ],
       ),
       body: Column(
         children: [

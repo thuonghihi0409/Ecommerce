@@ -32,4 +32,10 @@ class CartRepositoryImpl implements CartRepository {
   Future<void> updateCart(String id, ProductItem productItem) async {
     await remoteDataSource.updateCart(id, productItem);
   }
+
+  @override
+  Future<int> getCount(String userId) async {
+    final count = await remoteDataSource.getCount(userId);
+    return count;
+  }
 }

@@ -2,28 +2,27 @@ part of 'cart_bloc.dart';
 
 class CartState extends Equatable {
   final ListModel<CartItem> listCart;
-
+  final int totalProduct;
   final bool isGetDetail;
-
   final bool isLoading;
   final bool isLoadingMore;
   final bool isRefreshing;
-  const CartState({
-    required this.listCart,
-    this.isGetDetail = false,
-    this.isLoading = false,
-    this.isLoadingMore = false,
-    this.isRefreshing = false,
-  });
+  const CartState(
+      {required this.listCart,
+      this.isGetDetail = false,
+      this.isLoading = false,
+      this.isLoadingMore = false,
+      this.isRefreshing = false,
+      this.totalProduct = 0});
 
   factory CartState.empty() {
     return const CartState(
-      listCart: ListModel(),
-      isGetDetail: false,
-      isLoading: false,
-      isLoadingMore: false,
-      isRefreshing: false,
-    );
+        listCart: ListModel(),
+        isGetDetail: false,
+        isLoading: false,
+        isLoadingMore: false,
+        isRefreshing: false,
+        totalProduct: 0);
   }
 
   CartState copyWith(
@@ -33,14 +32,15 @@ class CartState extends Equatable {
       bool? isLoading,
       bool? isLoadingMore,
       bool? isRefreshing,
-      Store? store}) {
+      Store? store,
+      int? totalProduct}) {
     return CartState(
-      listCart: listCart ?? this.listCart,
-      isLoading: isLoading ?? this.isLoading,
-      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      isRefreshing: isRefreshing ?? this.isRefreshing,
-      isGetDetail: isGetDetail ?? this.isGetDetail,
-    );
+        listCart: listCart ?? this.listCart,
+        isLoading: isLoading ?? this.isLoading,
+        isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+        isRefreshing: isRefreshing ?? this.isRefreshing,
+        isGetDetail: isGetDetail ?? this.isGetDetail,
+        totalProduct: totalProduct ?? this.totalProduct);
   }
 
   @override
@@ -50,5 +50,6 @@ class CartState extends Equatable {
         isLoadingMore,
         isRefreshing,
         isGetDetail,
+        totalProduct
       ];
 }

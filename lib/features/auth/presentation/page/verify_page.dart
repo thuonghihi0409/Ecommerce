@@ -10,8 +10,9 @@ import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_life_cycle_handle.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
-import 'package:thuongmaidientu/features/auth/presentation/page/home_page.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
@@ -41,8 +42,13 @@ class _VerifyPageState extends State<VerifyPage> {
       await user?.reload();
       final isVerified = user?.emailVerified ?? false;
 
-      if (isVerified) {
-        NavigationService.instance.popUntilRootAndReplace(const HomePage());
+      if (isVerified && mounted) {
+        context.read<ProfileBloc>().add(GetProfile(
+            email: widget.email,
+            onSuccess: () {
+              NavigationService.instance
+                  .popUntilRootAndReplace(const MainTab());
+            }));
       }
     });
     WidgetsBinding.instance.addObserver(_handler);
@@ -89,6 +95,8 @@ class _VerifyPageState extends State<VerifyPage> {
         appBar: CustomAppBar(
           showLeading: false,
           title: "key_verify_email".tr(),
+          isShowCartIcon: false,
+          isShowChatIcon: false,
         ),
         body: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
           return Padding(

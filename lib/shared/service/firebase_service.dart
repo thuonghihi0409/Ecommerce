@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uuid/uuid.dart';
 
 class FirebaseService {
@@ -20,6 +22,70 @@ class FirebaseService {
       return urli;
     } catch (e) {
       return null;
+    }
+  }
+
+  static final _firebaseMessaging = FirebaseMessaging.instance;
+  static final _localNotifications = FlutterLocalNotificationsPlugin();
+
+  static Future<void> init() async {
+    await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    final fcmToken = await _firebaseMessaging.getToken();
+    print('FCM Token: $fcmToken');
+
+    // Cấu hình local notification
+    const androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const initSettings = InitializationSettings(android: androidSettings);
+    await _localNotifications.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (details) {
+        // Xử lý khi người dùng nhấn vào thông báo
+        print('Notification tapped: ${details.payload}');
+      },
+    );
+
+    // Lắng nghe foreground message
+    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+
+    // Khi nhấn vào notification từ background hoặc killed
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('Notification tapped (from background): ${message.data}');
+    });
+
+    final initialMsg = await _firebaseMessaging.getInitialMessage();
+    if (initialMsg != null) {
+      print('Notification tapped (from terminated): ${initialMsg.data}');
+    }
+  }
+
+  static void _handleForegroundMessage(RemoteMessage message) {
+    final notification = message.notification;
+    if (notification != null && notification.android != null) {
+      _localNotifications.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'default_channel',
+            'Thông báo',
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: true,
+          ),
+        ),
+        payload: message.data['payload'] ?? '',
+      );
     }
   }
 }

@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
-import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/product_detail_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/widget/product_card.dart';
-import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
@@ -49,31 +44,9 @@ class _ProductPageState extends State<ProductPage> {
     return BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
       return Scaffold(
         backgroundColor: AppColor.greyColor.withAlpha(20),
-        appBar: CustomAppBar(
-          customTitle: const CustomSearchField(),
+        appBar: const CustomAppBar(
+          customTitle: CustomSearchField(),
           showLeading: false,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  final id = context.read<ProfileBloc>().state.profile?.id;
-                  NavigationService.instance
-                      .push(ConversationPage(currentUserId: id ?? ""));
-                },
-                icon: SvgPicture.asset(
-                  AppAssets.chatIcon,
-                  height: 25,
-                  width: 25,
-                )),
-            IconButton(
-                onPressed: () {
-                  NavigationService.instance.push(const CartPage());
-                },
-                icon: SvgPicture.asset(
-                  AppAssets.cartIcon,
-                  height: 25,
-                  width: 25,
-                )),
-          ],
         ),
         body: Builder(builder: (context) {
           if (state.isLoading) {

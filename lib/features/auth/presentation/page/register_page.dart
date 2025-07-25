@@ -94,6 +94,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Scaffold(
         appBar: CustomAppBar(
           title: "key_register".tr(),
+          isShowCartIcon: false,
+          isShowChatIcon: false,
         ),
         body: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
           return SingleChildScrollView(

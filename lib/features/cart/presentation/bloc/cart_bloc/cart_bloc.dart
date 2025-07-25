@@ -8,6 +8,7 @@ import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/cart/domain/usecases/add_to_cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/domain/usecases/delete_cart_usecase.dart';
+import 'package:thuongmaidientu/features/cart/domain/usecases/get_count_cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/domain/usecases/update_cart_usecase.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -22,14 +23,16 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   final AddToCartUsecase addToCartUsecase;
   final UpdateCartUsecase updateCartUsecase;
   final DeleteCartUsecase deleteCartUsecase;
+  final GetCountCartUsecase getCountCartUsecase;
 
   CartBloc(this.getListCartUseCase, this.addToCartUsecase,
-      this.deleteCartUsecase, this.updateCartUsecase)
+      this.deleteCartUsecase, this.updateCartUsecase, this.getCountCartUsecase)
       : super(CartState.empty()) {
     on<GetListCart>(_getListCart);
     on<AddToCart>(_addToCart);
     on<UpdateCart>(_updateCart);
     on<DeleteCart>(_deleteCart);
+    on<GetCountCart>(_getCountCart);
   }
 
   void _getListCart(GetListCart event, Emitter<CartState> emit) async {
@@ -50,6 +53,17 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
+  void _getCountCart(GetCountCart event, Emitter<CartState> emit) async {
+    try {
+      final countCart = await getCountCartUsecase.call(event.userId ?? "");
+
+      emit(state.copyWith(totalProduct: countCart));
+    } catch (e) {
+      Helper.showToastBottom(message: ParseError.fromJson(e).message);
+      log(ParseError.fromJson(e).message);
+    }
+  }
+
   void _addToCart(AddToCart event, Emitter<CartState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
@@ -60,6 +74,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       ));
       Helper.showToastBottom(
           message: "key_add_to_cart_success".tr(), type: ToastType.success);
+      add(GetCountCart(userId: event.userId));
     } catch (e) {
       emit(state.copyWith(
           isLoading: false,
@@ -77,6 +92,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         isLoading: false,
       ));
       add(GetListCart(id: event.userId));
+      add(GetCountCart(userId: event.userId));
 
       // Helper.showToastBottom(
       //     message: "key_update_cart_success".tr(), type: ToastType.success);
@@ -95,14 +111,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       await deleteCartUsecase.call(
           event.cartId, event.userId, event.productItemId);
 
-      final newlist = state.listCart.results ?? [];
-      newlist.removeWhere((item) => item.id == event.productItemId);
       emit(state.copyWith(
         isLoading: false,
-        listCart: state.listCart.copyWith(results: newlist),
       ));
-      //   add(GetListCart(id: event.userId));
-
+      add(GetListCart(id: event.userId));
+      add(GetCountCart(userId: event.userId));
       Helper.showToastBottom(
           message: "key_delete_cart_success".tr(), type: ToastType.success);
     } catch (e) {

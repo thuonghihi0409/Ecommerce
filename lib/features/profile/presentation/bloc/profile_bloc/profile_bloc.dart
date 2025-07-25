@@ -38,10 +38,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(isLoading: true));
       final profile = await getProfileUsecase.call(email: event.email);
       emit(state.copyWith(isLoading: false, profile: profile));
+      event.onSuccess?.call();
       add(GetAddress(id: state.profile?.id ?? ""));
     } catch (e) {
       emit(state.copyWith(isLoading: false));
-      log("error ====${ParseError.fromJson(e).message}");
+
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
   }
@@ -49,10 +50,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   void getAddress(GetAddress event, Emitter<ProfileState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      log("get 1");
+
       final address = await getAddressUsecase.call(id: event.id);
       emit(state.copyWith(isLoading: false, address: address));
-      log("get 2");
     } catch (e) {
       emit(state.copyWith(isLoading: false));
       log("error ====${ParseError.fromJson(e).message}");

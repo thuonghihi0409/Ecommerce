@@ -1,11 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
-import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
-import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
@@ -52,28 +48,6 @@ class _ReviewPageState extends State<ReviewPage> {
       return Scaffold(
         appBar: CustomAppBar(
           title: "key_review".tr(),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  final id = context.read<ProfileBloc>().state.profile?.id;
-                  NavigationService.instance
-                      .push(ConversationPage(currentUserId: id ?? ""));
-                },
-                icon: SvgPicture.asset(
-                  AppAssets.chatIcon,
-                  height: 25,
-                  width: 25,
-                )),
-            IconButton(
-                onPressed: () {
-                  NavigationService.instance.push(const CartPage());
-                },
-                icon: SvgPicture.asset(
-                  AppAssets.cartIcon,
-                  height: 25,
-                  width: 25,
-                )),
-          ],
         ),
         body: Builder(builder: (context) {
           if (state.isLoading) {

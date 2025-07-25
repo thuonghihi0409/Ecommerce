@@ -22,17 +22,15 @@ class GetListOrder extends OrderEvent {
 
 class CreateOrder extends OrderEvent {
   final String userId;
-  final String productId;
-  final String storeId;
-  final String variantId;
-  final int quantity;
+  final List<OrderItem> orders;
+  final bool isDeleteCart;
+  final Function? onSuccess;
 
   const CreateOrder(
       {required this.userId,
-      required this.productId,
-      required this.storeId,
-      required this.variantId,
-      required this.quantity});
+      required this.orders,
+      this.isDeleteCart = false,
+      this.onSuccess});
 }
 
 class UpdateOrder extends OrderEvent {
@@ -42,5 +40,13 @@ class UpdateOrder extends OrderEvent {
   const UpdateOrder({
     this.userId,
     required this.productItem,
+  });
+}
+
+class GetCountOrder extends OrderEvent {
+  final String? userId;
+
+  const GetCountOrder({
+    required this.userId,
   });
 }

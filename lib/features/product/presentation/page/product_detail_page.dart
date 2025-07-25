@@ -1,15 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
-import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/chat_detail_page.dart';
-import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/store_detail.dart';
@@ -63,30 +59,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         appBar: CustomAppBar(
           backgroundColor: Colors.transparent,
           title: "key_product_detail".tr(),
-          actions: [
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.share_outlined)),
-            IconButton(
-                onPressed: () {
-                  final id = context.read<ProfileBloc>().state.profile?.id;
-                  NavigationService.instance
-                      .push(ConversationPage(currentUserId: id ?? ""));
-                },
-                icon: SvgPicture.asset(
-                  AppAssets.chatIcon,
-                  height: 25,
-                  width: 25,
-                )),
-            IconButton(
-                onPressed: () {
-                  NavigationService.instance.push(const CartPage());
-                },
-                icon: SvgPicture.asset(
-                  AppAssets.cartIcon,
-                  height: 25,
-                  width: 25,
-                )),
-          ],
         ),
         body: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
           return Padding(

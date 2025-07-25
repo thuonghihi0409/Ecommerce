@@ -1,12 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
-import 'package:thuongmaidientu/features/auth/presentation/page/home_page.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 
@@ -31,9 +29,12 @@ class _InitPageState extends State<InitPage> {
         .read<AuthBloc>()
         .add(AuthResumeSession(onSuccess: (bool isResume, String? email) {
           if (isResume) {
-            log(email ?? " ");
-            context.read<ProfileBloc>().add(GetProfile(email: email ?? ""));
-            NavigationService.instance.popUntilRootAndReplace(const HomePage());
+            context.read<ProfileBloc>().add(GetProfile(
+                email: email ?? "",
+                onSuccess: () {
+                  NavigationService.instance
+                      .popUntilRootAndReplace(const MainTab());
+                }));
           } else {
             NavigationService.instance
                 .popUntilRootAndReplace(const IntroPage());

@@ -56,9 +56,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       GetListCategory event, Emitter<ProductState> emit) async {
     try {
       final listCategory = await _getListCategoryUseCase.call();
-      log("bloc ${(listCategory ?? []).length}");
+
       emit(state.copyWith(listCategory: listCategory));
-      log("bloc 1 ${(state.listCategory ?? []).length}");
     } catch (e) {
       emit(state.copyWith(
           listProduct: state.listProduct

@@ -7,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
-import 'package:thuongmaidientu/features/auth/presentation/page/init_page.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
@@ -15,6 +14,8 @@ import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
 import 'package:thuongmaidientu/get_it.dart';
+import 'package:thuongmaidientu/init_page.dart';
+import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -38,11 +39,12 @@ void main() async {
   } else {
     await Firebase.initializeApp();
   }
+  FirebaseService.init();
   await Supabase.initialize(
       anonKey: dotenv.env["SUPABASE_KEY"]!,
       url: dotenv.env["SUPABASE_URL"]!,
       debug: true);
-  await init();
+  await init(); // get it
 
   runApp(EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('vi')],

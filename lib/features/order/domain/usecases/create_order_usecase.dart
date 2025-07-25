@@ -1,3 +1,4 @@
+import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/order/domain/repositories/order_repository.dart';
 
 class CreateOrderUsecase {
@@ -5,9 +6,7 @@ class CreateOrderUsecase {
 
   CreateOrderUsecase(this.repository);
 
-  Future<void> call(String userId, String productId, String storeId,
-      String variantId, int quantity) {
-    return repository.createOrder(
-        userId, productId, storeId, variantId, quantity);
+  Future<void> call(String userId, OrderItem order) {
+    return repository.createOrder(userId, order);
   }
 }

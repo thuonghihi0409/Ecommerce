@@ -9,7 +9,8 @@ class ProfileEvent extends Equatable {
 
 class GetProfile extends ProfileEvent {
   final String email;
-  const GetProfile({required this.email});
+  final Function? onSuccess;
+  const GetProfile({required this.email, this.onSuccess});
 }
 
 class GetAddress extends ProfileEvent {

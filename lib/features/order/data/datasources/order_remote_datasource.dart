@@ -1,14 +1,13 @@
-import 'dart:developer';
-
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/order/data/models/order_item_model.dart';
+import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
 abstract class OrderRemoteDatasource {
   Future<ListModel<OrderItemModel>> getListOrder(String userId, String status);
-  Future<void> createOrder(String userId, String productId, String storeId,
-      String variantId, int quantity);
+  Future<int> getCount(String userId);
+  Future<void> createOrder(String userId, OrderItem order);
   Future<void> updateOrder(String userId, ProductItem productItem);
 }
 
@@ -32,7 +31,7 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
       
       ),address: Address(*)
       ''').eq('user_id', userId).eq('status', status);
-    log(data.toString());
+
     final result = ListModel(
         results: data.map((item) => OrderItemModel.fromJson(item)).toList());
 
@@ -40,40 +39,29 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
   }
 
   @override
-  Future<void> createOrder(String userId, String productId, String storeId,
-      String variantId, int quantity) async {
+  Future<void> createOrder(String userId, OrderItem order) async {
     final newdata = await supabase
-        .from("Carts")
+        .from("Orders")
         .insert({
           'user_id': userId,
-          'store_id': storeId,
+          'store_id': order.store.id,
+          'address_id': order.address?.id,
+          'total': order.total,
+          'subtotal': order.subtotal,
+          'status': orderStatusToString(order.status)
         })
         .select()
         .single();
     final id = newdata["id"];
 
-    final result = await supabase.from("ProductCarts").select('''
-      *
-      ''').eq('cart_id', id).eq("variant_id", variantId).maybeSingle();
-
-    if (result == null) {
-      await supabase
-          .from("ProductCarts")
-          .insert({
-            'cart_id': id,
-            'product_id': productId,
-            'variant_id': variantId,
-            'number': quantity
-          })
-          .select()
-          .single();
-    } else {
-      int oldQuantity = result['number'] ?? 0;
-      int newQuantity = quantity + oldQuantity;
-      await supabase
-          .from('ProductCarts')
-          .update({'number': newQuantity}).eq('id', result['id']);
-    }
+    await supabase.from("ProductOrders").insert(order.productItem
+        .map((item) => {
+              'order_id': id,
+              'product_id': item.productDetail?.productId,
+              'variant_id': item.variant?.id,
+              'number': item.number
+            })
+        .toList());
   }
 
   @override
@@ -82,5 +70,15 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
       'number': productItem.number,
       'variant_id': productItem.variant?.id
     }).eq('id', productItem.id);
+  }
+
+  @override
+  Future<int> getCount(String userId) async {
+    final data = await supabase
+        .from('Orders')
+        .select('status')
+        .eq('user_id', userId)
+        .filter('status', 'in', '("pending","awaiting","delivering")');
+    return data.length;
   }
 }

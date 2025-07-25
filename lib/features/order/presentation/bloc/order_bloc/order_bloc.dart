@@ -4,8 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
+import 'package:thuongmaidientu/features/cart/domain/usecases/delete_cart_usecase.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/order/domain/usecases/create_order_usecase.dart';
+import 'package:thuongmaidientu/features/order/domain/usecases/get_count_order.dart';
 import 'package:thuongmaidientu/features/order/domain/usecases/get_list_order_usecase.dart';
 import 'package:thuongmaidientu/features/order/domain/usecases/update_order_usecase.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -19,13 +21,20 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final GetListOrderUseCase getListOrderUseCase;
   final CreateOrderUsecase createOrderUsecase;
   final UpdateOrderUsecase updateOrderUsecase;
+  final DeleteCartUsecase deleteCartUsecase;
+  final GetCountOrderUseCase getCountOrderUseCase;
 
-  OrderBloc(this.createOrderUsecase, this.getListOrderUseCase,
-      this.updateOrderUsecase)
+  OrderBloc(
+      this.createOrderUsecase,
+      this.getListOrderUseCase,
+      this.updateOrderUsecase,
+      this.deleteCartUsecase,
+      this.getCountOrderUseCase)
       : super(OrderState.empty()) {
     on<GetListOrder>(_getListOrder);
     on<CreateOrder>(_createOrder);
     on<UpdateOrder>(_updateOrder);
+    on<GetCountOrder>(_getCountOrder);
   }
 
   void _getListOrder(GetListOrder event, Emitter<OrderState> emit) async {
@@ -106,15 +115,23 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   void _createOrder(CreateOrder event, Emitter<OrderState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await createOrderUsecase.call(event.userId, event.productId,
-          event.storeId, event.variantId, event.quantity);
-      emit(state.copyWith(
-        isLoading: false,
-      ));
-      Helper.showToastBottom(
-          message: "key_add_to_cart_success".tr(), type: ToastType.success);
+      for (var item in event.orders) {
+        await createOrderUsecase.call(event.userId, item);
+        if (event.isDeleteCart) {
+          for (var product in item.productItem) {
+            await deleteCartUsecase.call(item.id, event.userId, product.id);
+          }
+        }
+      }
+      emit(state.copyWith(isLoading: false));
+
+      Helper.showToastBottom(message: "key_create_order_success".tr());
+      event.onSuccess?.call();
+      add(GetListOrder(orderStatus: OrderStatus.pending, id: event.userId));
     } catch (e) {
+      emit(state.copyWith(isLoading: false));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
+      log("hihi${ParseError.fromJson(e).message}");
     }
   }
 
@@ -129,6 +146,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
       // Helper.showToastBottom(
       //     message: "key_update_cart_success".tr(), type: ToastType.success);
+    } catch (e) {
+      Helper.showToastBottom(message: ParseError.fromJson(e).message);
+    }
+  }
+
+  void _getCountOrder(GetCountOrder event, Emitter<OrderState> emit) async {
+    try {
+      final count = await getCountOrderUseCase.call(event.userId ?? "");
+      emit(state.copyWith(count: count));
     } catch (e) {
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }

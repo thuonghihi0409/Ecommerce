@@ -82,15 +82,13 @@ class OrderItem {
       required this.address,
       required this.subtotal,
       required this.total});
-  factory OrderItem.copyFromCartItem(
-    CartItem item,
-  ) {
+  factory OrderItem.copyFromCartItem(CartItem item, AddressEntity? address) {
     return OrderItem(
         store: item.store,
         productItem: item.productItem,
-        id: "",
+        id: item.id,
         status: OrderStatus.pending,
-        address: null,
+        address: address,
         subtotal: item.productItem
             .fold(0, (sum, item) => sum + (item.variant?.price ?? 0)),
         total: item.productItem

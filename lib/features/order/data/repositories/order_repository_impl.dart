@@ -17,14 +17,18 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<void> createOrder(String userId, String productId, String storeId,
-      String variantId, int quantity) async {
-    await remoteDataSource.createOrder(
-        userId, productId, storeId, variantId, quantity);
+  Future<void> createOrder(String userId, OrderItem order) async {
+    await remoteDataSource.createOrder(userId, order);
   }
 
   @override
   Future<void> updateOrder(String id, ProductItem productItem) async {
     await remoteDataSource.updateOrder(id, productItem);
+  }
+
+  @override
+  Future<int> getCount(String userId) async {
+    final count = await remoteDataSource.getCount(userId);
+    return count;
   }
 }

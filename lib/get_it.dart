@@ -13,6 +13,7 @@ import 'package:thuongmaidientu/features/cart/data/repositories/cart_repository_
 import 'package:thuongmaidientu/features/cart/domain/repositories/cart_repository.dart';
 import 'package:thuongmaidientu/features/cart/domain/usecases/add_to_cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/domain/usecases/delete_cart_usecase.dart';
+import 'package:thuongmaidientu/features/cart/domain/usecases/get_count_cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/domain/usecases/update_cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/chat/data/datasources/chat_remote_datasource.dart';
@@ -28,6 +29,7 @@ import 'package:thuongmaidientu/features/order/data/datasources/order_remote_dat
 import 'package:thuongmaidientu/features/order/data/repositories/order_repository_impl.dart';
 import 'package:thuongmaidientu/features/order/domain/repositories/order_repository.dart';
 import 'package:thuongmaidientu/features/order/domain/usecases/create_order_usecase.dart';
+import 'package:thuongmaidientu/features/order/domain/usecases/get_count_order.dart';
 import 'package:thuongmaidientu/features/order/domain/usecases/get_list_order_usecase.dart';
 import 'package:thuongmaidientu/features/order/domain/usecases/update_order_usecase.dart';
 import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
@@ -63,7 +65,7 @@ Future<void> init() async {
 
   sl.registerFactory(() => ProductBloc(sl(), sl(), sl(), sl(), sl()));
 
-  sl.registerFactory(() => CartBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => CartBloc(sl(), sl(), sl(), sl(), sl()));
 
   sl.registerFactory(() => ReviewBloc(sl()));
 
@@ -71,7 +73,7 @@ Future<void> init() async {
 
   sl.registerFactory(() => ChatBloc(sl(), sl(), sl(), sl(), sl()));
 
-  sl.registerFactory(() => OrderBloc(sl(), sl(), sl()));
+  sl.registerFactory(() => OrderBloc(sl(), sl(), sl(), sl(), sl()));
 
   // UseCase
   //// Auth UseCase
@@ -99,6 +101,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => AddToCartUsecase(sl()));
   sl.registerLazySingleton(() => UpdateCartUsecase(sl()));
   sl.registerLazySingleton(() => DeleteCartUsecase(sl()));
+  sl.registerLazySingleton(() => GetCountCartUsecase(sl()));
 
   //// Review UseCase
   sl.registerLazySingleton(() => GetListReviewUseCase(sl()));
@@ -114,6 +117,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetListOrderUseCase(sl()));
   sl.registerLazySingleton(() => CreateOrderUsecase(sl()));
   sl.registerLazySingleton(() => UpdateOrderUsecase(sl()));
+  sl.registerLazySingleton(() => GetCountOrderUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,6 +50,7 @@ class _CartPageState extends State<CartPage> {
         backgroundColor: AppColor.whiteColor,
         appBar: CustomAppBar(
           title: "key_cart".tr(),
+          isShowCartIcon: false,
         ),
         body: Builder(builder: (context) {
           if (state.isLoading) {
@@ -75,12 +74,10 @@ class _CartPageState extends State<CartPage> {
                         onChangeSelect: (item) {
                           setState(() {
                             _total = 0;
-                            log("haha${_listCarts.length}");
+
                             _listCarts[index] = item;
-                            log(index.toString());
-                            log(_listCarts[index].toString());
+
                             for (var item in _listCarts) {
-                              log("hihi");
                               if (item != null) {
                                 for (var product in item.productItem) {
                                   _total += (product.variant?.price ?? 0);
@@ -95,16 +92,19 @@ class _CartPageState extends State<CartPage> {
                 ),
                 Row(
                   children: [
-                    Text(
-                        "${"key_sum".tr()}: ${Helper.formatCurrencyVND(_total)}"),
-                    10.w,
+                    if (_total != 0)
+                      Text(
+                          "${"key_sum".tr()}: ${Helper.formatCurrencyVND(_total)}"),
+                    if (_total != 0) 10.w,
                     Expanded(
                         child: CustomButton(
+                      isEnable: _total != 0,
                       text: "key_buy_now".tr(),
                       borderRadius: 0,
                       onPressed: () {
                         NavigationService.instance.push(
                           CreateOrderPage(
+                            isDeleteCart: true,
                             cartItems: _listCarts
                                 .where((item) => item != null)
                                 .toList(),

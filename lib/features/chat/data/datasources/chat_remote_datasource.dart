@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:thuongmaidientu/features/chat/data/models/message_model.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
@@ -47,7 +45,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
        
         last_message:Messages!Conversations_last_message_id_fkey(*)
         ''').single();
-    log("conversation$conversation");
+
     return ConversationModel.fromJson(conversation);
   }
 

@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:thuongmaidientu/features/cart/data/models/cart_item_model.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
 abstract class CartRemoteDatasource {
+  Future<int> getCount(String userId);
   Future<ListModel<CartItemModel>> getListCart(String userId);
   Future<void> addToCart(String userId, String productId, String storeId,
       String variantId, int quantity);
@@ -31,7 +30,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDatasource {
       variant: Variants(*)
       )
       ''').eq('user_id', userId);
-    log(data.toString());
+
     final result = ListModel(
         results: data.map((item) => CartItemModel.fromJson(item)).toList());
 
@@ -68,6 +67,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDatasource {
       await supabase
           .from("ProductCarts")
           .insert({
+            'user_id': userId,
             'cart_id': id,
             'product_id': productId,
             'variant_id': variantId,
@@ -104,5 +104,12 @@ class CartRemoteDataSourceImpl implements CartRemoteDatasource {
     if (result == null) {
       await supabase.from("Carts").delete().eq('id', cartId);
     }
+  }
+
+  @override
+  Future<int> getCount(String userId) async {
+    final data =
+        await supabase.from('ProductCarts').select('*').eq('user_id', userId);
+    return data.length;
   }
 }

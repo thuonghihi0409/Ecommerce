@@ -8,9 +8,10 @@ import 'package:thuongmaidientu/core/app_constraint.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/forgot_password.dart';
-import 'package:thuongmaidientu/features/auth/presentation/page/home_page.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/register_page.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/verify_page.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -57,8 +58,12 @@ class _LoginScreenState extends State<LoginScreen> {
         onSuccess: (val) {
           switch (val) {
             case AppConstraint.login:
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const HomePage()));
+              context.read<ProfileBloc>().add(GetProfile(
+                  email: _usernameController.text ?? "",
+                  onSuccess: () {
+                    NavigationService.instance
+                        .popUntilRootAndReplace(const MainTab());
+                  }));
               break;
             case AppConstraint.isNotVerify:
               Helper.showToastBottom(message: "Tài khoản chưa xác thực");
@@ -87,6 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         appBar: CustomAppBar(
           title: "key_login".tr(),
+          isShowCartIcon: false,
+          isShowChatIcon: false,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),

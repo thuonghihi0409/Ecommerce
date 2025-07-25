@@ -18,8 +18,12 @@ import 'package:thuongmaidientu/shared/widgets/location_widget.dart';
 class CreateOrderPage extends StatefulWidget {
   final List<CartItem?> cartItems;
   final int total;
+  final bool isDeleteCart;
   const CreateOrderPage(
-      {super.key, required this.cartItems, required this.total});
+      {super.key,
+      required this.cartItems,
+      required this.total,
+      this.isDeleteCart = false});
 
   @override
   State<CreateOrderPage> createState() => _CreateOrderPageState();
@@ -37,6 +41,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
     return Scaffold(
       appBar: const CustomAppBar(
         height: 10,
+        isShowCartIcon: false,
+        isShowChatIcon: false,
       ),
       body: Padding(
         padding: const EdgeInsetsGeometry.symmetric(horizontal: 5, vertical: 5),
@@ -57,7 +63,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     10.h,
                     ...widget.cartItems.map((product) => OrderItemWidget(
                           isCreating: true,
-                          orderItem: OrderItem.copyFromCartItem(product!),
+                          orderItem: OrderItem.copyFromCartItem(product!, null),
                         )),
                     10.h,
                     Row(
@@ -87,13 +93,23 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     isEnable: addresses.isNotEmpty,
                     text: "key_ordering".tr(),
                     onPressed: () {
-                      for (var item in widget.cartItems) {}
+                      final userId =
+                          context.read<ProfileBloc>().state.profile?.id ?? "";
+
                       context.read<OrderBloc>().add(CreateOrder(
+                          onSuccess: () {
+                            // context
+                            //     .read<CartBloc>()
+                            //     .add(GetListCart(id: userId));
+                            NavigationService.instance.goBack();
+                            NavigationService.instance.goBack();
+                          },
+                          isDeleteCart: widget.isDeleteCart,
                           userId: userId,
-                          productId: productId,
-                          storeId: storeId,
-                          variantId: variantId,
-                          quantity: quantity));
+                          orders: widget.cartItems
+                              .map((item) => OrderItem.copyFromCartItem(
+                                  item!, addresses[0]))
+                              .toList()));
                     },
                   ),
                 )
