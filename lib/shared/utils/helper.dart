@@ -140,18 +140,21 @@ class Helper {
             child: ValueListenableBuilder(
                 valueListenable: isDisablePrimaryButton ?? ValueNotifier(false),
                 builder: (context, isDisableButton, child) {
-                  return const Dialog(
-                      // message: message,
-                      // isShowSecondButton: isShowSecondButton,
-                      // labelPrimary: labelPrimary,
-                      // labelSecondary: labelSecondary,
-                      // onPressSecondButton: onPressSecondButton,
-                      // onClose: onClose,
-                      // onPressPrimaryButton: onPressPrimaryButton,
-                      // isShowCloseIcon: true,
-                      // headerCustom: headerCustom,
-                      // isDisablePrimaryButton: isDisableButton,
-                      );
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: [
+                        if (message != null)
+                          Text(
+                            message,
+                            style: AppTextStyles.textSize18(),
+                          ),
+                        headerCustom ?? const SizedBox(),
+                      ],
+                    ),
+                  );
                 }),
           );
         });

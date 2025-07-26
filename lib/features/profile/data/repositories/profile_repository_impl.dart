@@ -1,3 +1,4 @@
+import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/province_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/ward_entity.dart';
@@ -43,5 +44,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
       AddressEntity addAddress, String userId) async {
     final address = await remoteDataSource.addAddress(addAddress, userId);
     return address;
+  }
+
+  @override
+  Future<List<Store>> getStore(String userId) async {
+    final store = await remoteDataSource.getStore(userId);
+    return store;
   }
 }

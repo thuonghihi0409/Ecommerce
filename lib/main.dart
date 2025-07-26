@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -9,13 +12,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
+import 'package:thuongmaidientu/features/dashboard/presentation/bloc/dashboard_bloc/dashboard_bloc.dart';
 import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
 import 'package:thuongmaidientu/get_it.dart';
 import 'package:thuongmaidientu/init_page.dart';
-import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -39,7 +42,7 @@ void main() async {
   } else {
     await Firebase.initializeApp();
   }
-  FirebaseService.init();
+  FirebaseAuth.instance.setLanguageCode('vi');
   await Supabase.initialize(
       anonKey: dotenv.env["SUPABASE_KEY"]!,
       url: dotenv.env["SUPABASE_URL"]!,
@@ -50,6 +53,7 @@ void main() async {
       supportedLocales: const [Locale('en'), Locale('vi')],
       path: 'assets/translations',
       fallbackLocale: const Locale('vi'),
+      startLocale: const Locale('vi'),
       child: OverlaySupport.global(
         // to show toast
         child: MultiBlocProvider(providers: [
@@ -59,7 +63,8 @@ void main() async {
           BlocProvider(create: (_) => sl<ReviewBloc>()),
           BlocProvider(create: (_) => sl<ProfileBloc>()),
           BlocProvider(create: (_) => sl<ChatBloc>()),
-          BlocProvider(create: (_) => sl<OrderBloc>())
+          BlocProvider(create: (_) => sl<OrderBloc>()),
+          BlocProvider(create: (_) => sl<DashboardBloc>())
         ], child: const MyApp()),
       )));
 }
@@ -69,6 +74,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('🟡 Current locale: ${context.locale}');
+
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);

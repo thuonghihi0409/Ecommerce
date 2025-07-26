@@ -10,7 +10,8 @@ class ProfileEvent extends Equatable {
 class GetProfile extends ProfileEvent {
   final String email;
   final Function? onSuccess;
-  const GetProfile({required this.email, this.onSuccess});
+  final Function? onError;
+  const GetProfile({required this.email, this.onSuccess, this.onError});
 }
 
 class GetAddress extends ProfileEvent {
@@ -25,6 +26,11 @@ class GetProvinces extends ProfileEvent {
 class GetWards extends ProfileEvent {
   final String id;
   const GetWards({required this.id});
+}
+
+class SetStore extends ProfileEvent {
+  final Store store;
+  const SetStore({required this.store});
 }
 
 class AddAddress extends ProfileEvent {

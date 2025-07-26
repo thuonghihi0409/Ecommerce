@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,6 +11,7 @@ import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_b
 import 'package:thuongmaidientu/features/auth/presentation/page/forgot_password.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/register_page.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/verify_page.dart';
+import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
@@ -20,6 +22,7 @@ import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
+import 'package:thuongmaidientu/web_main_drawer.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -61,8 +64,39 @@ class _LoginScreenState extends State<LoginScreen> {
               context.read<ProfileBloc>().add(GetProfile(
                   email: _usernameController.text ?? "",
                   onSuccess: () {
-                    NavigationService.instance
-                        .popUntilRootAndReplace(const MainTab());
+                    if (kIsWeb) {
+                      final bloc = context.read<ProfileBloc>();
+                      List<Store> store = bloc.state.listStores ?? [];
+                      if (store.isEmpty) {
+                        // create business
+                      } else if (store.length == 1) {
+                        bloc.add(SetStore(store: store[0]));
+                        NavigationService.instance
+                            .popUntilRootAndReplace(const WebMainDrawer());
+                      } else {
+                        Helper.showCustomDialog(
+                            context: context,
+                            onPressPrimaryButton: () {},
+                            message: "key_select_store".tr(),
+                            headerCustom: Column(
+                              children: store
+                                  .map((st) => InkWell(
+                                        child: Text(st.name ?? ""),
+                                        onTap: () {
+                                          bloc.add(SetStore(store: st));
+                                          NavigationService.instance.goBack();
+                                          NavigationService.instance
+                                              .popUntilRootAndReplace(
+                                                  const WebMainDrawer());
+                                        },
+                                      ))
+                                  .toList(),
+                            ));
+                      }
+                    } else {
+                      NavigationService.instance
+                          .popUntilRootAndReplace(const MainTab());
+                    }
                   }));
               break;
             case AppConstraint.isNotVerify:

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,14 +12,17 @@ import 'package:thuongmaidientu/core/app_life_cycle_handle.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
+import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
+import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
+import 'package:thuongmaidientu/web_main_drawer.dart';
 
 class VerifyPage extends StatefulWidget {
   final String email;
@@ -46,8 +50,40 @@ class _VerifyPageState extends State<VerifyPage> {
         context.read<ProfileBloc>().add(GetProfile(
             email: widget.email,
             onSuccess: () {
-              NavigationService.instance
-                  .popUntilRootAndReplace(const MainTab());
+              if (kIsWeb) {
+                final bloc = context.read<ProfileBloc>();
+                List<Store> store = bloc.state.listStores ?? [];
+
+                if (store.isEmpty) {
+                  // create business
+                } else if (store.length == 1) {
+                  bloc.add(SetStore(store: store[0]));
+                  NavigationService.instance
+                      .popUntilRootAndReplace(const WebMainDrawer());
+                } else {
+                  Helper.showCustomDialog(
+                      context: context,
+                      onPressPrimaryButton: () {},
+                      message: "key_select_store".tr(),
+                      headerCustom: Column(
+                        children: store
+                            .map((st) => InkWell(
+                                  child: Text(st.name ?? ""),
+                                  onTap: () {
+                                    bloc.add(SetStore(store: st));
+                                    NavigationService.instance.goBack();
+                                    NavigationService.instance
+                                        .popUntilRootAndReplace(
+                                            const WebMainDrawer());
+                                  },
+                                ))
+                            .toList(),
+                      ));
+                }
+              } else {
+                NavigationService.instance
+                    .popUntilRootAndReplace(const MainTab());
+              }
             }));
       }
     });
@@ -62,7 +98,7 @@ class _VerifyPageState extends State<VerifyPage> {
       if (_remainingTime == 0) {
         timer.cancel();
       } else {
-        if (mounted) return;
+        if (!mounted) return;
         setState(() {
           _remainingTime--;
         });

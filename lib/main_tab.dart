@@ -13,6 +13,7 @@ import 'package:thuongmaidientu/features/product/presentation/page/product_page.
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/account_screen.dart';
 import 'package:thuongmaidientu/features/video/presentation/page/video_page.dart';
+import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/widgets/badge_icon.dart';
 
 class MainTab extends StatefulWidget {
@@ -37,6 +38,7 @@ class _MainTabState extends State<MainTab> {
   @override
   void initState() {
     super.initState();
+    FirebaseService.init();
     _getData();
   }
 

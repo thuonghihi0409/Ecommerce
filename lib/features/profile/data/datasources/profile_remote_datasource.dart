@@ -1,3 +1,5 @@
+import 'package:thuongmaidientu/features/product/data/models/store_model.dart';
+import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/province_entity.dart';
@@ -9,7 +11,8 @@ abstract class ProfileRemoteDatasource {
   Future<List<AddressEntity>> getAddress(String id);
   Future<List<ProvinceEntity>> getProvince();
   Future<List<WardEntity>> getWard(String id);
-  Future<AddressEntity> addAddress(AddressEntity addAddress, String UserId);
+  Future<AddressEntity> addAddress(AddressEntity addAddress, String userId);
+  Future<List<Store>> getStore(String userId);
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
@@ -73,5 +76,12 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
       ward:Wards (code, name)
     ''').eq('id', result['id']).single();
     return AddressEntity.fromJson(address);
+  }
+
+  @override
+  Future<List<Store>> getStore(String userId) async {
+    final stores =
+        await supabase.from('Stores').select('''*''').eq('user_id', userId);
+    return stores.map((e) => StoreModel.fromJson(e)).toList();
   }
 }

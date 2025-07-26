@@ -63,5 +63,8 @@
     "key_awaiting": "Chuẩn bị hàng",
     "key_delivering" :"Đang giao",
     "key_delivered": "Đã giao",
-    "key_reviewed": "Đánh giá"
+    "key_reviewed": "Đánh giá",
+    "key_dashboard": "Thống kê",
+    "key_product_management" : "Quản lý sản phẩm",
+    "key_order" : "Quản lý đơn hàng"
 }

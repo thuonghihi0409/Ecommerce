@@ -25,6 +25,7 @@ import 'package:thuongmaidientu/features/chat/domain/usecases/get_list_conversat
 import 'package:thuongmaidientu/features/chat/domain/usecases/get_message_usecase.dart';
 import 'package:thuongmaidientu/features/chat/domain/usecases/send_message_usecase.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
+import 'package:thuongmaidientu/features/dashboard/presentation/bloc/dashboard_bloc/dashboard_bloc.dart';
 import 'package:thuongmaidientu/features/order/data/datasources/order_remote_datasource.dart';
 import 'package:thuongmaidientu/features/order/data/repositories/order_repository_impl.dart';
 import 'package:thuongmaidientu/features/order/domain/repositories/order_repository.dart';
@@ -47,6 +48,7 @@ import 'package:thuongmaidientu/features/profile/data/repositories/profile_repos
 import 'package:thuongmaidientu/features/profile/domain/repositories/profile_repository.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/add_address_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_address_usecase.dart';
+import 'package:thuongmaidientu/features/profile/domain/usecases/get_list_store_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_provinces_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_wards_usecase.dart';
@@ -69,12 +71,13 @@ Future<void> init() async {
 
   sl.registerFactory(() => ReviewBloc(sl()));
 
-  sl.registerFactory(() => ProfileBloc(sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => ProfileBloc(sl(), sl(), sl(), sl(), sl(), sl()));
 
   sl.registerFactory(() => ChatBloc(sl(), sl(), sl(), sl(), sl()));
 
   sl.registerFactory(() => OrderBloc(sl(), sl(), sl(), sl(), sl()));
 
+  sl.registerFactory(() => DashboardBloc());
   // UseCase
   //// Auth UseCase
   sl.registerLazySingleton(() => LoginUseCase(sl()));
@@ -88,6 +91,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetAddressUsecase(sl()));
   sl.registerLazySingleton(() => GetWardsUsecase(sl()));
   sl.registerLazySingleton(() => AddAddressUsecase(sl()));
+  sl.registerLazySingleton(() => GetListStoreUsecase(sl()));
 
   //// Product UseCase
   sl.registerLazySingleton(() => GetListProductUseCase(sl()));
