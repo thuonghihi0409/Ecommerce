@@ -8,8 +8,8 @@ import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
 import 'package:thuongmaidientu/features/dashboard/presentation/page/dashboard_page.dart';
 import 'package:thuongmaidientu/features/notification/presentation/bloc/notification_bloc/notification_bloc.dart';
-import 'package:thuongmaidientu/features/order/presentation/page/order_page.dart';
 import 'package:thuongmaidientu/features/product/presentation/page/product_page.dart';
+import 'package:thuongmaidientu/features/product_management/presentation/page/product_management_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/account_screen.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
@@ -36,7 +36,7 @@ List<String> drawerIcons = [
 
 List<String> drawerRoutes = [
   "dashboard",
-  "cart",
+  "productmanagement",
   "order",
   "setting",
   // AppConstrains.chatRoute,
@@ -161,8 +161,8 @@ class _WebMainDrawerState extends State<WebMainDrawer> {
                         case "dashboard":
                           child = const DashboardPage();
                           break;
-                        case "order":
-                          child = const OrderPage();
+                        case "productmanagement":
+                          child = const ProductManagementPage();
                           break;
                         case "setting":
                           child = const AccountScreen();
