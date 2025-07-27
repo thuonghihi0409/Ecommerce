@@ -23,9 +23,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     final result = await supabase.from('Conversations').select('''
       *,
       user: Users(*),
-      store:Stores(*),
-      last_message: Messages!Conversations_last_message_id_fkey(*, product: Products(*,store : Stores(*)))
-      ''').eq('user_id', userId);
+      store: Stores(*),
+      last_message: Messages!Conversations_last_message_id_fkey(*, product: Products(*, store: Stores(*)))
+    ''').or('user_id.eq.$userId,store_id.eq.$userId');
 
     final listConversation = result
         .map((conversation) => ConversationModel.fromJson(conversation))

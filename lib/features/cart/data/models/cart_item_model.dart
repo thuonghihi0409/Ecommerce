@@ -1,6 +1,6 @@
 import 'package:thuongmaidientu/features/cart/data/models/product_item_model.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
-import 'package:thuongmaidientu/features/product/data/models/store_model.dart';
+import 'package:thuongmaidientu/features/customer/product/data/models/store_model.dart';
 
 class CartItemModel extends CartItem {
   CartItemModel(

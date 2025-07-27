@@ -12,11 +12,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
-import 'package:thuongmaidientu/features/dashboard/presentation/bloc/dashboard_bloc/dashboard_bloc.dart';
+import 'package:thuongmaidientu/features/customer/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
-import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/presentation/bloc/dashboard_bloc/dashboard_bloc.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
 import 'package:thuongmaidientu/get_it.dart';
 import 'package:thuongmaidientu/init_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
@@ -64,7 +66,9 @@ void main() async {
           BlocProvider(create: (_) => sl<ProfileBloc>()),
           BlocProvider(create: (_) => sl<ChatBloc>()),
           BlocProvider(create: (_) => sl<OrderBloc>()),
-          BlocProvider(create: (_) => sl<DashboardBloc>())
+          BlocProvider(create: (_) => sl<DashboardBloc>()),
+          BlocProvider(create: (_) => sl<ProductManagementBloc>()),
+          BlocProvider(create: (_) => sl<OrderManagementBloc>())
         ], child: const MyApp()),
       )));
 }

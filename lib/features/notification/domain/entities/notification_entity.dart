@@ -1,4 +1,4 @@
-import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 
 import '../../../profile/domain/entities/profile_entity.dart';
 

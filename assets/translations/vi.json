@@ -66,5 +66,15 @@
     "key_reviewed": "Đánh giá",
     "key_dashboard": "Thống kê",
     "key_product_management" : "Quản lý sản phẩm",
-    "key_order" : "Quản lý đơn hàng"
+    "key_order" : "Quản lý đơn hàng",
+    "key_notification" : "Thông báo",
+    "key_sign_out" :"Đăng xuất",
+    "key_select_ store": "Chọn cửa hàng",
+    "key_order_management": "Quản lý đơn hàng",
+    "key_transactions": "Giao dịch",
+    "key_revenue" : "Doanh thu",
+    "key_top_ordered_product": "Sản phẩm bán chạy",
+    "key_total_product" : "Tổng sản phẩm",
+    "key_total_order": "Tổng số đơn hàng",
+    "key_total_revenue" :"Tổng danh thu"
 }

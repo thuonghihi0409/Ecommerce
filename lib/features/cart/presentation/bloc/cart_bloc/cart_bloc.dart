@@ -10,7 +10,7 @@ import 'package:thuongmaidientu/features/cart/domain/usecases/add_to_cart_usecas
 import 'package:thuongmaidientu/features/cart/domain/usecases/delete_cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/domain/usecases/get_count_cart_usecase.dart';
 import 'package:thuongmaidientu/features/cart/domain/usecases/update_cart_usecase.dart';
-import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';

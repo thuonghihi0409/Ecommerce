@@ -1,6 +1,6 @@
 import 'package:thuongmaidientu/features/cart/data/models/product_item_model.dart';
+import 'package:thuongmaidientu/features/customer/product/data/models/store_model.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
-import 'package:thuongmaidientu/features/product/data/models/store_model.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
 
 class OrderItemModel extends OrderItem {

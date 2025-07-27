@@ -1,6 +1,6 @@
 import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
-import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
 
 enum OrderStatus {

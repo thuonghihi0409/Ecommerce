@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,6 +24,20 @@ class FirebaseService {
     } catch (e) {
       return null;
     }
+  }
+
+  Future<String> uploadImagesData(Uint8List imageBytes) async {
+    final storageRef = FirebaseStorage.instance.ref();
+    final imageId = const Uuid().v4();
+    final imageRef = storageRef.child('products/$imageId.jpg');
+
+    final uploadTask = await imageRef.putData(
+      imageBytes,
+      SettableMetadata(contentType: 'image/jpeg'),
+    );
+
+    final downloadUrl = await uploadTask.ref.getDownloadURL();
+    return downloadUrl;
   }
 
   static final _firebaseMessaging = FirebaseMessaging.instance;

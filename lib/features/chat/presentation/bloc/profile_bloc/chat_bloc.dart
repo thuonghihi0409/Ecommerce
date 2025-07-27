@@ -7,7 +7,7 @@ import 'package:thuongmaidientu/features/chat/domain/usecases/find_conversation_
 import 'package:thuongmaidientu/features/chat/domain/usecases/get_list_conversation_usecase.dart';
 import 'package:thuongmaidientu/features/chat/domain/usecases/get_message_usecase.dart';
 import 'package:thuongmaidientu/features/chat/domain/usecases/send_message_usecase.dart';
-import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';

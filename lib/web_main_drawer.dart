@@ -5,12 +5,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/cart/presentation/page/cart_page.dart';
-import 'package:thuongmaidientu/features/dashboard/presentation/page/dashboard_page.dart';
+import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
+import 'package:thuongmaidientu/features/customer/product/presentation/page/product_page.dart';
 import 'package:thuongmaidientu/features/notification/presentation/bloc/notification_bloc/notification_bloc.dart';
-import 'package:thuongmaidientu/features/product/presentation/page/product_page.dart';
-import 'package:thuongmaidientu/features/product_management/presentation/page/product_management_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/account_screen.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/presentation/page/dashboard_page.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/page/order_management_page.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/create_product_page.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/product_management_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -20,7 +22,7 @@ List<String> drawers = [
   'key_dashboard'.tr(),
   'key_product_management'.tr(),
   'key_order_management'.tr(),
-  'key_notification'.tr(),
+  'key_conversation'.tr(),
   // 'key_chat'.tr(),
   'key_setting'.tr(),
 ];
@@ -36,11 +38,11 @@ List<String> drawerIcons = [
 
 List<String> drawerRoutes = [
   "dashboard",
-  "productmanagement",
-  "order",
-  "setting",
+  "product_management",
+  "order_management",
+  "conversation",
   // AppConstrains.chatRoute,
-  "productdetail",
+  "product_detail",
 ];
 
 class WebMainDrawer extends StatefulWidget {
@@ -161,17 +163,23 @@ class _WebMainDrawerState extends State<WebMainDrawer> {
                         case "dashboard":
                           child = const DashboardPage();
                           break;
-                        case "productmanagement":
+                        case "product_management":
                           child = const ProductManagementPage();
                           break;
                         case "setting":
                           child = const AccountScreen();
                           break;
-                        case "productdetail":
+                        case "product_detail":
                           child = const ProductPage();
                           break;
-                        case "cart":
-                          child = const CartPage();
+                        case "conversation":
+                          child = const ConversationPage();
+                          break;
+                        case "create_product":
+                          child = const CreateProductPage();
+                          break;
+                        case "order_management":
+                          child = const OrderManagementPage();
                           break;
                       }
 

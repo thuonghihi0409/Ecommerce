@@ -1,5 +1,5 @@
 import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
-import 'package:thuongmaidientu/features/product/data/models/product_model.dart';
+import 'package:thuongmaidientu/features/customer/product/data/models/product_model.dart';
 
 class MessageModel extends MessageEntity {
   MessageModel(

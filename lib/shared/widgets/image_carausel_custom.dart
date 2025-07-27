@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 
 class ImageCarousel extends StatefulWidget {
   final List<ImageItem> imageUrls;

@@ -1,9 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/chat_detail_page.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
@@ -11,9 +13,7 @@ import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
 
 class ConversationPage extends StatefulWidget {
-  final String currentUserId;
-
-  const ConversationPage({super.key, required this.currentUserId});
+  const ConversationPage({super.key});
 
   @override
   State<ConversationPage> createState() => _ConversationPageState();
@@ -21,16 +21,19 @@ class ConversationPage extends StatefulWidget {
 
 class _ConversationPageState extends State<ConversationPage> {
   late ChatBloc _chatBloc;
-
+  late String currentUserId;
   @override
   void initState() {
     super.initState();
+    currentUserId = kIsWeb
+        ? context.read<ProfileBloc>().state.store?.id ?? ""
+        : (context.read<ProfileBloc>().state.profile?.id ?? "");
     _chatBloc = context.read<ChatBloc>();
     _getData();
   }
 
   _getData() async {
-    _chatBloc.add(GetListConversation(userId: widget.currentUserId));
+    _chatBloc.add(GetListConversation(userId: currentUserId));
   }
 
   @override

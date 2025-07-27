@@ -1,4 +1,4 @@
-import 'package:thuongmaidientu/features/product/domain/entities/product.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/product.dart';
 
 enum MessageType { message, product, media }
 

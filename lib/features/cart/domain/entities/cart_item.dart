@@ -1,5 +1,5 @@
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
-import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 
 class CartItem {
   final String id;

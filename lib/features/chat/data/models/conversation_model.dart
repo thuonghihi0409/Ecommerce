@@ -1,6 +1,6 @@
 import 'package:thuongmaidientu/features/chat/data/models/message_model.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation_entity.dart';
-import 'package:thuongmaidientu/features/product/data/models/store_model.dart';
+import 'package:thuongmaidientu/features/customer/product/data/models/store_model.dart';
 import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 
 class ConversationModel extends ConversationEntity {

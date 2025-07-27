@@ -1,5 +1,5 @@
+import 'package:thuongmaidientu/features/customer/product/data/models/product_detail_model.dart';
 import 'package:thuongmaidientu/features/notification/domain/entities/notification_entity.dart';
-import 'package:thuongmaidientu/features/product/data/models/product_detail_model.dart';
 import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 
 class NotificationModel extends NotificationEntity {

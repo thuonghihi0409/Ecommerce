@@ -25,7 +25,15 @@ import 'package:thuongmaidientu/features/chat/domain/usecases/get_list_conversat
 import 'package:thuongmaidientu/features/chat/domain/usecases/get_message_usecase.dart';
 import 'package:thuongmaidientu/features/chat/domain/usecases/send_message_usecase.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
-import 'package:thuongmaidientu/features/dashboard/presentation/bloc/dashboard_bloc/dashboard_bloc.dart';
+import 'package:thuongmaidientu/features/customer/product/data/datasources/product_remote_datasource.dart';
+import 'package:thuongmaidientu/features/customer/product/data/repositories/product_repository_impl.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/repositories/product_repository.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_category_usecase.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_product_summerice_usecase.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_product_usecase.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_product_detail_usecase.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_store_usecase.dart';
+import 'package:thuongmaidientu/features/customer/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/order/data/datasources/order_remote_datasource.dart';
 import 'package:thuongmaidientu/features/order/data/repositories/order_repository_impl.dart';
 import 'package:thuongmaidientu/features/order/domain/repositories/order_repository.dart';
@@ -34,15 +42,6 @@ import 'package:thuongmaidientu/features/order/domain/usecases/get_count_order.d
 import 'package:thuongmaidientu/features/order/domain/usecases/get_list_order_usecase.dart';
 import 'package:thuongmaidientu/features/order/domain/usecases/update_order_usecase.dart';
 import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
-import 'package:thuongmaidientu/features/product/data/datasources/product_remote_datasource.dart';
-import 'package:thuongmaidientu/features/product/data/repositories/product_repository_impl.dart';
-import 'package:thuongmaidientu/features/product/domain/repositories/product_repository.dart';
-import 'package:thuongmaidientu/features/product/domain/usecases/get_list_category_usecase.dart';
-import 'package:thuongmaidientu/features/product/domain/usecases/get_list_product_summerice_usecase.dart';
-import 'package:thuongmaidientu/features/product/domain/usecases/get_list_product_usecase.dart';
-import 'package:thuongmaidientu/features/product/domain/usecases/get_product_detail_usecase.dart';
-import 'package:thuongmaidientu/features/product/domain/usecases/get_store_usecase.dart';
-import 'package:thuongmaidientu/features/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/profile/data/datasources/profile_remote_datasource.dart';
 import 'package:thuongmaidientu/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:thuongmaidientu/features/profile/domain/repositories/profile_repository.dart';
@@ -58,6 +57,21 @@ import 'package:thuongmaidientu/features/review/data/repositories/review_reposit
 import 'package:thuongmaidientu/features/review/domain/repositories/review_repository.dart';
 import 'package:thuongmaidientu/features/review/domain/usecases/get_list_review_usecase.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/data/datasources/dashboard_remote_datasource.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/data/repositories/seller_dashboard_repository_impl.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/domain/repositories/seller_dashboard_repository.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/domain/usecases/seller_get_dashboard_cart_usecase.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/presentation/bloc/dashboard_bloc/dashboard_bloc.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/data/datasources/order_management_remote_datasource.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/data/repositories/order_management_repository_impl.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/domain/repositories/order_management_repository.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/domain/usecases/seller_get_list_order_usecase.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';
+import 'package:thuongmaidientu/features/seller/product_management/data/datasources/product_mamagement_remote_datasource.dart';
+import 'package:thuongmaidientu/features/seller/product_management/data/repositories/product_management_repository_impl.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/repositories/product_management_repository.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/create_product_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -77,7 +91,10 @@ Future<void> init() async {
 
   sl.registerFactory(() => OrderBloc(sl(), sl(), sl(), sl(), sl()));
 
-  sl.registerFactory(() => DashboardBloc());
+  sl.registerFactory(() => DashboardBloc(sl()));
+
+  sl.registerFactory(() => ProductManagementBloc(sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => OrderManagementBloc(sl(), sl(), sl(), sl()));
   // UseCase
   //// Auth UseCase
   sl.registerLazySingleton(() => LoginUseCase(sl()));
@@ -123,6 +140,15 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateOrderUsecase(sl()));
   sl.registerLazySingleton(() => GetCountOrderUseCase(sl()));
 
+  //// Dashboard usecase
+  sl.registerLazySingleton(() => SellerGetDashboardCartUsecase(sl()));
+
+  //// Product Management UseCase
+  sl.registerLazySingleton(() => CreateProductUsecase(sl()));
+
+  //// Order Management usecase
+  sl.registerLazySingleton(() => SellerGetListOrderUsecase(sl()));
+
   // Repository
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
 
@@ -139,6 +165,15 @@ Future<void> init() async {
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(sl()));
 
   sl.registerLazySingleton<OrderRepository>(() => OrderRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<ProductManagementRepository>(
+      () => ProductManagementRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<OrderManagementRepository>(
+      () => OrderManagementRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<SellerDashboardRepository>(
+      () => SellerDashboardRepositoryImpl(sl()));
 
   // DataSource
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -159,4 +194,11 @@ Future<void> init() async {
 
   sl.registerLazySingleton<OrderRemoteDatasource>(
       () => OrderRemoteDataSourceImpl());
+
+  sl.registerLazySingleton<ProductManagementRemoteDatasource>(
+      () => ProductManagementRemoteDataSourceImpl());
+  sl.registerLazySingleton<OrderManagementRemoteDatasource>(
+      () => OrderManagementRemoteDataSourceImpl());
+  sl.registerLazySingleton<DashboardRemoteDatasource>(
+      () => DashboardRemoteDataSourceImpl());
 }

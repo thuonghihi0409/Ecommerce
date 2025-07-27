@@ -80,8 +80,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             onTap: () {
               final id = context.read<ProfileBloc>().state.profile?.id;
-              NavigationService.instance
-                  .push(ConversationPage(currentUserId: id ?? ""));
+              NavigationService.instance.push(const ConversationPage());
             },
           ),
         if (isShowCartIcon && isShowCartIcon) 10.w,

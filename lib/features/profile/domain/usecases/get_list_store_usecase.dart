@@ -1,4 +1,4 @@
-import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/repositories/profile_repository.dart';
 
 class GetListStoreUsecase {

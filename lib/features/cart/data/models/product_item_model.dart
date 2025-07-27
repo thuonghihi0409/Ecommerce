@@ -1,5 +1,5 @@
 import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
-import 'package:thuongmaidientu/features/product/data/models/product_detail_model.dart';
+import 'package:thuongmaidientu/features/customer/product/data/models/product_detail_model.dart';
 
 class ProductItemModel extends ProductItem {
   ProductItemModel({

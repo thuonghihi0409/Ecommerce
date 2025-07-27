@@ -1,12 +1,15 @@
+import 'dart:convert';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
-import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
@@ -36,7 +39,7 @@ class _InitPageState extends State<InitPage> {
           if (isResume) {
             context.read<ProfileBloc>().add(GetProfile(
                 email: email ?? "",
-                onSuccess: () {
+                onSuccess: () async {
                   if (kIsWeb) {
                     final bloc = context.read<ProfileBloc>();
                     List<Store> store = bloc.state.listStores ?? [];
@@ -47,6 +50,17 @@ class _InitPageState extends State<InitPage> {
                       NavigationService.instance
                           .popUntilRootAndReplace(const WebMainDrawer());
                     } else {
+                      final prefs = await SharedPreferences.getInstance();
+                      final jsonString = prefs.getString('selected_store');
+
+                      if (jsonString != null) {
+                        final Map<String, dynamic> jsonMap =
+                            jsonDecode(jsonString);
+                        bloc.add(SetStore(store: Store.fromJson(jsonMap)));
+                        NavigationService.instance
+                            .popUntilRootAndReplace(const WebMainDrawer());
+                        return;
+                      }
                       Helper.showCustomDialog(
                           context: context,
                           onPressPrimaryButton: () {},
@@ -55,8 +69,12 @@ class _InitPageState extends State<InitPage> {
                             children: store
                                 .map((st) => InkWell(
                                       child: Text(st.name ?? ""),
-                                      onTap: () {
+                                      onTap: () async {
                                         bloc.add(SetStore(store: st));
+                                        final prefs = await SharedPreferences
+                                            .getInstance();
+                                        await prefs.setString('selected_store',
+                                            jsonEncode(st.toJson()));
                                         NavigationService.instance.goBack();
                                         NavigationService.instance
                                             .popUntilRootAndReplace(

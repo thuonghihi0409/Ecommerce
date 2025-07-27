@@ -1,4 +1,4 @@
-import 'package:thuongmaidientu/features/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/province_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/ward_entity.dart';
