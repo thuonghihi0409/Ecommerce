@@ -6,11 +6,13 @@ import 'package:thuongmaidientu/features/customer/product/domain/entities/catego
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
-import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_category_usecase.dart';
-import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_product_summerice_usecase.dart';
-import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_product_usecase.dart';
-import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_product_detail_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/entities/seller_product.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/create_product_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_list_category_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_list_product_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_product_detail_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_update_product_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_update_variant_usecase.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
@@ -20,31 +22,34 @@ part 'product_management_state.dart';
 
 class ProductManagementBloc
     extends Bloc<ProductManagementEvent, ProductManagementState> {
-  final GetListProductUseCase _getListProductUseCase;
-  final GetProductDetailUsecase _getProductDetailUsecase;
-
+  final SellerGetListProductUseCase _getListProductUseCase;
+  final SellerGetProductDetailUsecase _getProductDetailUsecase;
   final CreateProductUsecase _createProductUsecase;
-  final GetListProductSummericeUseCase _getListProductSummericeUseCase;
-  final GetListCategoryUseCase _getListCategoryUseCase;
+  final SellerGetListCategoryUseCase _getListCategoryUseCase;
+  final SellerUpdateProductUseCase _updateProductUsecase;
+  final SellerUpdateVariantUseCase _updateVariantUsecase;
   ProductManagementBloc(
       this._getListProductUseCase,
       this._getProductDetailUsecase,
-      this._getListProductSummericeUseCase,
       this._getListCategoryUseCase,
-      this._createProductUsecase)
+      this._createProductUsecase,
+      this._updateProductUsecase,
+      this._updateVariantUsecase)
       : super(ProductManagementState.empty()) {
-    on<GetListProduct>(_getListProduct);
-    on<GetListCategory>(_getListCategory);
-    on<GetProductDetail>(_getProductDetail);
-    on<CreateProduct>(_createProduct);
+    on<SellerGetListProduct>(_getListProduct);
+    on<SellerGetListCategory>(_getListCategory);
+    on<SellerGetProductDetail>(_getProductDetail);
+    on<SellerCreateProduct>(_createProduct);
+    on<SellerUpdateProduct>(_updateProduct);
+    on<SellerUpdateVariant>(_updateVariant);
   }
 
   void _getListProduct(
-      GetListProduct event, Emitter<ProductManagementState> emit) async {
+      SellerGetListProduct event, Emitter<ProductManagementState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
 
-      final listProduct = await _getListProductUseCase.call();
+      final listProduct = await _getListProductUseCase.call(event.id);
       emit(state.copyWith(isLoading: false, listProduct: listProduct));
     } catch (e) {
       emit(state.copyWith(
@@ -57,7 +62,7 @@ class ProductManagementBloc
   }
 
   void _getListCategory(
-      GetListCategory event, Emitter<ProductManagementState> emit) async {
+      SellerGetListCategory event, Emitter<ProductManagementState> emit) async {
     try {
       final listCategory = await _getListCategoryUseCase.call();
 
@@ -70,20 +75,17 @@ class ProductManagementBloc
     }
   }
 
-  void _getProductDetail(
-      GetProductDetail event, Emitter<ProductManagementState> emit) async {
+  void _getProductDetail(SellerGetProductDetail event,
+      Emitter<ProductManagementState> emit) async {
     try {
       emit(state.copyWith(isGetDetail: true));
       final product = await _getProductDetailUsecase.call(event.productId);
 
-      final listSummerice =
-          await _getListProductSummericeUseCase.call(event.categoryId);
-
       emit(state.copyWith(
-          isGetDetail: false,
-          productDetailModel: product,
-          getProductDetailError: "",
-          listProductSummerice: listSummerice));
+        isGetDetail: false,
+        productDetailModel: product,
+        getProductDetailError: "",
+      ));
     } catch (e) {
       emit(state.copyWith(
           isGetDetail: false,
@@ -94,13 +96,43 @@ class ProductManagementBloc
   }
 
   void _createProduct(
-      CreateProduct event, Emitter<ProductManagementState> emit) async {
+      SellerCreateProduct event, Emitter<ProductManagementState> emit) async {
     try {
+      emit(state.copyWith(isGetDetail: true));
       await _createProductUsecase.call(event.productDetail);
+      event.onSuccess?.call();
+      emit(state.copyWith(isGetDetail: false));
+    } catch (e) {
+      emit(state.copyWith(isGetDetail: false));
+      Helper.showToastBottom(message: ParseError.fromJson(e).message);
+      event.onError?.call();
+      log(ParseError.fromJson(e).message);
+    }
+  }
+
+  void _updateProduct(
+      SellerUpdateProduct event, Emitter<ProductManagementState> emit) async {
+    try {
+      emit(state.copyWith(isGetDetail: true));
+      await _updateProductUsecase.call(event.productDetail);
+      event.onSuccess?.call();
+      emit(state.copyWith(isGetDetail: false));
+    } catch (e) {
+      emit(state.copyWith(isGetDetail: false));
+      Helper.showToastBottom(message: ParseError.fromJson(e).message);
+
+      log(ParseError.fromJson(e).message);
+    }
+  }
+
+  void _updateVariant(
+      SellerUpdateVariant event, Emitter<ProductManagementState> emit) async {
+    try {
+      await _updateVariantUsecase.call(event.variants);
       event.onSuccess?.call();
     } catch (e) {
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
-      event.onError?.call();
+
       log(ParseError.fromJson(e).message);
     }
   }

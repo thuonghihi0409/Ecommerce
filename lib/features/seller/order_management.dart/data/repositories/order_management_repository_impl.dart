@@ -1,7 +1,5 @@
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
-import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/data/datasources/order_management_remote_datasource.dart';
-import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/repositories/order_management_repository.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
@@ -18,13 +16,8 @@ class OrderManagementRepositoryImpl implements OrderManagementRepository {
   }
 
   @override
-  Future<void> createOrder(String userId, OrderItem order) async {
-    await remoteDataSource.createOrder(userId, order);
-  }
-
-  @override
-  Future<void> updateOrder(String id, ProductItem productItem) async {
-    await remoteDataSource.updateOrder(id, productItem);
+  Future<void> updateOrder(String id, SellerOrderItem order) async {
+    await remoteDataSource.updateOrder(id, order);
   }
 
   @override

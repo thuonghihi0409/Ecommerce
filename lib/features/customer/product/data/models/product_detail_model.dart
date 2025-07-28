@@ -81,7 +81,8 @@ class VariantModel extends Variant {
       required super.name,
       required super.price,
       required super.stock,
-      required super.cover});
+      required super.cover,
+      required super.totalSold});
 
   factory VariantModel.fromJson(Map<String, dynamic> json) {
     return VariantModel(
@@ -89,7 +90,8 @@ class VariantModel extends Variant {
         name: json['name'],
         price: json['price'],
         stock: json['stock'] ?? 0,
-        cover: json['cover'] ?? "");
+        cover: json['cover'] ?? "",
+        totalSold: json['total_sold']);
   }
 
   Map<String, dynamic> toJson() {

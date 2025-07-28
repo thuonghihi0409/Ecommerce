@@ -20,4 +20,14 @@ class SellerOrderItem {
       required this.address,
       required this.subtotal,
       required this.total});
+  SellerOrderItem copyWith({required OrderStatus? orderStatus}) {
+    return SellerOrderItem(
+        user: user,
+        productItem: productItem,
+        id: id,
+        status: orderStatus ?? status,
+        address: address,
+        subtotal: subtotal,
+        total: total);
+  }
 }

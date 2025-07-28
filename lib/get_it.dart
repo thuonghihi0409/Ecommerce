@@ -66,11 +66,17 @@ import 'package:thuongmaidientu/features/seller/order_management.dart/data/datas
 import 'package:thuongmaidientu/features/seller/order_management.dart/data/repositories/order_management_repository_impl.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/repositories/order_management_repository.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/usecases/seller_get_list_order_usecase.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/domain/usecases/update_order_usecase.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';
 import 'package:thuongmaidientu/features/seller/product_management/data/datasources/product_mamagement_remote_datasource.dart';
 import 'package:thuongmaidientu/features/seller/product_management/data/repositories/product_management_repository_impl.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/repositories/product_management_repository.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/create_product_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_list_category_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_list_product_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_product_detail_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_update_product_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_update_variant_usecase.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
 
 final sl = GetIt.instance;
@@ -93,8 +99,13 @@ Future<void> init() async {
 
   sl.registerFactory(() => DashboardBloc(sl()));
 
-  sl.registerFactory(() => ProductManagementBloc(sl(), sl(), sl(), sl(), sl()));
-  sl.registerFactory(() => OrderManagementBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory(
+      () => ProductManagementBloc(sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => OrderManagementBloc(
+        sl(),
+        sl(),
+        sl(),
+      ));
   // UseCase
   //// Auth UseCase
   sl.registerLazySingleton(() => LoginUseCase(sl()));
@@ -145,9 +156,15 @@ Future<void> init() async {
 
   //// Product Management UseCase
   sl.registerLazySingleton(() => CreateProductUsecase(sl()));
+  sl.registerLazySingleton(() => SellerGetListProductUseCase(sl()));
+  sl.registerLazySingleton(() => SellerGetProductDetailUsecase(sl()));
+  sl.registerLazySingleton(() => SellerGetListCategoryUseCase(sl()));
+  sl.registerLazySingleton(() => SellerUpdateProductUseCase(sl()));
+  sl.registerLazySingleton(() => SellerUpdateVariantUseCase(sl()));
 
   //// Order Management usecase
   sl.registerLazySingleton(() => SellerGetListOrderUsecase(sl()));
+  sl.registerLazySingleton(() => SellerUpdateOrderUsecase(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));

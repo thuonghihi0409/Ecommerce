@@ -13,6 +13,7 @@ import 'package:thuongmaidientu/features/seller/dashboard/presentation/page/dash
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/page/order_management_page.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/page/create_product_page.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/page/product_management_page.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/product_restock_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -180,6 +181,9 @@ class _WebMainDrawerState extends State<WebMainDrawer> {
                           break;
                         case "order_management":
                           child = const OrderManagementPage();
+                          break;
+                        case "product_restock":
+                          child = const ProductRestockPage();
                           break;
                       }
 

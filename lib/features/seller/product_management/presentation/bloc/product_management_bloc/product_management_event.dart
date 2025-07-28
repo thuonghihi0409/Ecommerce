@@ -7,30 +7,44 @@ class ProductManagementEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetListProduct extends ProductManagementEvent {
+class SellerGetListProduct extends ProductManagementEvent {
+  final String id;
+  final bool isLoadingMore, isRefreshing;
+  const SellerGetListProduct(
+      {required this.id,
+      this.isLoadingMore = false,
+      this.isRefreshing = false});
+}
+
+class SellerGetListCategory extends ProductManagementEvent {
   final String? id;
   final bool isLoadingMore, isRefreshing;
-  const GetListProduct(
+  const SellerGetListCategory(
       {this.id, this.isLoadingMore = false, this.isRefreshing = false});
 }
 
-class GetListCategory extends ProductManagementEvent {
-  final String? id;
-  final bool isLoadingMore, isRefreshing;
-  const GetListCategory(
-      {this.id, this.isLoadingMore = false, this.isRefreshing = false});
-}
-
-class GetProductDetail extends ProductManagementEvent {
+class SellerGetProductDetail extends ProductManagementEvent {
   final String productId;
-  final String categoryId;
-  const GetProductDetail({required this.productId, required this.categoryId});
+
+  const SellerGetProductDetail({required this.productId});
 }
 
-class CreateProduct extends ProductManagementEvent {
+class SellerCreateProduct extends ProductManagementEvent {
   final ProductDetail productDetail;
   final Function? onSuccess;
   final Function? onError;
-  const CreateProduct(
+  const SellerCreateProduct(
       {required this.productDetail, this.onSuccess, this.onError});
+}
+
+class SellerUpdateProduct extends ProductManagementEvent {
+  final ProductDetail productDetail;
+  final Function? onSuccess;
+  const SellerUpdateProduct({required this.productDetail, this.onSuccess});
+}
+
+class SellerUpdateVariant extends ProductManagementEvent {
+  final List<Variant> variants;
+  final Function? onSuccess;
+  const SellerUpdateVariant({required this.variants, this.onSuccess});
 }

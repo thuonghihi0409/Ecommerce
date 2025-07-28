@@ -1,11 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
-import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
+import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 
 class SellerOrderItemWidget extends StatefulWidget {
@@ -19,9 +23,11 @@ class SellerOrderItemWidget extends StatefulWidget {
 }
 
 class _SellerOrderItemWidgetState extends State<SellerOrderItemWidget> {
+  late OrderManagementBloc _bloc;
   @override
   void initState() {
     super.initState();
+    _bloc = context.read<OrderManagementBloc>();
   }
 
   @override
@@ -101,10 +107,72 @@ class _SellerOrderItemWidgetState extends State<SellerOrderItemWidget> {
               )),
           const Divider(),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                  "${"key_total_currency".tr()}: ${Helper.formatCurrencyVND(widget.orderItem.total)}")
+                  "${"key_total_currency".tr()}: ${Helper.formatCurrencyVND(widget.orderItem.total)}"),
+              if (widget.orderItem.status == OrderStatus.pending)
+                Row(
+                  children: [
+                    CustomButton(
+                      isMinWidth: true,
+                      text: "key_cancel_order".tr(),
+                      onPressed: () {
+                        _bloc.add(UpdateOrder(
+                            id: context.read<ProfileBloc>().state.store?.id ??
+                                "",
+                            order: widget.orderItem,
+                            newStatus: OrderStatus.cancelled));
+                      },
+                    ),
+                    40.w,
+                    CustomButton(
+                      text: "key_prepare_product".tr(),
+                      isMinWidth: true,
+                      onPressed: () {
+                        _bloc.add(UpdateOrder(
+                            id: context.read<ProfileBloc>().state.store?.id ??
+                                "",
+                            order: widget.orderItem,
+                            newStatus: OrderStatus.awaiting));
+                      },
+                    )
+                  ],
+                ),
+              if (widget.orderItem.status == OrderStatus.awaiting)
+                Row(
+                  children: [
+                    CustomButton(
+                      isMinWidth: true,
+                      text: "key_cancel_order".tr(),
+                      onPressed: () {
+                        _bloc.add(UpdateOrder(
+                            id: context.read<ProfileBloc>().state.store?.id ??
+                                "",
+                            order: widget.orderItem,
+                            newStatus: OrderStatus.cancelled));
+                      },
+                    ),
+                    40.w,
+                    CustomButton(
+                      text: "key_delivering_product".tr(),
+                      isMinWidth: true,
+                      onPressed: () {
+                        _bloc.add(UpdateOrder(
+                            id: context.read<ProfileBloc>().state.store?.id ??
+                                "",
+                            order: widget.orderItem,
+                            newStatus: OrderStatus.delivering));
+                      },
+                    )
+                  ],
+                ),
+              if (widget.orderItem.status == OrderStatus.reviewed)
+                CustomButton(
+                  isMinWidth: true,
+                  text: "key_view_review".tr(),
+                  onPressed: () {},
+                ),
             ],
           )
         ],

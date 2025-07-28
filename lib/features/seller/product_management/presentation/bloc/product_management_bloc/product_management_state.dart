@@ -1,7 +1,7 @@
 part of 'product_management_bloc.dart';
 
 class ProductManagementState extends Equatable {
-  final ListModel<Product> listProduct;
+  final ListModel<SellerProduct> listProduct;
   final List<Category>? listCategory;
   final ProductDetail? productDetailModel;
 
@@ -38,7 +38,7 @@ class ProductManagementState extends Equatable {
   }
 
   ProductManagementState copyWith(
-      {ListModel<Product>? listProduct,
+      {ListModel<SellerProduct>? listProduct,
       ProductDetail? productDetailModel,
       bool? isGetDetail,
       String? getProductDetailError,

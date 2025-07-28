@@ -73,7 +73,8 @@ class _CreateProductPageState extends State<CreateProductPage> {
             name: variant.nameController.text,
             price: int.tryParse(variant.priceController.text) ?? 0,
             stock: int.tryParse(variant.stockController.text) ?? 0,
-            cover: url);
+            cover: url,
+            totalSold: 0);
       }));
 
       final product = ProductDetail(
@@ -89,7 +90,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
           totalRating: 0,
           totalSold: 0,
           cover: listImage[0].url);
-      _bloc.add(CreateProduct(
+      _bloc.add(SellerCreateProduct(
           productDetail: product,
           onSuccess: () {
             setState(() {

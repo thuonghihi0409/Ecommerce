@@ -47,11 +47,13 @@ class Variant {
   final String? name;
   final int? price;
   final int? stock;
+  final int? totalSold;
 
   Variant(
       {required this.id,
       required this.name,
       required this.price,
       required this.stock,
-      required this.cover});
+      required this.cover,
+      required this.totalSold});
 }

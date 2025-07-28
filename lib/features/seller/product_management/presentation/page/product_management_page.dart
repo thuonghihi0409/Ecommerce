@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/customer/product/domain/entities/product.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/entities/seller_product.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
@@ -12,6 +13,7 @@ import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/rating_starts_widget.dart';
 
 class ProductManagementPage extends StatefulWidget {
   const ProductManagementPage({super.key});
@@ -21,22 +23,24 @@ class ProductManagementPage extends StatefulWidget {
 }
 
 class _ProductManagementPageState extends State<ProductManagementPage> {
-  final ScrollController _scrollController = ScrollController();
   final int _selectCategory = -1;
   late ProductDataSource _dataSource;
-  List<Product> _products = [];
+  List<SellerProduct> _products = [];
 
   String _searchQuery = '';
+  late ProductManagementBloc _productManagementBloc;
   @override
   void initState() {
     super.initState();
+    _productManagementBloc = context.read<ProductManagementBloc>();
     _getDate();
   }
 
   _getDate() async {
-    context.read<ProductManagementBloc>()
-      ..add(const GetListProduct())
-      ..add(const GetListCategory());
+    final String storeId = context.read<ProfileBloc>().state.store?.id ?? "";
+    _productManagementBloc
+      ..add(SellerGetListProduct(id: storeId))
+      ..add(const SellerGetListCategory());
   }
 
   void _filterSearch(String query) {
@@ -50,16 +54,12 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
     });
   }
 
-  void _onRefresh() {}
-
-  void _onLoading() {}
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProductManagementBloc, ProductManagementState>(
       builder: (context, state) {
         _products = state.listProduct.results ?? [];
-        _dataSource = ProductDataSource(_products);
+        _dataSource = ProductDataSource(_products, _productManagementBloc);
 
         return Scaffold(
           backgroundColor: AppColor.greyColor.withAlpha(20),
@@ -77,10 +77,10 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 12),
                       child: TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Tìm kiếm sản phẩm...',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.search),
+                        decoration: InputDecoration(
+                          labelText: 'key_find_product'.tr(),
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.search),
                         ),
                         onChanged: _filterSearch,
                       ),
@@ -88,12 +88,13 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                     Expanded(
                       child: SingleChildScrollView(
                         child: PaginatedDataTable(
+                          columnSpacing: 35,
                           header: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                'Bảng sản phẩm',
+                                'key_table_product'.tr(),
                                 style: AppTextStyles.textSize20(),
                               ),
                               SizedBox(
@@ -101,7 +102,7 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                               ),
                               Expanded(
                                 child: CustomButton(
-                                  text: "Thêm sản phẩm",
+                                  text: "key_add_product".tr(),
                                   onPressed: () {
                                     NavigationService.instance
                                         .pushNamed("create_product");
@@ -114,11 +115,17 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                           sortColumnIndex: _dataSource.sortColumnIndex,
                           sortAscending: _dataSource.sortAscending,
                           columns: [
-                            const DataColumn(
-                              label: Text('STT'),
+                            DataColumn(
+                              label: Text(
+                                'key_STT'.tr(),
+                                style: AppTextStyles.textSize16(),
+                              ),
                             ),
                             DataColumn(
-                              label: const Text('Tên sản phẩm'),
+                              label: Text(
+                                'key_name_product'.tr(),
+                                style: AppTextStyles.textSize16(),
+                              ),
                               onSort: (i, asc) => _dataSource.sort<String>(
                                 getField: (p) => p.productName ?? "",
                                 ascending: asc,
@@ -127,7 +134,10 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                               ),
                             ),
                             DataColumn(
-                              label: const Text('Giá (VNĐ)'),
+                              label: Text(
+                                'key_price_VND'.tr(),
+                                style: AppTextStyles.textSize16(),
+                              ),
                               numeric: true,
                               onSort: (i, asc) => _dataSource.sort<int>(
                                 getField: (p) => p.price ?? 0,
@@ -137,7 +147,10 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                               ),
                             ),
                             DataColumn(
-                              label: const Text('Tồn kho'),
+                              label: Text(
+                                'key_category'.tr(),
+                                style: AppTextStyles.textSize16(),
+                              ),
                               numeric: true,
                               onSort: (i, asc) => _dataSource.sort<int>(
                                 getField: (p) => p.price ?? 0,
@@ -147,7 +160,10 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                               ),
                             ),
                             DataColumn(
-                              label: const Text('Đã bán'),
+                              label: Text(
+                                'key_in_stock'.tr(),
+                                style: AppTextStyles.textSize16(),
+                              ),
                               numeric: true,
                               onSort: (i, asc) => _dataSource.sort<int>(
                                 getField: (p) => p.price ?? 0,
@@ -157,7 +173,10 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                               ),
                             ),
                             DataColumn(
-                              label: const Text('Đánh giá'),
+                              label: Text(
+                                'key_solded'.tr(),
+                                style: AppTextStyles.textSize16(),
+                              ),
                               numeric: true,
                               onSort: (i, asc) => _dataSource.sort<int>(
                                 getField: (p) => p.price ?? 0,
@@ -166,8 +185,24 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                                 refresh: () => setState(() {}),
                               ),
                             ),
-                            const DataColumn(
-                              label: Text('Thao tác'),
+                            DataColumn(
+                              label: Text(
+                                'key_review'.tr(),
+                                style: AppTextStyles.textSize16(),
+                              ),
+                              numeric: true,
+                              onSort: (i, asc) => _dataSource.sort<int>(
+                                getField: (p) => p.price ?? 0,
+                                ascending: asc,
+                                columnIndex: i,
+                                refresh: () => setState(() {}),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'key_action'.tr(),
+                                style: AppTextStyles.textSize16(),
+                              ),
                             ),
                           ],
                           source: _dataSource,
@@ -183,19 +218,19 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
 }
 
 class ProductDataSource extends DataTableSource {
-  List<Product> _products;
+  List<SellerProduct> _products;
   int? sortColumnIndex;
   bool sortAscending = true;
+  final ProductManagementBloc _bloc;
+  ProductDataSource(this._products, this._bloc);
 
-  ProductDataSource(this._products);
-
-  void updateData(List<Product> newData) {
+  void updateData(List<SellerProduct> newData) {
     _products = newData;
     notifyListeners();
   }
 
   void sort<T extends Comparable<dynamic>>({
-    required T Function(Product p) getField,
+    required T Function(SellerProduct p) getField,
     required bool ascending,
     required int columnIndex,
     required VoidCallback refresh,
@@ -217,7 +252,10 @@ class ProductDataSource extends DataTableSource {
   DataRow? getRow(int index) {
     if (index >= _products.length) return null;
     final product = _products[index];
-
+    int instock = 0;
+    (product.variants ?? []).map((item) {
+      instock = instock + (item.stock ?? 0);
+    }).toList();
     return DataRow(cells: [
       DataCell(Text('${index + 1}', style: AppTextStyles.textSize16())),
       DataCell(Row(
@@ -239,26 +277,37 @@ class ProductDataSource extends DataTableSource {
       DataCell(Text(Helper.formatCurrencyVND(product.price ?? 0),
           style: AppTextStyles.textSize16())),
       DataCell(
-          Text('${product.price ?? 0}', style: AppTextStyles.textSize16())),
+          Text(product.category.name ?? "", style: AppTextStyles.textSize16())),
+      DataCell(Text(instock.toString(), style: AppTextStyles.textSize16())),
       DataCell(
           Text('${product.totalSold ?? 0}', style: AppTextStyles.textSize16())),
-      DataCell(
-          Text('${product.price ?? 0.0}', style: AppTextStyles.textSize16())),
+      DataCell(Row(
+        children: [
+          Text((product.avgRating ?? 0.0).toStringAsFixed(1),
+              style: AppTextStyles.textSize16()),
+          5.w,
+          RatingStarsWidget(rating: product.avgRating ?? 0)
+        ],
+      )),
       DataCell(Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.visibility),
-            tooltip: "Chi tiết",
+            icon: const Icon(Icons.read_more),
+            tooltip: "key_restock_product".tr(),
             onPressed: () {
-              // TODO: Handle view
+              _bloc.add(SellerGetProductDetail(productId: product.productId));
+              NavigationService.instance.pushNamed("product_restock");
             },
           ),
           IconButton(
-            icon: const Icon(Icons.delete),
-            tooltip: "Xoá",
-            onPressed: () {
-              // TODO: Handle delete
-            },
+            icon: const Icon(Icons.visibility),
+            tooltip: "key_detail".tr(),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.lock),
+            tooltip: "key_block_product".tr(),
+            onPressed: () {},
           ),
         ],
       )),

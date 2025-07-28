@@ -1,6 +1,6 @@
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/data/models/order_item_model.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
@@ -8,8 +8,8 @@ abstract class OrderManagementRemoteDatasource {
   Future<ListModel<SellerOrderItemModel>> getListOrder(
       String storeId, String status);
   Future<int> getCount(String userId);
-  Future<void> createOrder(String userId, OrderItem order);
-  Future<void> updateOrder(String userId, ProductItem productItem);
+
+  Future<void> updateOrder(String userId, SellerOrderItem order);
 }
 
 class OrderManagementRemoteDataSourceImpl
@@ -42,37 +42,17 @@ class OrderManagementRemoteDataSourceImpl
   }
 
   @override
-  Future<void> createOrder(String userId, OrderItem order) async {
-    final newdata = await supabase
-        .from("Orders")
-        .insert({
-          'user_id': userId,
-          'store_id': order.store.id,
-          'address_id': order.address?.id,
-          'total': order.total,
-          'subtotal': order.subtotal,
-          'status': orderStatusToString(order.status)
-        })
-        .select()
-        .single();
-    final id = newdata["id"];
-
-    await supabase.from("ProductOrders").insert(order.productItem
-        .map((item) => {
-              'order_id': id,
-              'product_id': item.productDetail?.productId,
-              'variant_id': item.variant?.id,
-              'number': item.number
-            })
-        .toList());
-  }
-
-  @override
-  Future<void> updateOrder(String userId, productItem) async {
-    await supabase.from('ProductCarts').update({
-      'number': productItem.number,
-      'variant_id': productItem.variant?.id
-    }).eq('id', productItem.id);
+  Future<void> updateOrder(String userId, SellerOrderItem order) async {
+    if (order.status == OrderStatus.delivering) {
+      await Future.wait(order.productItem.map((item) async {
+        await supabase.from('Variants').update({
+          'stock': (item.variant?.stock ?? 0) - item.number,
+          'total_sold': (item.variant?.totalSold ?? 0) + item.number
+        }).eq('id', item.variant?.id ?? "");
+      }));
+    }
+    await supabase.from('Orders').update(
+        {'status': orderStatusToString(order.status)}).eq('id', order.id);
   }
 
   @override

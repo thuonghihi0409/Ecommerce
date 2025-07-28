@@ -20,27 +20,13 @@ class SellerGetListOrder extends OrderManagementEvent {
       this.onSuccess});
 }
 
-class CreateOrder extends OrderManagementEvent {
-  final String userId;
-  final List<OrderItem> orders;
-  final bool isDeleteCart;
-  final Function? onSuccess;
-
-  const CreateOrder(
-      {required this.userId,
-      required this.orders,
-      this.isDeleteCart = false,
-      this.onSuccess});
-}
-
 class UpdateOrder extends OrderManagementEvent {
-  final String? userId;
-  final ProductItem productItem;
+  final String id;
+  final SellerOrderItem order;
+  final OrderStatus newStatus;
 
-  const UpdateOrder({
-    this.userId,
-    required this.productItem,
-  });
+  const UpdateOrder(
+      {required this.id, required this.order, required this.newStatus});
 }
 
 class GetCountOrder extends OrderManagementEvent {

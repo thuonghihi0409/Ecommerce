@@ -1,4 +1,4 @@
-import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/repositories/order_management_repository.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 

@@ -1,20 +1,18 @@
 import 'package:thuongmaidientu/features/customer/product/data/models/category_model.dart';
 import 'package:thuongmaidientu/features/customer/product/data/models/product_detail_model.dart';
-import 'package:thuongmaidientu/features/customer/product/data/models/product_model.dart';
-import 'package:thuongmaidientu/features/customer/product/data/models/store_model.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/category.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
-import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/seller/product_management/data/models/seller_product_model.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
 abstract class ProductManagementRemoteDatasource {
-  Future<ListModel<ProductModel>> getListProduct();
+  Future<ListModel<SellerProductModel>> getListProduct(String storeId);
   Future<ProductDetailModel> getProductDetail(String id);
   Future<void> createProductDetail(ProductDetail product);
-  Future<Store> getStore();
-  Future<List<ProductModel>> getListProductSummerice(String categoryId);
   Future<List<Category>> getListCategory();
+  Future<void> updateVariants(List<Variant> variants);
+  Future<void> updateProduct(ProductDetail product);
 }
 
 class ProductManagementRemoteDataSourceImpl
@@ -22,13 +20,16 @@ class ProductManagementRemoteDataSourceImpl
   ProductManagementRemoteDataSourceImpl();
 
   @override
-  Future<ListModel<ProductModel>> getListProduct() async {
-    final data =
-        await supabase.from("Products").select('''*,store : Stores(*)''');
-
+  Future<ListModel<SellerProductModel>> getListProduct(String storeId) async {
+    final data = await supabase.from("Products").select('''
+      *,
+      variants : Variants(*),
+      category: Categories(*)
+      ''').eq("store_id", storeId);
     final result = ListModel(
-        results:
-            data.map((product) => ProductModel.fromJson(product)).toList());
+        results: data
+            .map((product) => SellerProductModel.fromJson(product))
+            .toList());
 
     return result;
   }
@@ -43,22 +44,6 @@ class ProductManagementRemoteDataSourceImpl
       ''').eq("id", id).single();
 
     return ProductDetailModel.fromJson(data);
-  }
-
-  @override
-  Future<Store> getStore() async {
-    final data = await supabase.from("Stores").select('''*''').single();
-
-    return StoreModel.fromJson(data);
-  }
-
-  @override
-  Future<List<ProductModel>> getListProductSummerice(String categoryId) async {
-    final data = await supabase
-        .from("Products")
-        .select('''*,store : Stores(*)''').eq("category_id", categoryId);
-
-    return data.map((product) => ProductModel.fromJson(product)).toList();
   }
 
   @override
@@ -115,6 +100,18 @@ class ProductManagementRemoteDataSourceImpl
       }).toList();
 
       await supabase.from('Variants').insert(variantData);
+    }
+  }
+
+  @override
+  Future<void> updateProduct(ProductDetail product) async {}
+
+  @override
+  Future<void> updateVariants(List<Variant> variants) async {
+    for (final variant in variants) {
+      await supabase.from('Variants').update({
+        'stock': variant.stock,
+      }).eq('id', variant.id);
     }
   }
 }

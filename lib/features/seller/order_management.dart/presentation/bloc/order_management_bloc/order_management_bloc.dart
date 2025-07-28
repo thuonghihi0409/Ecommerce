@@ -2,13 +2,11 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
-import 'package:thuongmaidientu/features/cart/domain/usecases/delete_cart_usecase.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/order/domain/usecases/get_count_order.dart';
-import 'package:thuongmaidientu/features/order/domain/usecases/update_order_usecase.dart';
-import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/usecases/seller_get_list_order_usecase.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/domain/usecases/update_order_usecase.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
@@ -20,12 +18,12 @@ class OrderManagementBloc
     extends Bloc<OrderManagementEvent, OrderManagementState> {
   final SellerGetListOrderUsecase getListOrderUseCase;
 
-  final UpdateOrderUsecase updateOrderUsecase;
-  final DeleteCartUsecase deleteCartUsecase;
+  final SellerUpdateOrderUsecase updateOrderUsecase;
+
   final GetCountOrderUseCase getCountOrderUseCase;
 
   OrderManagementBloc(this.getListOrderUseCase, this.updateOrderUsecase,
-      this.deleteCartUsecase, this.getCountOrderUseCase)
+      this.getCountOrderUseCase)
       : super(OrderManagementState.empty()) {
     on<SellerGetListOrder>(_getListOrder);
 
@@ -115,16 +113,19 @@ class OrderManagementBloc
       UpdateOrder event, Emitter<OrderManagementState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await updateOrderUsecase.call(event.userId ?? "", event.productItem);
+      await updateOrderUsecase.call(
+          event.id, event.order.copyWith(orderStatus: event.newStatus));
+
+      add(SellerGetListOrder(orderStatus: event.order.status, id: event.id));
+      add(SellerGetListOrder(orderStatus: event.newStatus, id: event.id));
       emit(state.copyWith(
         isLoading: false,
       ));
-      add(SellerGetListOrder(id: event.userId));
-
       // Helper.showToastBottom(
       //     message: "key_update_cart_success".tr(), type: ToastType.success);
     } catch (e) {
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
+      log(ParseError.fromJson(e).message);
     }
   }
 
