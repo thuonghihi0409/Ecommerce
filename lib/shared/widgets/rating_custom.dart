@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class CustomRatingBar extends StatefulWidget {
   final int starCount;
-  final double rating;
-  final Function(double)? onRatingChanged;
+  final int rating;
+  final Function(int)? onRatingChanged;
   final double starSize;
   final double spacing;
   final Color activeColor;
@@ -28,7 +28,7 @@ class CustomRatingBar extends StatefulWidget {
 
 class _CustomRatingBarState extends State<CustomRatingBar>
     with SingleTickerProviderStateMixin {
-  late double _currentRating;
+  late int _currentRating;
 
   @override
   void initState() {

@@ -1,12 +1,14 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
-import 'package:thuongmaidientu/features/order/presentation/widget/list_order_empty_widget.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/widget/seller_order_item_widget.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
+import 'package:thuongmaidientu/shared/widgets/list_empty_widget.dart';
 
 class SellerOrderListTab extends StatefulWidget {
   final OrderStatus status;
@@ -50,13 +52,13 @@ class _SellerOrderListTabState extends State<SellerOrderListTab> {
         case OrderStatus.delivering:
           _data = state.listOrderDelivering;
           break;
-        case OrderStatus.reviewed:
-          _data = state.listOrderReviewed;
-          break;
       }
       if ((_data.results ?? []).isEmpty) {
-        return const Center(
-          child: ListOrderEmptyWidget(),
+        return Center(
+          child: ListEmptyWidget(
+            title: 'key_no_order'.tr(),
+            icon: AppAssets.orderIcon,
+          ),
         );
       }
 

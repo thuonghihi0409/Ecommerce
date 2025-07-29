@@ -1,4 +1,3 @@
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/order/data/datasources/order_remote_datasource.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/order/domain/repositories/order_repository.dart';
@@ -22,8 +21,8 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<void> updateOrder(String id, ProductItem productItem) async {
-    await remoteDataSource.updateOrder(id, productItem);
+  Future<void> updateOrder(String id, OrderItem order) async {
+    await remoteDataSource.updateOrder(id, order);
   }
 
   @override

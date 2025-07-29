@@ -167,12 +167,6 @@ class _SellerOrderItemWidgetState extends State<SellerOrderItemWidget> {
                     )
                   ],
                 ),
-              if (widget.orderItem.status == OrderStatus.reviewed)
-                CustomButton(
-                  isMinWidth: true,
-                  text: "key_view_review".tr(),
-                  onPressed: () {},
-                ),
             ],
           )
         ],

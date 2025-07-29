@@ -55,6 +55,7 @@ import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/
 import 'package:thuongmaidientu/features/review/data/datasources/review_remote_datasource.dart';
 import 'package:thuongmaidientu/features/review/data/repositories/review_repository_impl.dart';
 import 'package:thuongmaidientu/features/review/domain/repositories/review_repository.dart';
+import 'package:thuongmaidientu/features/review/domain/usecases/create_review_usecase.dart';
 import 'package:thuongmaidientu/features/review/domain/usecases/get_list_review_usecase.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/data/datasources/dashboard_remote_datasource.dart';
@@ -89,7 +90,7 @@ Future<void> init() async {
 
   sl.registerFactory(() => CartBloc(sl(), sl(), sl(), sl(), sl()));
 
-  sl.registerFactory(() => ReviewBloc(sl()));
+  sl.registerFactory(() => ReviewBloc(sl(), sl()));
 
   sl.registerFactory(() => ProfileBloc(sl(), sl(), sl(), sl(), sl(), sl()));
 
@@ -137,6 +138,7 @@ Future<void> init() async {
 
   //// Review UseCase
   sl.registerLazySingleton(() => GetListReviewUseCase(sl()));
+  sl.registerLazySingleton(() => CreateReviewUsecase(sl()));
 
   //// Chat UseCase
   sl.registerLazySingleton(() => GetListConversationUseCase(sl()));

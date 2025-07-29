@@ -50,7 +50,7 @@ void main() async {
       url: dotenv.env["SUPABASE_URL"]!,
       debug: true);
   await init(); // get it
-
+  // await generateEmbeddings();
   runApp(EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('vi')],
       path: 'assets/translations',

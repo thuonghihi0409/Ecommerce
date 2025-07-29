@@ -14,4 +14,9 @@ class ReviewRepositoryImpl implements ReviewRepository {
     final userModel = await remoteDataSource.getListReview(id);
     return userModel;
   }
+
+  @override
+  Future<void> createReview(Review review, String id) async {
+    await remoteDataSource.createReview(review, id);
+  }
 }

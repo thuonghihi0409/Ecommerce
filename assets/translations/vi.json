@@ -85,7 +85,7 @@
     "key_restock_for_all_variant": "Áp dụng cho tất cả các biến thể",
     "key_apply":"Áp dụng",
     "key_confirm_restock": "Xác nhận nhập hàng",
-    "key_no_erder": "Hiện tại không có đơn hàng nào",
+    "key_no_order": "Hiện tại không có đơn hàng nào",
     "key_find_product": "Tìm sản phẩm ...",
     "key_table_product" : "Bảng sản phẩm",
     "key_add_product" : "Thêm sản phẩm",
@@ -97,5 +97,14 @@
     "key_action": "Thao tác",
     "key_restock_product": "Nhập sản phẩm",
     "key_detail": "Chi tiết",
-    "key_block_product": "Khóa sản phẩm"
+    "key_block_product": "Khóa sản phẩm",
+    "key_please_enter_content_review": "Vui lòng nhập nội dung đánh giá",
+    "key_review_product": "Đánh giá sản phẩm",
+    "key_satisfy_level": "Độ hài lòng",
+    "key_content_review": "Nội dung đánh giá",
+    "key_your_experient_about_product": "Trải nghiệm của bạn về sản phẩm",
+    "key_image_optional": "Hình ảnh (Tùy chọn)",
+    "key_send_review": "Gửi đánh giá",
+    "key_view_review" : "Xem đánh giá",
+    "key_no_product_cart" : "Hiện tại không có sản phẩm nào trong giỏ hàng, hãy thêm sản phẩm vào giỏ hàng"
 }

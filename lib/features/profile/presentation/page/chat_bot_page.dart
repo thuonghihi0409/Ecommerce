@@ -1,8 +1,14 @@
+//
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
+
+final supabase = Supabase.instance.client;
 
 class GeminiChatPage extends StatefulWidget {
   const GeminiChatPage({super.key});
@@ -23,41 +29,84 @@ class _GeminiChatPageState extends State<GeminiChatPage> {
   void initState() {
     super.initState();
     _model = GenerativeModel(
-      model: 'gemini-2.0-flash', // ⚠️ Hãy dùng đúng tên model bạn được phép gọi
+      model: 'gemini-2.0-flash',
       apiKey: dotenv.env['GEMINI_API_KEY']!,
     );
     _chat = _model.startChat();
   }
 
   Future<void> _sendMessage() async {
-    final input = _controller.text.trim();
-    if (input.isEmpty) return;
+    final question = _controller.text.trim();
+    if (question.isEmpty) return;
 
     setState(() {
-      _messages.add({'role': 'user', 'text': input});
+      _messages.add({'role': 'user', 'text': question});
       _controller.clear();
     });
 
     scrollToBottom();
 
     try {
-      final response = await _chat.sendMessage(Content.text(input));
-      final text = response.text;
+      // 1. Gọi API embedding để tạo embedding cho câu hỏi
+      final embeddingModel = GenerativeModel(
+        model: 'embedding-001',
+        apiKey: dotenv.env['GEMINI_API_KEY']!,
+      );
+
+      final result = await embeddingModel.embedContent(
+        Content.text(question),
+        taskType: TaskType.retrievalQuery,
+      );
+      final queryEmbedding = result.embedding;
+
+      // 2. Truy vấn Supabase để tìm context liên quan
+      final contexts = await _searchKnowledge(queryEmbedding.values);
+
+      final contextText = contexts.map((e) => e['content']).join('\n---\n');
+
+      final fullPrompt = '''
+        Dưới đây là các thông tin nội bộ hệ thống:
+        $contextText
+
+        Nếu câu hỏi: "$question" có liên quan đến hệ thống hãy dựa vào đó trả lời.
+        ''';
+
+      // 3. Gửi đến Gemini cùng context
+      final response = await _chat.sendMessage(Content.text(fullPrompt));
 
       setState(() {
         _messages.add({
           'role': 'bot',
-          'text': text ?? '❗ Không nhận được phản hồi từ Gemini.'
+          'text': response.text ?? '❗ Không nhận được phản hồi từ Gemini.'
         });
       });
 
       scrollToBottom();
     } catch (e) {
-      log(e.toString());
       setState(() {
         _messages.add({'role': 'bot', 'text': '❗ Đã xảy ra lỗi: $e'});
       });
+      log("'role': 'bot', 'text': '❗ Đã xảy ra lỗi: $e'");
       scrollToBottom();
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _searchKnowledge(
+      List<double> queryEmbedding) async {
+    // Chuẩn hóa vector để tránh lỗi truy vấn
+    final formattedVector =
+        '[${queryEmbedding.map((e) => e.toStringAsFixed(6)).join(', ')}]';
+
+    final response = await supabase.rpc('match_knowledge', params: {
+      'query_embedding': formattedVector,
+      'match_threshold': 0.75,
+      'match_count': 5,
+    });
+
+    if (response is List) {
+      return response.cast<Map<String, dynamic>>();
+    } else {
+      return [];
     }
   }
 
@@ -90,33 +139,8 @@ class _GeminiChatPageState extends State<GeminiChatPage> {
             bottomRight: Radius.circular(isUser ? 0 : 16),
           ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (!isUser)
-              const Padding(
-                padding: EdgeInsets.only(right: 8.0),
-                child: CircleAvatar(
-                  radius: 14,
-                  backgroundImage: AssetImage('assets/bot.png'), // hoặc Icon
-                ),
-              ),
-            Expanded(
-              child: Text(
-                message['text'] ?? '',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
-            if (isUser)
-              const Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: CircleAvatar(
-                  radius: 14,
-                  backgroundImage: AssetImage('assets/user.png'),
-                ),
-              ),
-          ],
-        ),
+        child:
+            Text(message['text'] ?? '', style: const TextStyle(fontSize: 16)),
       ),
     );
   }
@@ -132,9 +156,8 @@ class _GeminiChatPageState extends State<GeminiChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
-      appBar: AppBar(
-        title: const Text('💬 Gemini Chatbot'),
-        backgroundColor: Colors.blueAccent,
+      appBar: const CustomAppBar(
+        title: "Chatbot",
       ),
       body: Column(
         children: [

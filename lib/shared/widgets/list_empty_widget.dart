@@ -1,12 +1,12 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 
-class ListOrderEmptyWidget extends StatelessWidget {
-  const ListOrderEmptyWidget({super.key});
+class ListEmptyWidget extends StatelessWidget {
+  final String title;
+  final String icon;
+  const ListEmptyWidget({super.key, required this.title, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -14,13 +14,14 @@ class ListOrderEmptyWidget extends StatelessWidget {
       SvgPicture.asset(
         height: 100,
         width: 100,
-        AppAssets.orderIcon,
+        icon,
         colorFilter:
             const ColorFilter.mode(Colors.greenAccent, BlendMode.srcIn),
       ),
       50.h,
       Text(
-        "key_no_order".tr(),
+        textAlign: TextAlign.center,
+        title,
         style: AppTextStyles.textSize16(),
       )
     ]);

@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/cart/domain/usecases/delete_cart_usecase.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/order/domain/usecases/create_order_usecase.dart';
@@ -86,11 +85,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           listOrderCancelled:
               state.listOrderCancelled.copyWith(isLoading: isLoading),
         );
-      case OrderStatus.reviewed:
-        return state.copyWith(
-          listOrderReviewed:
-              state.listOrderReviewed.copyWith(isLoading: isLoading),
-        );
     }
   }
 
@@ -107,8 +101,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         return state.copyWith(listOrderDelivered: data);
       case OrderStatus.cancelled:
         return state.copyWith(listOrderCancelled: data);
-      case OrderStatus.reviewed:
-        return state.copyWith(listOrderReviewed: data);
     }
   }
 
@@ -138,16 +130,19 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   void _updateOrder(UpdateOrder event, Emitter<OrderState> emit) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await updateOrderUsecase.call(event.userId ?? "", event.productItem);
+      await updateOrderUsecase.call(
+          event.id, event.order.copyWith(orderStatus: event.newStatus));
+
+      add(GetListOrder(orderStatus: event.order.status, id: event.id));
+      add(GetListOrder(orderStatus: event.newStatus, id: event.id));
       emit(state.copyWith(
         isLoading: false,
       ));
-      add(GetListOrder(id: event.userId));
-
       // Helper.showToastBottom(
       //     message: "key_update_cart_success".tr(), type: ToastType.success);
     } catch (e) {
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
+      log(ParseError.fromJson(e).message);
     }
   }
 

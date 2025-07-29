@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
@@ -21,8 +22,8 @@ class ProductMessageWidget extends StatelessWidget {
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        height: context.widthScreen * 0.7,
-        width: context.widthScreen * 0.5,
+        height: kIsWeb ? context.widthScreen * 0.3 : context.widthScreen * 0.6,
+        width: kIsWeb ? context.widthScreen * 0.25 : context.widthScreen * 0.5,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),

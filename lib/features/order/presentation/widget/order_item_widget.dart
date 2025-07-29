@@ -1,10 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
+import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/features/review/presentation/page/create_review_page.dart';
+import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
+import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 
 class OrderItemWidget extends StatefulWidget {
@@ -18,9 +24,11 @@ class OrderItemWidget extends StatefulWidget {
 }
 
 class _OrderItemWidgetState extends State<OrderItemWidget> {
+  late OrderBloc _bloc;
   @override
   void initState() {
     super.initState();
+    _bloc = context.read<OrderBloc>();
   }
 
   @override
@@ -92,6 +100,47 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                               ),
                             ],
                           ),
+                          if (!entrie.value.isReviewed &&
+                              widget.orderItem.status == OrderStatus.delivered)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                CustomButton(
+                                  padding: const EdgeInsets.all(10),
+                                  borderRadius: 15,
+                                  isMinWidth: true,
+                                  text: "key_review".tr(),
+                                  onPressed: () {
+                                    NavigationService.instance
+                                        .push(CreateReviewPage(
+                                      product: entrie.value,
+                                    ));
+                                  },
+                                ),
+                              ],
+                            ),
+                          if (entrie.value.isReviewed)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                CustomButton(
+                                  backgroundColor: AppColor.whiteColor,
+                                  textStyle: AppTextStyles.textSize16(
+                                      color: AppColor.primary),
+                                  borderColor: AppColor.primary,
+                                  padding: const EdgeInsets.all(10),
+                                  borderRadius: 15,
+                                  isMinWidth: true,
+                                  text: "key_view_review".tr(),
+                                  onPressed: () {
+                                    NavigationService.instance
+                                        .push(CreateReviewPage(
+                                      product: entrie.value,
+                                    ));
+                                  },
+                                ),
+                              ],
+                            ),
                         ],
                       ),
                     ),
@@ -100,10 +149,43 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
               )),
           const Divider(),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                  "${"key_total_currency".tr()}: ${Helper.formatCurrencyVND(widget.orderItem.total)}")
+                  "${"key_total_currency".tr()}: ${Helper.formatCurrencyVND(widget.orderItem.total)}"),
+              if (widget.orderItem.status == OrderStatus.pending &&
+                  !widget.isCreating)
+                Row(
+                  children: [
+                    CustomButton(
+                      isMinWidth: true,
+                      text: "key_cancel_order".tr(),
+                      onPressed: () {
+                        _bloc.add(UpdateOrder(
+                            id: context.read<ProfileBloc>().state.profile?.id ??
+                                "",
+                            order: widget.orderItem,
+                            newStatus: OrderStatus.cancelled));
+                      },
+                    ),
+                  ],
+                ),
+              if (widget.orderItem.status == OrderStatus.awaiting)
+                Row(
+                  children: [
+                    CustomButton(
+                      isMinWidth: true,
+                      text: "key_cancel_order".tr(),
+                      onPressed: () {
+                        _bloc.add(UpdateOrder(
+                            id: context.read<ProfileBloc>().state.profile?.id ??
+                                "",
+                            order: widget.orderItem,
+                            newStatus: OrderStatus.cancelled));
+                      },
+                    ),
+                  ],
+                ),
             ],
           )
         ],

@@ -1,4 +1,3 @@
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/order/data/models/order_item_model.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
@@ -8,7 +7,7 @@ abstract class OrderRemoteDatasource {
   Future<ListModel<OrderItemModel>> getListOrder(String userId, String status);
   Future<int> getCount(String userId);
   Future<void> createOrder(String userId, OrderItem order);
-  Future<void> updateOrder(String userId, ProductItem productItem);
+  Future<void> updateOrder(String userId, OrderItem order);
 }
 
 class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
@@ -21,7 +20,7 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
       *,
       store: Stores(*),
       product_orders: ProductOrders(
-      id,
+      *,
       product: Products(*,
         images : Images(*),
         variants : Variants(*),
@@ -65,11 +64,9 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
   }
 
   @override
-  Future<void> updateOrder(String userId, productItem) async {
-    await supabase.from('ProductCarts').update({
-      'number': productItem.number,
-      'variant_id': productItem.variant?.id
-    }).eq('id', productItem.id);
+  Future<void> updateOrder(String userId, OrderItem order) async {
+    await supabase.from('Orders').update(
+        {'status': orderStatusToString(order.status)}).eq('id', order.id);
   }
 
   @override

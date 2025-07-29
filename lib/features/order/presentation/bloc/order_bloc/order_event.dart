@@ -34,13 +34,12 @@ class CreateOrder extends OrderEvent {
 }
 
 class UpdateOrder extends OrderEvent {
-  final String? userId;
-  final ProductItem productItem;
+  final String id;
+  final OrderItem order;
+  final OrderStatus newStatus;
 
-  const UpdateOrder({
-    this.userId,
-    required this.productItem,
-  });
+  const UpdateOrder(
+      {required this.id, required this.order, required this.newStatus});
 }
 
 class GetCountOrder extends OrderEvent {

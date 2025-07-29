@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/list_empty_widget.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -57,6 +59,12 @@ class _CartPageState extends State<CartPage> {
             return const CustomLoading(
               isLoading: true,
             );
+          }
+          if ((state.listCart.results ?? []).isEmpty) {
+            return Center(
+                child: ListEmptyWidget(
+                    title: "key_no_product_cart".tr(),
+                    icon: AppAssets.cartIcon));
           }
           return Padding(
             padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),

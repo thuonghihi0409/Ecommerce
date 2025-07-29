@@ -1,6 +1,6 @@
 import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/order/domain/entities/order_product_item.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
 
 enum OrderStatus {
@@ -9,7 +9,6 @@ enum OrderStatus {
   delivering, // Đang giao
   delivered, // Đã giao
   cancelled, // Đã hủy
-  reviewed // Đánh giá
 }
 
 OrderStatus orderStatusFromString(String status) {
@@ -24,8 +23,7 @@ OrderStatus orderStatusFromString(String status) {
       return OrderStatus.delivered;
     case 'cancelled':
       return OrderStatus.cancelled;
-    case 'reviewed':
-      return OrderStatus.reviewed;
+
     default:
       throw Exception('Unknown order status: $status');
   }
@@ -43,8 +41,6 @@ String orderStatusToString(OrderStatus status) {
       return 'delivered';
     case OrderStatus.cancelled:
       return 'cancelled';
-    case OrderStatus.reviewed:
-      return 'reviewed';
   }
 }
 
@@ -60,8 +56,6 @@ String orderStatusToText(OrderStatus status) {
       return 'Đã giao';
     case OrderStatus.cancelled:
       return 'Đã hủy';
-    case OrderStatus.reviewed:
-      return 'Đánh giá';
   }
 }
 
@@ -71,7 +65,7 @@ class OrderItem {
   final int subtotal;
   final int total;
   final OrderStatus status;
-  final List<ProductItem> productItem;
+  final List<OrderProductItem> productItem;
   final AddressEntity? address;
 
   OrderItem(
@@ -85,7 +79,14 @@ class OrderItem {
   factory OrderItem.copyFromCartItem(CartItem item, AddressEntity? address) {
     return OrderItem(
         store: item.store,
-        productItem: item.productItem,
+        productItem: item.productItem
+            .map((item) => OrderProductItem(
+                id: '',
+                productDetail: item.productDetail,
+                variant: item.variant,
+                number: item.number,
+                isReviewed: false))
+            .toList(),
         id: item.id,
         status: OrderStatus.pending,
         address: address,
@@ -93,5 +94,16 @@ class OrderItem {
             .fold(0, (sum, item) => sum + (item.variant?.price ?? 0)),
         total: item.productItem
             .fold(0, (sum, item) => sum + (item.variant?.price ?? 0)));
+  }
+
+  OrderItem copyWith({required OrderStatus? orderStatus}) {
+    return OrderItem(
+        store: store,
+        productItem: productItem,
+        id: id,
+        status: orderStatus ?? status,
+        address: address,
+        subtotal: subtotal,
+        total: total);
   }
 }

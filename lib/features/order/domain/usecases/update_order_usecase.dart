@@ -1,4 +1,4 @@
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
+import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/order/domain/repositories/order_repository.dart';
 
 class UpdateOrderUsecase {
@@ -6,7 +6,7 @@ class UpdateOrderUsecase {
 
   UpdateOrderUsecase(this.repository);
 
-  Future<void> call(String userId, ProductItem productItem) {
-    return repository.updateOrder(userId, productItem);
+  Future<void> call(String userId, OrderItem order) {
+    return repository.updateOrder(userId, order);
   }
 }

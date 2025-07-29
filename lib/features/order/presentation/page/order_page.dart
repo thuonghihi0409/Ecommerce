@@ -21,7 +21,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     OrderStatus.delivering,
     OrderStatus.delivered,
     OrderStatus.cancelled,
-    OrderStatus.reviewed
   ];
 
   late final TabController _tabController;

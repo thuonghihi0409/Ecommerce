@@ -5,9 +5,7 @@ import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_b
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
-import 'package:thuongmaidientu/features/review/presentation/page/create_review_page.dart';
 import 'package:thuongmaidientu/features/review/presentation/widget/review_item_widget.dart';
-import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/add_to_cart_widget.dart';
@@ -58,12 +56,6 @@ class _ReviewPageState extends State<ReviewPage> {
           return Column(
             children: [
               5.h,
-              CustomButton(
-                text: "Danh Gia",
-                onPressed: () {
-                  NavigationService.instance.push(const CreateReviewPage());
-                },
-              ),
               Expanded(
                 child: ListView.separated(
                   controller: _scrollController,
