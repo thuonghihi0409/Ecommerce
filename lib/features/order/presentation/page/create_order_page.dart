@@ -5,6 +5,7 @@ import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
+import 'package:thuongmaidientu/features/order/presentation/page/payment_page.dart';
 import 'package:thuongmaidientu/features/order/presentation/widget/order_item_widget.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/add_address.dart';
@@ -72,7 +73,13 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                         Text("${"key_total_currency".tr()}: "),
                         Text(Helper.formatCurrencyVND(widget.total))
                       ],
-                    )
+                    ),
+                    20.h,
+                    CustomButton(
+                        text: "key_payment".tr(),
+                        onPressed: () {
+                          NavigationService.instance.push(const PayPalDemo());
+                        })
                   ],
                 ),
               ),
