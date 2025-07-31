@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
+import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
@@ -61,6 +62,7 @@ class _InitPageState extends State<InitPage> {
                             .popUntilRootAndReplace(const WebMainDrawer());
                         return;
                       }
+                      if (!mounted) return;
                       Helper.showCustomDialog(
                           context: context,
                           onPressPrimaryButton: () {},
@@ -68,7 +70,16 @@ class _InitPageState extends State<InitPage> {
                           headerCustom: Column(
                             children: store
                                 .map((st) => InkWell(
-                                      child: Text(st.name ?? ""),
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20, horizontal: 12),
+                                          decoration: BoxDecoration(
+                                              color: AppColor.greyColor
+                                                  .withAlpha(100)),
+                                          child: Text(
+                                            st.name ?? "",
+                                            style: AppTextStyles.textSize18(),
+                                          )),
                                       onTap: () async {
                                         bloc.add(SetStore(store: st));
                                         final prefs = await SharedPreferences

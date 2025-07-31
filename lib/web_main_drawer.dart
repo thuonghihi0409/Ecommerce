@@ -5,6 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
+import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
+import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/customer/product/presentation/page/product_page.dart';
 import 'package:thuongmaidientu/features/notification/presentation/bloc/notification_bloc/notification_bloc.dart';
@@ -57,7 +59,19 @@ class _WebMainDrawerState extends State<WebMainDrawer> {
   String _routeSelected = "";
 
   _logout() {
-    Helper.showCustomDialog(context: context, onPressPrimaryButton: () {});
+    Helper.showCustomDialog(
+        context: context,
+        onPressPrimaryButton: () {
+          context.read<AuthBloc>().add(AuthLogout(onSuccess: () {
+            NavigationService.instance
+                .popUntilRootAndReplace(const IntroPage());
+          }));
+        },
+        message: "key_confirm_logout".tr(),
+        isShowSecondButton: true,
+        onPressSecondButton: () {
+          NavigationService.instance.goBack();
+        });
   }
 
   Widget _buildItem(

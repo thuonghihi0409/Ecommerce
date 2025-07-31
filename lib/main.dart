@@ -10,10 +10,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
-import 'package:thuongmaidientu/features/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
+import 'package:thuongmaidientu/features/customer/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
+import 'package:thuongmaidientu/features/customer/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/customer/product/presentation/bloc/product_bloc/product_bloc.dart';
-import 'package:thuongmaidientu/features/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/presentation/bloc/dashboard_bloc/dashboard_bloc.dart';
@@ -49,7 +49,7 @@ void main() async {
       anonKey: dotenv.env["SUPABASE_KEY"]!,
       url: dotenv.env["SUPABASE_URL"]!,
       debug: true);
-  await init(); // get it
+  init(); // get it
   // await generateEmbeddings();
   runApp(EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('vi')],

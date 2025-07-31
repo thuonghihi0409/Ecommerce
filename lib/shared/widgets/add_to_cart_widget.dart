@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
+import 'package:thuongmaidientu/features/customer/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';

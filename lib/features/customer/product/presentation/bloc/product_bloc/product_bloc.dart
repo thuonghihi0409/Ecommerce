@@ -10,7 +10,6 @@ import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_li
 import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_product_summerice_usecase.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_product_usecase.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_product_detail_usecase.dart';
-import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_store_usecase.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
@@ -21,15 +20,11 @@ part 'product_state.dart';
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final GetListProductUseCase _getListProductUseCase;
   final GetProductDetailUsecase _getProductDetailUsecase;
-  final GetStoreUsecase _getStoreUsecase;
+
   final GetListProductSummericeUseCase _getListProductSummericeUseCase;
   final GetListCategoryUseCase _getListCategoryUseCase;
-  ProductBloc(
-      this._getListProductUseCase,
-      this._getProductDetailUsecase,
-      this._getStoreUsecase,
-      this._getListProductSummericeUseCase,
-      this._getListCategoryUseCase)
+  ProductBloc(this._getListProductUseCase, this._getProductDetailUsecase,
+      this._getListProductSummericeUseCase, this._getListCategoryUseCase)
       : super(ProductState.empty()) {
     on<GetListProduct>(_getListProduct);
     on<GetListCategory>(_getListCategory);
@@ -38,9 +33,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   void _getListProduct(GetListProduct event, Emitter<ProductState> emit) async {
     try {
-      emit(state.copyWith(isLoading: true));
+      emit(state.copyWith(isLoading: event.isLoading));
 
-      final listProduct = await _getListProductUseCase.call();
+      final listProduct = await _getListProductUseCase.call(
+          search: event.search,
+          categoryId: event.categoryId,
+          maxPrice: event.maxPrice,
+          minPrice: event.minPrice,
+          storeId: event.storeId);
       emit(state.copyWith(isLoading: false, listProduct: listProduct));
     } catch (e) {
       emit(state.copyWith(

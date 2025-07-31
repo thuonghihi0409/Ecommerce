@@ -1,5 +1,5 @@
-import 'package:thuongmaidientu/features/cart/data/models/product_item_model.dart';
-import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/customer/cart/data/models/product_item_model.dart';
+import 'package:thuongmaidientu/features/customer/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';

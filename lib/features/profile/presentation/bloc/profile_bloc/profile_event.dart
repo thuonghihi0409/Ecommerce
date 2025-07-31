@@ -40,3 +40,10 @@ class AddAddress extends ProfileEvent {
   const AddAddress(
       {required this.id, required this.addressEntity, this.onSuccess});
 }
+
+class UpdateProfile extends ProfileEvent {
+  final ProfileEntity profile;
+  final Function? onSuccess;
+  final Function? onError;
+  const UpdateProfile({required this.profile, this.onSuccess, this.onError});
+}

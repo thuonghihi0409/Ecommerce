@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/customer/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';

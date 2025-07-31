@@ -1,4 +1,4 @@
-import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/customer/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/data/models/order_item_model.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';

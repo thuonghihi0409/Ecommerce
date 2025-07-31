@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
-import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/customer/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/page/seller_order_list_tab.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';

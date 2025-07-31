@@ -106,5 +106,9 @@
     "key_image_optional": "Hình ảnh (Tùy chọn)",
     "key_send_review": "Gửi đánh giá",
     "key_view_review" : "Xem đánh giá",
-    "key_no_product_cart" : "Hiện tại không có sản phẩm nào trong giỏ hàng, hãy thêm sản phẩm vào giỏ hàng"
+    "key_no_product_cart" : "Hiện tại không có sản phẩm nào trong giỏ hàng, hãy thêm sản phẩm vào giỏ hàng",
+    "key_select_payment_method": "Chọn phương thức thanh toán",
+    "key_payment_online": "Thanh toán trực tuyến",
+    "key_payment_after_recieve_product":"Thanh toán sau khi nhận hàng",
+    "key_payment": "Thanh toán"
 }

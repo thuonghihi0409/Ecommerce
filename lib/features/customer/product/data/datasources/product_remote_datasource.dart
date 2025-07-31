@@ -9,7 +9,13 @@ import 'package:thuongmaidientu/shared/utils/list_model.dart';
 import '../models/product_model.dart';
 
 abstract class ProductRemoteDatasource {
-  Future<ListModel<ProductModel>> getListProduct();
+  Future<ListModel<ProductModel>> getListProduct({
+    String? search,
+    String? categoryId,
+    int? minPrice,
+    int? maxPrice,
+    String? storeId,
+  });
   Future<ProductDetailModel> getProductDetail(String id);
   Future<Store> getStore();
   Future<List<ProductModel>> getListProductSummerice(String categoryId);
@@ -20,13 +26,40 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
   ProductRemoteDataSourceImpl();
 
   @override
-  Future<ListModel<ProductModel>> getListProduct() async {
-    final data =
-        await supabase.from("Products").select('''*,store : Stores(*)''');
+  Future<ListModel<ProductModel>> getListProduct({
+    String? search,
+    String? categoryId,
+    int? minPrice,
+    int? maxPrice,
+    String? storeId,
+  }) async {
+    var query = supabase.from("Products").select('''*, store: Stores(*)''');
+
+    if (search != null && search.isNotEmpty) {
+      query = query.ilike('product_name', '%$search%');
+    }
+
+    if (categoryId != null) {
+      query = query.eq('category_id', categoryId);
+    }
+
+    if (storeId != null) {
+      query = query.eq('store_id', storeId);
+    }
+
+    if (minPrice != null) {
+      query = query.gte('price', minPrice);
+    }
+
+    if (maxPrice != null) {
+      query = query.lte('price', maxPrice);
+    }
+
+    final data = await query;
 
     final result = ListModel(
-        results:
-            data.map((product) => ProductModel.fromJson(product)).toList());
+      results: data.map((e) => ProductModel.fromJson(e)).toList(),
+    );
 
     return result;
   }

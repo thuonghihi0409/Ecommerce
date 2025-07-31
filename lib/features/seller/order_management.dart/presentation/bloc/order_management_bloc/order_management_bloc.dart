@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
-import 'package:thuongmaidientu/features/order/domain/usecases/get_count_order.dart';
+import 'package:thuongmaidientu/features/customer/order/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/customer/order/domain/usecases/get_count_order.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/usecases/seller_get_list_order_usecase.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/usecases/update_order_usecase.dart';

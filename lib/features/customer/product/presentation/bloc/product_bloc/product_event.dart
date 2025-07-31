@@ -8,10 +8,22 @@ class ProductEvent extends Equatable {
 }
 
 class GetListProduct extends ProductEvent {
-  final String? id;
-  final bool isLoadingMore, isRefreshing;
-  const GetListProduct(
-      {this.id, this.isLoadingMore = false, this.isRefreshing = false});
+  final String? search;
+  final String? categoryId;
+  final int? minPrice;
+  final int? maxPrice;
+  final String? storeId;
+  final bool isLoadingMore, isRefreshing, isLoading;
+  const GetListProduct({
+    this.isLoadingMore = false,
+    this.isRefreshing = false,
+    this.isLoading = true,
+    this.search,
+    this.categoryId,
+    this.minPrice,
+    this.maxPrice,
+    this.storeId,
+  });
 }
 
 class GetListCategory extends ProductEvent {

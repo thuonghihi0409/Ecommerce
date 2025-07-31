@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
@@ -10,11 +11,14 @@ import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/
 import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/purchase_history_screen.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/setting_screen.dart';
+import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
+import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
 
@@ -26,7 +30,13 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  String _avt = "";
+  late ProfileBloc _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = context.read<ProfileBloc>();
+  }
 
   _onLogout() {
     context.read<AuthBloc>().add(AuthLogout(onSuccess: () {
@@ -60,15 +70,28 @@ class _AccountScreenState extends State<AccountScreen> {
                   Stack(
                     children: [
                       InkWell(
-                        onTap: () {},
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.deepPurple,
-                          backgroundImage: _avt.isNotEmpty
-                              ? FileImage(File(_avt))
-                              : (_avt.isNotEmpty ? NetworkImage(_avt) : null),
-                        ),
-                      ),
+                          onTap: () {},
+                          child: CustomCacheImageNetwork(
+                            imageUrl: state.profile?.image,
+                            height: 80,
+                            width: 80,
+                            borderRadius: 40,
+                            errorWidget: Container(
+                              height: 80,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                  color: AppColor.primary,
+                                  borderRadius: BorderRadius.circular(40)),
+                              child: Center(
+                                  child: Text(
+                                (state.profile?.name ?? "T")
+                                    .substring(0, 1)
+                                    .toUpperCase(),
+                                style: AppTextStyles.textSize30(
+                                    color: AppColor.whiteColor),
+                              )),
+                            ),
+                          )),
                       Positioned(
                           bottom: 0,
                           right: 0,
@@ -77,15 +100,37 @@ class _AccountScreenState extends State<AccountScreen> {
                                 Helper.showImagePickerDialog(
                                   isOne: true,
                                   context,
-                                  onPicker: (path) {
-                                    setState(() {
-                                      _avt = path ?? "";
-                                    });
+                                  onPicker: (path) async {
+                                    if (path != null) {
+                                      try {
+                                        final imageUrl = await FirebaseService
+                                            .instance
+                                            .uploadImages(File(path));
+                                        _bloc.add(UpdateProfile(
+                                            profile: state.profile!
+                                                .copyWith(image: imageUrl)));
+                                      } catch (e) {
+                                        Helper.showToastBottom(
+                                            message:
+                                                ParseError.fromJson(e).message);
+                                      }
+                                    }
                                   },
-                                  onCamera: (path) {
-                                    setState(() {
-                                      _avt = path ?? "";
-                                    });
+                                  onCamera: (path) async {
+                                    if (path != null) {
+                                      try {
+                                        final imageUrl = await FirebaseService
+                                            .instance
+                                            .uploadImages(File(path));
+                                        _bloc.add(UpdateProfile(
+                                            profile: state.profile!
+                                                .copyWith(image: imageUrl)));
+                                      } catch (e) {
+                                        Helper.showToastBottom(
+                                            message:
+                                                ParseError.fromJson(e).message);
+                                      }
+                                    }
                                   },
                                 );
                               },

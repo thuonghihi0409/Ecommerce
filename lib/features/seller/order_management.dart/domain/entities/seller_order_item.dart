@@ -1,5 +1,5 @@
-import 'package:thuongmaidientu/features/cart/domain/entities/product_item.dart';
-import 'package:thuongmaidientu/features/order/domain/entities/order_item.dart';
+import 'package:thuongmaidientu/features/customer/cart/domain/entities/product_item.dart';
+import 'package:thuongmaidientu/features/customer/order/domain/entities/order_item.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.dart';
 
