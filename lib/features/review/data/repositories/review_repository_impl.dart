@@ -10,8 +10,13 @@ class ReviewRepositoryImpl implements ReviewRepository {
   ReviewRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<ListModel<Review>> getListReview() async {
-    final userModel = await remoteDataSource.getListReview();
+  Future<ListModel<Review>> getListReview(String id) async {
+    final userModel = await remoteDataSource.getListReview(id);
     return userModel;
+  }
+
+  @override
+  Future<void> createReview(Review review, String id) async {
+    await remoteDataSource.createReview(review, id);
   }
 }

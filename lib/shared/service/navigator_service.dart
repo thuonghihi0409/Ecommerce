@@ -123,4 +123,14 @@ class NavigationService {
       navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
   }
+
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
+  Future<dynamic> pushNamed(String name, {dynamic arguments}) {
+    return routeObserver.navigator!.pushNamed(name, arguments: arguments);
+  }
+
+  Future<dynamic> replaceNamed(String name, {dynamic arguments}) {
+    return routeObserver.navigator!.popAndPushNamed(name, arguments: arguments);
+  }
 }

@@ -1,164 +1,106 @@
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:uuid/uuid.dart';
 
 class FirebaseService {
   // Singleton
   static final FirebaseService instance = FirebaseService._internal();
   FirebaseService._internal();
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  Future<String?> uploadImages(File? image) async {
+    if (image == null) return null;
 
-  // ----------------------- AUTH -----------------------
+    try {
+      const uuid = Uuid();
+      final storageRef =
+          FirebaseStorage.instance.ref().child("images/${uuid.v4()}");
+      await storageRef.putFile(File(image.path));
+      String urli = await storageRef.getDownloadURL();
+      return urli;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  User? get currentUser => _auth.currentUser;
+  Future<String> uploadImagesData(Uint8List imageBytes) async {
+    final storageRef = FirebaseStorage.instance.ref();
+    final imageId = const Uuid().v4();
+    final imageRef = storageRef.child('products/$imageId.jpg');
 
-  Future<UserCredential> signUpWithEmail({
-    required String email,
-    required String password,
-  }) {
-    return _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
+    final uploadTask = await imageRef.putData(
+      imageBytes,
+      SettableMetadata(contentType: 'image/jpeg'),
     );
+
+    final downloadUrl = await uploadTask.ref.getDownloadURL();
+    return downloadUrl;
   }
 
-  Future<UserCredential> signInWithEmail({
-    required String email,
-    required String password,
-  }) {
-    return _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
+  static final _firebaseMessaging = FirebaseMessaging.instance;
+  static final _localNotifications = FlutterLocalNotificationsPlugin();
+
+  static Future<void> init() async {
+    await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
     );
+
+    final fcmToken = await _firebaseMessaging.getToken();
+    print('FCM Token: $fcmToken');
+
+    // Cấu hình local notification
+    const androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const initSettings = InitializationSettings(android: androidSettings);
+    await _localNotifications.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (details) {
+        // Xử lý khi người dùng nhấn vào thông báo
+        print('Notification tapped: ${details.payload}');
+      },
+    );
+
+    // Lắng nghe foreground message
+    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+
+    // Khi nhấn vào notification từ background hoặc killed
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('Notification tapped (from background): ${message.data}');
+    });
+
+    final initialMsg = await _firebaseMessaging.getInitialMessage();
+    if (initialMsg != null) {
+      print('Notification tapped (from terminated): ${initialMsg.data}');
+    }
   }
 
-  Future<void> signOut() async {
-    await _auth.signOut();
+  static void _handleForegroundMessage(RemoteMessage message) {
+    final notification = message.notification;
+    if (notification != null && notification.android != null) {
+      _localNotifications.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'default_channel',
+            'Thông báo',
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: true,
+          ),
+        ),
+        payload: message.data['payload'] ?? '',
+      );
+    }
   }
-
-  bool get isLoggedIn => _auth.currentUser != null;
-
-  // -------------------- FIRESTORE --------------------
-
-  Future<void> setDocument({
-    required String collectionPath,
-    required String docId,
-    required Map<String, dynamic> data,
-  }) {
-    return _firestore.collection(collectionPath).doc(docId).set(data);
-  }
-
-  Future<void> updateDocument({
-    required String collectionPath,
-    required String docId,
-    required Map<String, dynamic> data,
-  }) {
-    return _firestore.collection(collectionPath).doc(docId).update(data);
-  }
-
-  Future<DocumentSnapshot<Map<String, dynamic>>> getDocument({
-    required String collectionPath,
-    required String docId,
-  }) {
-    return _firestore.collection(collectionPath).doc(docId).get();
-  }
-
-  Future<void> deleteDocument({
-    required String collectionPath,
-    required String docId,
-  }) {
-    return _firestore.collection(collectionPath).doc(docId).delete();
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> streamCollection({
-    required String collectionPath,
-  }) {
-    return _firestore.collection(collectionPath).snapshots();
-  }
-
-  // ------------------ STORAGE ------------------
-
-  Future<String> uploadFile({
-    required File file,
-    required String path, // Ex: 'avatars/user123.jpg'
-  }) async {
-    final ref = _storage.ref().child(path);
-    await ref.putFile(file);
-    return await ref.getDownloadURL();
-  }
-
-  Future<void> deleteFile(String path) {
-    return _storage.ref().child(path).delete();
-  }
-
-  // Future<void> addProductToCart({
-  //   required String userId,
-  //   required CartItemModel newItem,
-  // }) async {
-  //   final cartRef = _firestore
-  //       .collection('users')
-  //       .doc(userId)
-  //       .collection('cart')
-  //       .doc(newItem.storeId);
-
-  //   final doc = await cartRef.get();
-
-  //   if (doc.exists) {
-  //     final data = doc.data()!;
-  //     final List<dynamic> currentItems = data['items'] ?? [];
-
-  //     final index = currentItems.indexWhere(
-  //       (e) =>
-  //           e['productId'] == newItem.productId &&
-  //           e['variant']['id'] == newItem.variant.id,
-  //     );
-
-  //     if (index != -1) {
-  //       // Đã có trong giỏ, cập nhật số lượng
-  //       currentItems[index]['quantity'] += newItem.quantity;
-  //     } else {
-  //       // Chưa có, thêm mới
-  //       currentItems.add(newItem.toJson());
-  //     }
-
-  //     await cartRef.update({'items': currentItems});
-  //   } else {
-  //     // Chưa có store trong giỏ
-  //     await cartRef.set({
-  //       'storeName': newItem.storeName,
-  //       'items': [newItem.toMap()],
-  //     });
-  //   }
-  // }
-
-  // Future<List<CartItemModel>> getCartItemsByStore({
-  //   required String userId,
-  //   required String storeId,
-  // }) async {
-  //   final doc = await _firestore
-  //       .collection('users')
-  //       .doc(userId)
-  //       .collection('cart')
-  //       .doc(storeId)
-  //       .get();
-
-  //   if (!doc.exists) return [];
-
-  //   final data = doc.data()!;
-  //   final List items = data['items'] ?? [];
-  //   return items.map((e) => CartItemModel.fromjson(e)).toList();
-  // }
-
-  // Future<void> clearCart(String userId) async {
-  //   final cartCollection = _firestore.collection('users').doc(userId).collection('cart');
-  //   final cartDocs = await cartCollection.get();
-  //   for (var doc in cartDocs.docs) {
-  //     await doc.reference.delete();
-  //   }
-  // }
 }

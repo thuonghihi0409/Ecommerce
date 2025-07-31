@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 
 class ImageCarousel extends StatefulWidget {
   final List<ImageItem> imageUrls;
@@ -58,7 +58,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                             children: [
                               Expanded(
                                 child: Image.network(
-                                  widget.imageUrls[index].url,
+                                  widget.imageUrls[index].url ?? "",
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   loadingBuilder:
@@ -85,7 +85,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                                 ),
                               ),
                               Text(
-                                widget.imageUrls[index].alt,
+                                widget.imageUrls[index].alt ?? "",
                                 style: AppTextStyles.textSize12(),
                               ),
                             ],

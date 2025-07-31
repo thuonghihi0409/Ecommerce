@@ -1,5 +1,5 @@
-import 'package:thuongmaidientu/features/auth/domain/entities/user.dart';
-import 'package:thuongmaidientu/features/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.dart';
 
 class Review {
   final String id;
@@ -7,7 +7,7 @@ class Review {
   final List<String>? imageUrls;
   final int? rating;
   final int? likesCount;
-  final User? user;
+  final ProfileEntity? user;
   final String? productId;
   final Variant? variant;
   final DateTime? createdAt;

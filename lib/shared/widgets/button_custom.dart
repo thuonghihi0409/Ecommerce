@@ -14,22 +14,25 @@ class CustomButton extends StatelessWidget {
   final double? height;
   final Widget? icon;
   final bool isLoading;
+  final bool isEnable;
+  final bool isMinWidth;
 
-  const CustomButton({
-    super.key,
-    required this.text,
-    this.onPressed,
-    this.borderColor,
-    this.textStyle,
-    this.backgroundColor,
-    this.foregroundColor,
-    this.borderRadius = 25,
-    this.padding,
-    this.width,
-    this.height,
-    this.icon,
-    this.isLoading = false,
-  });
+  const CustomButton(
+      {super.key,
+      required this.text,
+      this.isEnable = true,
+      this.onPressed,
+      this.borderColor,
+      this.textStyle,
+      this.backgroundColor,
+      this.foregroundColor,
+      this.borderRadius = 25,
+      this.padding,
+      this.width,
+      this.height,
+      this.icon,
+      this.isLoading = false,
+      this.isMinWidth = false});
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +63,10 @@ class CustomButton extends StatelessWidget {
           );
 
     return SizedBox(
-      width: width ?? double.infinity,
+      width: isMinWidth ? null : (width ?? double.infinity),
       height: height,
       child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
+        onPressed: (isLoading || !isEnable) ? null : onPressed,
         style: ElevatedButton.styleFrom(
           padding: padding ??
               const EdgeInsets.symmetric(horizontal: 24, vertical: 14),

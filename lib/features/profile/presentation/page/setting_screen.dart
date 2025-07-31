@@ -1,6 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/change_password_screen.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/update_profile_screen.dart';
+import 'package:thuongmaidientu/shared/service/navigator_service.dart';
+import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
@@ -25,40 +29,34 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
           children: [
             // Cập nhật thông tin cá nhân
             ListTile(
-              title: const Text(
-                "Cập nhật thông tin",
-                style: TextStyle(fontSize: 20),
+              title: Text(
+                "key_update_information".tr(),
+                style: AppTextStyles.textSize20(),
               ),
               trailing: const Icon(Icons.arrow_forward_ios,
                   size: 16, color: Colors.grey),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => UpdateProfileScreen()));
+                NavigationService.instance.push(const UpdateProfileScreen());
               },
             ),
-            const SizedBox(height: 20),
+            20.h,
 
             // Đổi mật khẩu
             ListTile(
-              title: const Text(
-                "Đổi mật khẩu",
-                style: TextStyle(fontSize: 20),
+              title: Text(
+                "key_change_password".tr(),
+                style: AppTextStyles.textSize20(),
               ),
               trailing: const Icon(Icons.arrow_forward_ios,
                   size: 16, color: Colors.grey),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChangePasswordScreen()));
+                NavigationService.instance.push(const ChangePasswordScreen());
               },
             ),
-            const SizedBox(height: 20),
+            20.h,
 
             SwitchListTile(
-              title: const Text('Chế độ tối', style: TextStyle(fontSize: 20)),
+              title: Text('Chế độ tối', style: AppTextStyles.textSize20()),
               value: _isDarkMode,
               onChanged: (value) {
                 setState(() {
@@ -70,8 +68,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             const SizedBox(height: 20),
 
             SwitchListTile(
-              title:
-                  const Text('Bật thông báo', style: TextStyle(fontSize: 20)),
+              title: Text('Bật thông báo', style: AppTextStyles.textSize20()),
               value: _notificationsEnabled,
               onChanged: (value) {
                 setState(() {

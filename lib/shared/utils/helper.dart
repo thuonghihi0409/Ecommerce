@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
+import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -138,18 +140,21 @@ class Helper {
             child: ValueListenableBuilder(
                 valueListenable: isDisablePrimaryButton ?? ValueNotifier(false),
                 builder: (context, isDisableButton, child) {
-                  return const Dialog(
-                      // message: message,
-                      // isShowSecondButton: isShowSecondButton,
-                      // labelPrimary: labelPrimary,
-                      // labelSecondary: labelSecondary,
-                      // onPressSecondButton: onPressSecondButton,
-                      // onClose: onClose,
-                      // onPressPrimaryButton: onPressPrimaryButton,
-                      // isShowCloseIcon: true,
-                      // headerCustom: headerCustom,
-                      // isDisablePrimaryButton: isDisableButton,
-                      );
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: [
+                        if (message != null)
+                          Text(
+                            message,
+                            style: AppTextStyles.textSize18(),
+                          ),
+                        headerCustom ?? const SizedBox(),
+                      ],
+                    ),
+                  );
                 }),
           );
         });
@@ -181,6 +186,7 @@ class Helper {
   }
 
   /// Show toast message
+
   static void showToastBottom({
     required String message,
     ToastType type = ToastType.error,
@@ -222,7 +228,7 @@ class Helper {
         ),
         elevation: 0,
         background: color,
-        duration: duration ?? const Duration(milliseconds: 3000),
+        duration: duration ?? const Duration(milliseconds: 1500),
         position: NotificationPosition.top,
         autoDismiss: true,
         slideDismissDirection: DismissDirection.up);
@@ -349,5 +355,42 @@ class Helper {
         );
       },
     );
+  }
+
+  static String timeAgo(DateTime time) {
+    // Viết theo nhu cầu: '2 phút trước', 'hôm qua',...
+    return DateFormat.Hm().format(time);
+  }
+
+  static String formatTime(DateTime time) {
+    return DateFormat('HH:mm dd/MM').format(time);
+  }
+
+  static String formatCurrencyVND(dynamic input) {
+    try {
+      final number = num.tryParse(input.toString());
+      if (number == null) return '0 ₫';
+
+      final formatter = NumberFormat.currency(
+        locale: 'vi_VN',
+        symbol: '₫',
+        decimalDigits: 0,
+      );
+
+      return formatter.format(number);
+    } catch (e) {
+      return '0 ₫';
+    }
+  }
+
+  static String convertLastMessage(MessageEntity? message) {
+    switch (message?.messageType ?? MessageType.message) {
+      case MessageType.message:
+        return message?.content ?? "";
+      case MessageType.media:
+        return message?.content ?? "";
+      case MessageType.product:
+        return "[${"key_product".tr()}] ${message?.product?.productName ?? ""}";
+    }
   }
 }

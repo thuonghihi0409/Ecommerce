@@ -1,7 +1,5 @@
-// lib/features/review/data/models/review_model.dart
-
-import 'package:thuongmaidientu/features/auth/data/models/user_model.dart';
-import 'package:thuongmaidientu/features/product/data/models/product_detail_model.dart';
+import 'package:thuongmaidientu/features/customer/product/data/models/product_detail_model.dart';
+import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 import 'package:thuongmaidientu/features/review/domain/entities/review.dart';
 
 class ReviewModel extends Review {
@@ -21,10 +19,11 @@ class ReviewModel extends Review {
     return ReviewModel(
       id: json['id'] ?? '',
       content: json['content'] ?? '',
-      imageUrls: List<String>.from(json['image_urls'] ?? []),
+      imageUrls: List<String>.from(
+          json['image_urls'].map((item) => item["url"]).toList() ?? []),
       rating: json['rating'] ?? 0,
       likesCount: json['likes_count'] ?? 0,
-      user: UserModel.fromJson(json['user'] ?? ''),
+      user: ProfileEntityModel.fromJson(json['user'] ?? ''),
       productId: json['product_id'] ?? '',
       variant: VariantModel.fromJson(json['variant'] ?? ''),
       createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),

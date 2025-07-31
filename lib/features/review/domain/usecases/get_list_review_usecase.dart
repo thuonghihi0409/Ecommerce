@@ -8,7 +8,7 @@ class GetListReviewUseCase {
 
   GetListReviewUseCase(this.repository);
 
-  Future<ListModel<Review>> call() {
-    return repository.getListReview();
+  Future<ListModel<Review>> call(String id) {
+    return repository.getListReview(id);
   }
 }

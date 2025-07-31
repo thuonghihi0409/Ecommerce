@@ -1,12 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
-import 'package:thuongmaidientu/features/auth/presentation/page/home_page.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
+import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/web_main_drawer.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -118,7 +120,13 @@ class _IntroPageState extends State<IntroPage> {
                   backgroundColor: AppColor.greyColor,
                   text: "key_skip".tr(),
                   onPressed: () {
-                    NavigationService.instance.push(const HomePage());
+                    if (kIsWeb) {
+                      NavigationService.instance
+                          .popUntilRootAndReplace(const WebMainDrawer());
+                    } else {
+                      NavigationService.instance
+                          .popUntilRootAndReplace(const MainTab());
+                    }
                   },
                 ),
               20.h,

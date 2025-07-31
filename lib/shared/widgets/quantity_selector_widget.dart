@@ -59,7 +59,7 @@ class _QuantitySelectorState extends State<QuantitySelector> {
               : null,
         ),
         SizedBox(
-          width: 60,
+          width: 50,
           height: 30,
           child: TextField(
             controller: _controller,
