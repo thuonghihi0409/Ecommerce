@@ -110,5 +110,9 @@
     "key_select_payment_method": "Chọn phương thức thanh toán",
     "key_payment_online": "Thanh toán trực tuyến",
     "key_payment_after_recieve_product":"Thanh toán sau khi nhận hàng",
-    "key_payment": "Thanh toán"
+    "key_payment": "Thanh toán",
+    "key_create_store": "Tạo cửa hàng",
+    "key_upload_logo_store": "Chọn logo cửa hàng",
+    "key_upload_background_store": "Chọn ảnh nền cửa hàng"
+
 }

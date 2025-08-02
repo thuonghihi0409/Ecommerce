@@ -1,33 +1,32 @@
 import 'package:equatable/equatable.dart';
 
-class TopOrderedProductEntity extends Equatable {
+class TopProductEntity extends Equatable {
   final String? id;
   final int? totalOrdered;
   final String? name;
+  final double? avgRating;
 
-  const TopOrderedProductEntity({
+  const TopProductEntity({
     required this.id,
+    required this.avgRating,
     required this.totalOrdered,
     required this.name,
   });
 
-  TopOrderedProductEntity copyWith({
-    String? id,
-    int? totalOdered,
-    String? name,
-  }) =>
-      TopOrderedProductEntity(
-        id: id ?? this.id,
-        totalOrdered: totalOdered ?? totalOrdered,
-        name: name ?? this.name,
-      );
+  TopProductEntity copyWith(
+          {String? id, int? totalOdered, String? name, double? avgRating}) =>
+      TopProductEntity(
+          id: id ?? this.id,
+          totalOrdered: totalOdered ?? totalOrdered,
+          name: name ?? this.name,
+          avgRating: avgRating ?? this.avgRating);
 
-  factory TopOrderedProductEntity.fromJson(Map<String, dynamic> json) =>
-      TopOrderedProductEntity(
-        id: json["id"],
-        totalOrdered: json["totalOrdered"],
-        name: json["name"],
-      );
+  factory TopProductEntity.fromJson(Map<String, dynamic> json) =>
+      TopProductEntity(
+          id: json["id"],
+          totalOrdered: json["totalOrdered"],
+          name: json["name"],
+          avgRating: json["avg_rating"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,

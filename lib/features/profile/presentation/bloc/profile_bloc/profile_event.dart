@@ -47,3 +47,9 @@ class UpdateProfile extends ProfileEvent {
   final Function? onError;
   const UpdateProfile({required this.profile, this.onSuccess, this.onError});
 }
+
+class CreateStore extends ProfileEvent {
+  final Store store;
+  final Function? onSuccess;
+  const CreateStore({required this.store, this.onSuccess});
+}

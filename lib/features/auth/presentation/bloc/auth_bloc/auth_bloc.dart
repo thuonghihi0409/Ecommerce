@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thuongmaidientu/core/app_constraint.dart';
 import 'package:thuongmaidientu/features/auth/domain/usecases/login_usecase.dart';
 import 'package:thuongmaidientu/features/auth/domain/usecases/logout_usecase.dart';
@@ -74,7 +75,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(isLoading: true));
 
       await logoutUseCase.call();
-
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('selected_store');
       emit(state.copyWith(isLoading: false));
       event.onSuccess?.call();
     } on FirebaseAuthException catch (e) {

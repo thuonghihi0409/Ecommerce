@@ -21,9 +21,24 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDatasource {
         .order('total_sold', ascending: false)
         .limit(10);
     final listPrduct = topProducts
-        .map((item) => TopOrderedProductEntity(
+        .map((item) => TopProductEntity(
             id: item["id"],
             totalOrdered: item["total_sold"],
+            avgRating: item["avg_rating"],
+            name: item["product_name"]))
+        .toList();
+
+    final topRatingProducts = await supabase
+        .from('Products')
+        .select('*')
+        .eq('store_id', storeId)
+        .order('avg_rating', ascending: false)
+        .limit(10);
+    final listRatingPrduct = topRatingProducts
+        .map((item) => TopProductEntity(
+            id: item["id"],
+            totalOrdered: item["total_sold"],
+            avgRating: item["avg_rating"],
             name: item["product_name"]))
         .toList();
 
@@ -31,6 +46,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDatasource {
         await supabase.from('Orders').select('id').eq('store_id', storeId);
     final totalOrder = totalOrdersRes.length;
     return StatisticModel(
+        topAvgRatingProducts: listRatingPrduct,
         totalOrders: totalOrder,
         totalProducts: totalProduct,
         topOrderedProducts: listPrduct,

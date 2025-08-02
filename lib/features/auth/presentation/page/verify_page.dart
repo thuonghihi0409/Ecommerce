@@ -16,6 +16,7 @@ import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_b
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/features/profile/presentation/page/create_store.dart';
 import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
@@ -57,7 +58,7 @@ class _VerifyPageState extends State<VerifyPage> {
                 List<Store> store = bloc.state.listStores ?? [];
 
                 if (store.isEmpty) {
-                  // create business
+                  NavigationService.instance.push(const CreateStorePage());
                 } else if (store.length == 1) {
                   bloc.add(SetStore(store: store[0]));
                   NavigationService.instance
@@ -73,6 +74,7 @@ class _VerifyPageState extends State<VerifyPage> {
                         .popUntilRootAndReplace(const WebMainDrawer());
                     return;
                   }
+                  if (!mounted) return;
                   Helper.showCustomDialog(
                       context: context,
                       onPressPrimaryButton: () {},
@@ -152,7 +154,12 @@ class _VerifyPageState extends State<VerifyPage> {
         ),
         body: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: kIsWeb
+                ? EdgeInsets.symmetric(
+                    horizontal: context.widthScreen > 1000
+                        ? context.widthScreen * 0.2
+                        : context.widthScreen * 0.1)
+                : const EdgeInsets.all(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

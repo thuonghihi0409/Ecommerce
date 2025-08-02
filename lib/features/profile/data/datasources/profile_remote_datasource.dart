@@ -13,6 +13,7 @@ abstract class ProfileRemoteDatasource {
   Future<List<WardEntity>> getWard(String id);
   Future<AddressEntity> addAddress(AddressEntity addAddress, String userId);
   Future<List<Store>> getStore(String userId);
+  Future<Store> createStore(Store store, String userId);
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
@@ -83,5 +84,21 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
     final stores =
         await supabase.from('Stores').select('''*''').eq('user_id', userId);
     return stores.map((e) => StoreModel.fromJson(e)).toList();
+  }
+
+  @override
+  Future<Store> createStore(Store store, String userId) async {
+    final newStore = await supabase.from('Stores').insert({
+      "user_id": userId,
+      "name": store.name,
+      "address": store.address,
+      "phone": store.phone,
+      "logo_url": store.logoUrl,
+      "background_url": store.backgroundUrl,
+      "total_product": store.totalProducts,
+      "avg_rating": store.averageRating
+    }).select('''*''').single();
+    await supabase.from("Users").update({"role": "is_seller"}).eq("id", userId);
+    return StoreModel.fromJson(newStore);
   }
 }

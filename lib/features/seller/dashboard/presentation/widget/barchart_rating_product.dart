@@ -4,15 +4,15 @@ import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/domain/entities/top_ordered_product_entity.dart';
 
-class BarChartProduct extends StatefulWidget {
+class BarChartRatingProduct extends StatefulWidget {
   final List<TopProductEntity>? topOrderedProductModel;
-  const BarChartProduct({super.key, this.topOrderedProductModel});
+  const BarChartRatingProduct({super.key, this.topOrderedProductModel});
 
   @override
   State<StatefulWidget> createState() => BarChartProductState();
 }
 
-class BarChartProductState extends State<BarChartProduct> {
+class BarChartProductState extends State<BarChartRatingProduct> {
   @override
   Widget build(BuildContext context) {
     if (widget.topOrderedProductModel == null ||
@@ -27,7 +27,7 @@ class BarChartProductState extends State<BarChartProduct> {
     }
     return LayoutBuilder(builder: (context, constrains) {
       return AspectRatio(
-        aspectRatio: 2.3,
+        aspectRatio: 2.5,
         child: BarChart(
           BarChartData(
             barTouchData: barTouchData,
@@ -62,18 +62,23 @@ class BarChartProductState extends State<BarChartProduct> {
   }
 
   BarTouchData get barTouchData => BarTouchData(
-        enabled: true,
-        touchTooltipData: BarTouchTooltipData(
-          getTooltipColor: (_) => Colors.transparent,
-          fitInsideVertically: true,
-          tooltipPadding: EdgeInsets.zero,
-          tooltipMargin: 0,
-          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-            return BarTooltipItem(
-                rod.toY.round().toString(), AppTextStyles.textSize18());
-          },
-        ),
-      );
+      enabled: true,
+      touchTooltipData: BarTouchTooltipData(
+        getTooltipColor: (_) => Colors.transparent, // Màu nền của tooltip
+        tooltipBorderRadius: BorderRadius.circular(8), // Bo góc
+        fitInsideVertically: true,
+        tooltipPadding: const EdgeInsets.all(8), // Padding đẹp hơn
+        tooltipMargin: 8,
+        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          return BarTooltipItem(
+            '${rod.toY}⭐',
+            AppTextStyles.textSize16().copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          );
+        },
+      ));
 
   FlTitlesData titlesData(double width) => FlTitlesData(
         show: true,
@@ -91,7 +96,7 @@ class BarChartProductState extends State<BarChartProduct> {
                 child: SizedBox(
                   width: width - 10,
                   child: Transform.rotate(
-                    angle: -0.4,
+                    angle: -0.5,
                     child: Text(
                       widget.topOrderedProductModel?[index].name ?? "",
                       style: AppTextStyles.textSize14(),
@@ -108,20 +113,20 @@ class BarChartProductState extends State<BarChartProduct> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 60,
+            reservedSize: 30,
             interval: maxYValue / 5,
-            // getTitlesWidget: (value, meta) {
-            //   return SideTitleWidget(
-            //     space: 2,
-            //     //   axisSide: AxisSide.left,
-            //     meta: meta,
-            //     child: Text(
-            //       value.toInt().toString(),
-            //       style: AppTextStyles.textSize18(),
-            //       textAlign: TextAlign.end,
-            //     ),
-            //   );
-            // },
+            getTitlesWidget: (value, meta) {
+              return SideTitleWidget(
+                space: 2,
+                //   axisSide: AxisSide.left,
+                meta: meta,
+                child: Text(
+                  value.toString(),
+                  style: AppTextStyles.textSize18(),
+                  textAlign: TextAlign.end,
+                ),
+              );
+            },
           ),
         ),
         topTitles: const AxisTitles(
@@ -142,13 +147,7 @@ class BarChartProductState extends State<BarChartProduct> {
       );
 
   double get maxYValue {
-    final maxRevenue = (widget.topOrderedProductModel ?? [])
-        .map((e) => (e.totalOrdered ?? 0).toDouble())
-        .fold<double>(0, (prev, value) => value > prev ? value : prev);
-
-    return maxRevenue == 0
-        ? 100
-        : ((maxRevenue * 1.2) / 100).ceil() * 100.toDouble();
+    return 5.0;
   }
 
   List<BarChartGroupData> barGroups(double? width) =>
@@ -161,7 +160,7 @@ class BarChartProductState extends State<BarChartProduct> {
               barRods: [
                 BarChartRodData(
                   width: (width ?? 0) * 0.4,
-                  toY: entry.value.totalOrdered?.toDouble() ?? 0,
+                  toY: entry.value.avgRating?.toDouble() ?? 0,
                   // gradient: _barsGradient,
                   color: AppColor.primary,
                   borderRadius: BorderRadius.zero,

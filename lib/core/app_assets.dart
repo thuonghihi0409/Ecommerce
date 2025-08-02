@@ -9,4 +9,7 @@ class AppAssets {
   static String loginIcon = "${assets}login_icon.svg";
   static String securityIcon = "${assets}security_icon.svg";
   static String orderIcon = "${assets}order_icon.svg";
+  static String settingIcon = "${assets}setting_icon.svg";
+  static String dashboardIcon = "${assets}dashboard_icon.svg";
+  static String productIcon = "${assets}product_icon.svg";
 }

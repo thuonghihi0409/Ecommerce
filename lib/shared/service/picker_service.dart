@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 class PickerService {
   final ImagePicker _picker = ImagePicker();
 
-  /// ✅ Xin quyền truy cập thư viện (Android)
+  ///  Xin quyền truy cập thư viện (Android)
   Future<void> requestStoragePermission() async {
     if (Platform.isAndroid) {
       final status = await Permission.storage.request();
@@ -18,7 +18,7 @@ class PickerService {
     }
   }
 
-  /// ✅ Chọn 1 ảnh từ thư viện
+  ///  Chọn 1 ảnh từ thư viện
   Future<String?> pickSingleImageFromGallery() async {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -27,7 +27,7 @@ class PickerService {
     return pickedFile?.path;
   }
 
-  /// ✅ Chọn nhiều ảnh từ thư viện
+  ///  Chọn nhiều ảnh từ thư viện
   Future<List<String>> pickMultipleImagesFromGallery() async {
     final List<XFile> pickedFiles = await _picker.pickMultiImage(
       imageQuality: 80,
@@ -35,14 +35,14 @@ class PickerService {
     return pickedFiles.map((file) => file.path).toList();
   }
 
-  /// ✅ Chụp ảnh từ camera
+  ///  Chụp ảnh từ camera
   Future<String?> captureImageFromCamera() async {
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
     return pickedFile?.path;
   }
 
-  /// ✅ Chọn video từ thư viện
+  /// Chọn video từ thư viện
   Future<String?> pickVideoFromGallery() async {
     final XFile? video = await _picker.pickVideo(
       source: ImageSource.gallery,
@@ -50,7 +50,7 @@ class PickerService {
     return video?.path;
   }
 
-  /// ✅ Chọn nhiều loại file (tùy chọn thêm)
+  ///  Chọn nhiều loại file (tùy chọn thêm)
   Future<List<String>> pickFiles({List<String>? allowedExtensions}) async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,

@@ -10,13 +10,13 @@ import 'package:thuongmaidientu/features/customer/product/domain/entities/catego
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
-import 'package:thuongmaidientu/features/seller/product_management/presentation/widget/upload_image_widget.dart';
 import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/upload_image_widget.dart';
 
 class CreateProductPage extends StatefulWidget {
   const CreateProductPage({super.key});

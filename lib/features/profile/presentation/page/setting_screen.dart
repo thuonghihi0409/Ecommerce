@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/change_password_screen.dart';
@@ -11,17 +12,21 @@ class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
 
   @override
-  _AccountSettingsScreenState createState() => _AccountSettingsScreenState();
+  AccountSettingsScreenState createState() => AccountSettingsScreenState();
 }
 
-class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
+class AccountSettingsScreenState extends State<AccountSettingsScreen> {
   bool _notificationsEnabled = true;
   bool _isDarkMode = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        isShowCartIcon: false,
+        isShowChatIcon: false,
+        showLeading: !kIsWeb,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -51,4 +51,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
     final store = await remoteDataSource.getStore(userId);
     return store;
   }
+
+  @override
+  Future<Store> createStore(Store store, String userId) async {
+    final stores = await remoteDataSource.createStore(store, userId);
+    return stores;
+  }
 }

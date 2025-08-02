@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -9,6 +10,8 @@ import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
+import 'package:thuongmaidientu/shared/utils/extension.dart';
+import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Toast type
@@ -119,6 +122,7 @@ class Helper {
     String? message,
     Function()? onClose,
     bool isShowSecondButton = false,
+    bool isShowPrimaryButton = false,
     required Function() onPressPrimaryButton,
     onPressSecondButton,
     String? labelPrimary,
@@ -141,18 +145,50 @@ class Helper {
                 valueListenable: isDisablePrimaryButton ?? ValueNotifier(false),
                 builder: (context, isDisableButton, child) {
                   return Dialog(
+                    insetPadding: kIsWeb
+                        ? EdgeInsets.symmetric(
+                            horizontal: context.widthScreen * 0.3)
+                        : const EdgeInsets.symmetric(horizontal: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Column(
-                      children: [
-                        if (message != null)
-                          Text(
-                            message,
-                            style: AppTextStyles.textSize18(),
-                          ),
-                        headerCustom ?? const SizedBox(),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          if (message != null)
+                            Text(
+                              message,
+                              style: AppTextStyles.textSize18(),
+                            ),
+                          headerCustom ?? const SizedBox(),
+                          Row(
+                            mainAxisAlignment:
+                                isShowPrimaryButton && isShowSecondButton
+                                    ? MainAxisAlignment.spaceAround
+                                    : (isShowPrimaryButton
+                                        ? MainAxisAlignment.end
+                                        : MainAxisAlignment.start),
+                            children: [
+                              if (isShowSecondButton)
+                                CustomButton(
+                                  text: "key_cancel".tr(),
+                                  isMinWidth: true,
+                                  onPressed: onClose ??
+                                      () {
+                                        NavigationService.instance.goBack();
+                                      },
+                                ),
+                              if (isShowPrimaryButton)
+                                CustomButton(
+                                  text: "key_ok".tr(),
+                                  isMinWidth: true,
+                                  onPressed: onPressPrimaryButton,
+                                )
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   );
                 }),

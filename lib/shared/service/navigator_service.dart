@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Fade transition page route
 class FadePageRoute<T> extends PageRoute<T> {
   final Widget child;
   final Duration duration;
@@ -8,7 +7,7 @@ class FadePageRoute<T> extends PageRoute<T> {
 
   FadePageRoute({
     required this.child,
-    this.duration = const Duration(milliseconds: 300),
+    this.duration = const Duration(milliseconds: 200),
     this.color = Colors.white,
   });
 
@@ -34,7 +33,6 @@ class FadePageRoute<T> extends PageRoute<T> {
   }
 }
 
-/// Singleton Navigation Service
 class NavigationService {
   static final NavigationService instance = NavigationService._internal();
 
@@ -42,7 +40,6 @@ class NavigationService {
 
   NavigationService._internal();
 
-  /// Push new page
   Future<T?> push<T>(Widget page, {BuildContext? context}) {
     final route = MaterialPageRoute<T>(builder: (_) => page);
     if (context != null) {
@@ -51,7 +48,6 @@ class NavigationService {
     return navigatorKey.currentState!.push(route);
   }
 
-  /// Push with fade effect
   Future<T?> pushFade<T>(Widget page, {BuildContext? context}) {
     final route = FadePageRoute<T>(child: page);
     if (context != null) {

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
@@ -46,7 +47,12 @@ class _ForgotPasswordScreenState extends State<ForgotPassword> {
         isShowChatIcon: false,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: kIsWeb
+            ? EdgeInsets.symmetric(
+                horizontal: context.widthScreen > 1000
+                    ? context.widthScreen * 0.2
+                    : context.widthScreen * 0.1)
+            : const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
