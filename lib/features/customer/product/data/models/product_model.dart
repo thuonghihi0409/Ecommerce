@@ -1,9 +1,11 @@
+import 'package:thuongmaidientu/features/customer/product/data/models/promotion_model.dart';
 import 'package:thuongmaidientu/features/customer/product/data/models/store_model.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product.dart';
 
 class ProductModel extends Product {
   ProductModel(
       {required super.productId,
+      required super.promotion,
       required super.cover,
       required super.store,
       required super.categoryId,
@@ -15,6 +17,9 @@ class ProductModel extends Product {
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
+        promotion: json["promotion"] != null && json["promotion"].isNotEmpty
+            ? PromotionModel.fromJson(json["promotion"][0]["promotion"])
+            : null,
         productId: json['id'],
         cover: json['cover'],
         store: StoreModel.fromJson(json['store']), // Nested store object

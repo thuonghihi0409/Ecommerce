@@ -2,12 +2,14 @@ import 'package:thuongmaidientu/features/customer/product/data/models/store_mode
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/province_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/ward_entity.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 
 abstract class ProfileRemoteDatasource {
   Future<ProfileEntityModel> getProfile(String email);
+  Future<void> updateProfile(ProfileEntity profile);
   Future<List<AddressEntity>> getAddress(String id);
   Future<List<ProvinceEntity>> getProvince();
   Future<List<WardEntity>> getWard(String id);
@@ -23,6 +25,15 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
         await supabase.from("Users").select().eq("email", email).single();
 
     return ProfileEntityModel.fromJson(profile);
+  }
+
+  @override
+  Future<void> updateProfile(ProfileEntity profile) async {
+    await supabase.from("Users").update({
+      "name": profile.name,
+      "avatar": profile.image,
+      "phone": profile.phone
+    }).eq("email", profile.email ?? "");
   }
 
   @override

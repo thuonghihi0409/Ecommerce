@@ -1,12 +1,11 @@
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/repositories/product_repository.dart';
 
-class GetProductDetailUsecase {
+class GetWishlistUsecase {
   final ProductRepository repository;
 
-  GetProductDetailUsecase(this.repository);
-
-  Future<ProductDetail?> call(String id, String userId) {
-    return repository.getProductDetail(id, userId);
+  GetWishlistUsecase(this.repository);
+  Future<List<ProductDetail>> call(String userId) {
+    return repository.getWishlist(userId);
   }
 }

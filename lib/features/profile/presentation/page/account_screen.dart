@@ -7,6 +7,7 @@ import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
+import 'package:thuongmaidientu/features/customer/product/presentation/page/wishlist_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/purchase_history_screen.dart';
@@ -173,12 +174,9 @@ class _AccountScreenState extends State<AccountScreen> {
                   }),
                   _buildAccountOption(Icons.favorite, "key_list_favorite".tr(),
                       () {
-                    // Xử lý nhấn vào
+                    NavigationService.instance.push(const WishlistPage());
                   }),
-                  _buildAccountOption(Icons.location_on, "key_address".tr(),
-                      () {
-                    // Xử lý nhấn vào
-                  }),
+
                   _buildAccountOption(Icons.help_outline, "key_help".tr(), () {
                     NavigationService.instance.push(const GeminiChatPage());
                   }),

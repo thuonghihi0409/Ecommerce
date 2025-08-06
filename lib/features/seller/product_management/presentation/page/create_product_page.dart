@@ -88,6 +88,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
           variants: listVariant,
           avgRating: 0.0,
           totalRating: 0,
+          isLike: false,
           totalSold: 0,
           cover: listImage[0].url);
       _bloc.add(SellerCreateProduct(

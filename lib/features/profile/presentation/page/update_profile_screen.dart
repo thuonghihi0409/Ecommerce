@@ -24,11 +24,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   late TextEditingController _usernameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
-  late TextEditingController _confirmPasswordController;
+
   late FocusNode _usernameNode;
 
   late FocusNode _phoneNode;
-  late FocusNode _confirmPasswordNode;
 
   bool _isValidName = false;
   late ProfileBloc _bloc;
@@ -42,11 +41,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _emailController.text = _bloc.state.profile?.email ?? "";
     _phoneController = TextEditingController();
     _phoneController.text = _bloc.state.profile?.phone ?? "";
-    _confirmPasswordController = TextEditingController();
+
     _usernameNode = FocusNode();
 
     _phoneNode = FocusNode();
-    _confirmPasswordNode = FocusNode();
   }
 
   @override
@@ -54,15 +52,22 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _usernameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
-    _confirmPasswordController.dispose();
+
     _usernameNode.dispose();
 
     _phoneNode.dispose();
-    _confirmPasswordNode.dispose();
+
     super.dispose();
   }
 
-  void _submit() {}
+  void _submit() {
+    _bloc.add(UpdateProfile(
+        profile: _bloc.state.profile!.copyWith(
+            phone: _phoneController.text, name: _usernameController.text),
+        onSuccess: () {
+          NavigationService.instance.goBack();
+        }));
+  }
 
   _enableButton() {
     return _isValidName;
@@ -128,7 +133,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.phone,
                     onFieldSubmitted: (p0) {
-                      _confirmPasswordNode.requestFocus();
+                      _submit();
                     },
                   ),
                   20.h,

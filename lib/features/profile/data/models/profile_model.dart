@@ -35,7 +35,7 @@ class ProfileEntityModel extends ProfileEntity {
           : null,
       role: json['role']?.toString(),
       gender: json['gender']?.toString(),
-      image: json['image']?.toString(),
+      image: json['avatar']?.toString(),
     );
   }
 }

@@ -5,23 +5,22 @@ import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_li
 import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_product_summerice_usecase.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_list_product_usecase.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_product_detail_usecase.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/usecases/get_wishlist_usecase.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/usecases/update_wishlist_usecase.dart';
 import 'package:thuongmaidientu/features/customer/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/get_it.dart';
 
 class ProductDependecy {
   static void init() {
-    sl.registerFactory(() => ProductBloc(
-          sl(),
-          sl(),
-          sl(),
-          sl(),
-        ));
+    sl.registerFactory(() => ProductBloc(sl(), sl(), sl(), sl(), sl(), sl()));
 
     //// Product UseCase
     sl.registerLazySingleton(() => GetListProductUseCase(sl()));
+    sl.registerLazySingleton(() => UpdateWishlistUsecase(sl()));
     sl.registerLazySingleton(() => GetProductDetailUsecase(sl()));
     sl.registerLazySingleton(() => GetListProductSummericeUseCase(sl()));
 
+    sl.registerLazySingleton(() => GetWishlistUsecase(sl()));
     sl.registerLazySingleton(() => GetListCategoryUseCase(sl()));
 
     sl.registerLazySingleton<ProductRepository>(

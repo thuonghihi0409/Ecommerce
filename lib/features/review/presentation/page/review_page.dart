@@ -1,11 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thuongmaidientu/features/customer/cart/domain/entities/cart_item.dart';
+import 'package:thuongmaidientu/features/customer/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/customer/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
+import 'package:thuongmaidientu/features/customer/order/presentation/page/create_order_page.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/review_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/widget/review_item_widget.dart';
+import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/add_to_cart_widget.dart';
@@ -116,8 +120,29 @@ class _ReviewPageState extends State<ReviewPage> {
                       Helper.showCustomBottomSheet(
                         headerCustom: AddCartWidget(
                           productDetail: widget.productDetail,
-                          lableButton: 'key_buy_now'.tr(),
-                          onTap: (productItem, index, quantity) {},
+                          lableButton: "key_buy_now".tr(),
+                          onTap: (productItem, index, quantity) {
+                            try {
+                              NavigationService.instance.push(CreateOrderPage(
+                                  cartItems: [
+                                    CartItem(
+                                        store: widget.productDetail!.store!,
+                                        productItem: [
+                                          ProductItem(
+                                              id: "",
+                                              productDetail:
+                                                  widget.productDetail!,
+                                              variant: widget.productDetail!
+                                                  .variants![index],
+                                              number: quantity)
+                                        ],
+                                        id: "")
+                                  ],
+                                  total: widget.productDetail!.variants![index]
+                                          .price! *
+                                      quantity));
+                            } catch (e) {}
+                          },
                         ),
                         context: context,
                       );

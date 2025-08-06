@@ -1,3 +1,4 @@
+import 'package:thuongmaidientu/features/customer/product/data/models/promotion_model.dart';
 import 'package:thuongmaidientu/features/customer/product/data/models/store_model.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 
@@ -13,11 +14,17 @@ class ProductDetailModel extends ProductDetail {
       required super.variants,
       required super.avgRating,
       required super.totalRating,
+      required super.isLike,
       required super.totalSold,
+      required super.promotion,
       required super.cover});
 
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
     return ProductDetailModel(
+      promotion: json["promotion"] != null && json["promotion"].isNotEmpty
+          ? PromotionModel.fromJson(json["promotion"][0]["promotion"])
+          : null,
+      isLike: json["is_like"] ?? false,
       cover: json["cover"],
       totalRating: json['total_rating'],
       avgRating: json['avg_rating'].toDouble(),

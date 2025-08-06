@@ -1,3 +1,4 @@
+import 'package:thuongmaidientu/features/customer/product/domain/entities/promotion.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 
 class Product {
@@ -7,7 +8,7 @@ class Product {
   final String? categoryId;
   final String? productName;
   final String? description;
-
+  final Promotion? promotion;
   final int? price;
   final double? avgRating;
   final int? totalSold;
@@ -19,6 +20,7 @@ class Product {
       this.categoryId,
       this.productName,
       this.description,
+      this.promotion,
       this.price,
       this.avgRating,
       this.totalSold});

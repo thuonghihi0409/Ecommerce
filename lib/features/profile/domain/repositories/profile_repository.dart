@@ -13,4 +13,5 @@ abstract class ProfileRepository {
   Future<AddressEntity> addAddress(AddressEntity addAddress, String userId);
   Future<List<Store>> getStore(String userId);
   Future<Store> createStore(Store store, String userId);
+  Future<void> updateProfile(ProfileEntity profile);
 }

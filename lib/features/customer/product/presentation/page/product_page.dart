@@ -212,7 +212,7 @@ class _ProductPageState extends State<ProductPage> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 5,
                       mainAxisSpacing: 5,
-                      childAspectRatio: 0.7,
+                      childAspectRatio: 0.67,
                     ),
                     itemCount: state.listProduct.results?.length ?? 0,
                     itemBuilder: (context, index) {
@@ -220,8 +220,10 @@ class _ProductPageState extends State<ProductPage> {
                       return ProductCard(
                           product: product!,
                           onTap: () {
-                            NavigationService.instance
-                                .push(ProductDetailPage(product: product));
+                            NavigationService.instance.push(ProductDetailPage(
+                              productId: product.productId,
+                              categoryId: product.categoryId ?? "",
+                            ));
                           });
                     },
                   ),

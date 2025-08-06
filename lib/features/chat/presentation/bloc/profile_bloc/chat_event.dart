@@ -9,7 +9,8 @@ class ChatEvent extends Equatable {
 
 class GetListConversation extends ChatEvent {
   final String userId;
-  const GetListConversation({required this.userId});
+  final bool isLoading;
+  const GetListConversation({required this.userId, this.isLoading = true});
 }
 
 class CreateConversation extends ChatEvent {

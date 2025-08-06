@@ -7,7 +7,6 @@ import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/cha
 import 'package:thuongmaidientu/features/chat/presentation/widgets/product_message_widget.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
-import 'package:thuongmaidientu/shared/utils/helper.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final String? productId;
@@ -131,13 +130,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 if (msg?.messageType == MessageType.product)
                                   ProductMessageWidget(
                                       product: msg?.product, onTap: () {}),
-                                const SizedBox(height: 4),
-                                Text(
-                                  Helper.formatTime(
-                                      msg?.timesend ?? DateTime.now()),
-                                  style: const TextStyle(
-                                      fontSize: 10, color: Colors.white70),
-                                ),
+                                // const SizedBox(height: 4),
+                                // Text(
+                                //   Helper.formatTime(
+                                //       msg?.timesend ?? DateTime.now()),
+                                //   style: const TextStyle(
+                                //       fontSize: 10, color: Colors.white70),
+                                // ),
                               ],
                             ),
                           ),

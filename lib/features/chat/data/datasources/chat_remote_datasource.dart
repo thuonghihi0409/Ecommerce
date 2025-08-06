@@ -29,7 +29,14 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
     final listConversation = result
         .map((conversation) => ConversationModel.fromJson(conversation))
-        .toList();
+        .toList()
+      ..sort((a, b) {
+        final timeA =
+            a.lastMessage?.timesend ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final timeB =
+            b.lastMessage?.timesend ?? DateTime.fromMillisecondsSinceEpoch(0);
+        return timeB.compareTo(timeA);
+      });
     return ListModel(results: listConversation);
   }
 
@@ -42,7 +49,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         *,
         user: Users(*),
         store:Stores(*),
-       
         last_message:Messages!Conversations_last_message_id_fkey(*)
         ''').single();
 
@@ -82,8 +88,13 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }
 
   @override
-  Future<MessageModel> sendMessage(String senderId, String receiverId,
-      String message, String conversationId, String type) async {
+  Future<MessageModel> sendMessage(
+    String senderId,
+    String receiverId,
+    String message,
+    String conversationId,
+    String type,
+  ) async {
     final result = await supabase.from('Messages').insert({
       "sender_id": senderId,
       "receiver_id": receiverId,

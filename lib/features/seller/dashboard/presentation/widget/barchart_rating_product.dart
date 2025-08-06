@@ -137,15 +137,6 @@ class BarChartProductState extends State<BarChartRatingProduct> {
         ),
       );
 
-  LinearGradient get _barsGradient => const LinearGradient(
-        colors: [
-          AppColor.greenColor,
-          AppColor.yellowColor,
-        ],
-        begin: Alignment.bottomCenter,
-        end: Alignment.topCenter,
-      );
-
   double get maxYValue {
     return 5.0;
   }

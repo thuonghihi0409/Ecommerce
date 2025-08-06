@@ -57,4 +57,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
     final stores = await remoteDataSource.createStore(store, userId);
     return stores;
   }
+
+  @override
+  Future<void> updateProfile(ProfileEntity profile) async {
+    await remoteDataSource.updateProfile(profile);
+  }
 }

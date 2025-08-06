@@ -67,7 +67,11 @@ class ProductCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(Helper.formatCurrencyVND(product.price),
+                Text(
+                    Helper.formatCurrencyVND(((product.price ?? 0) -
+                        (product.promotion?.amount ?? 0) *
+                            (product.price ?? 0) *
+                            0.01)),
                     style: AppTextStyles.textSize14(color: AppColor.primary)),
                 Text(
                   "${"key_solded".tr()} ${Helper.formatNumber(
@@ -78,6 +82,11 @@ class ProductCard extends StatelessWidget {
                 )
               ],
             ),
+            if (product.promotion != null)
+              Text(Helper.formatCurrencyVND(product.price),
+                  style: AppTextStyles.textSize10(
+                      color: AppColor.primary,
+                      decoration: TextDecoration.lineThrough))
           ],
         ),
       ),

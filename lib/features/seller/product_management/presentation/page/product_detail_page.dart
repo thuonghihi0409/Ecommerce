@@ -39,9 +39,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   _getDate() async {
-    context.read<ProductBloc>().add(GetProductDetail(
-        productId: widget.product.productId,
-        categoryId: widget.product.categoryId ?? ""));
+    // context.read<ProductBloc>().add(GetProductDetail(
+    //     productId: widget.product.productId,
+    //     categoryId: widget.product.categoryId ?? ""));
   }
 
   @override

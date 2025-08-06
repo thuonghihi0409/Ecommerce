@@ -36,5 +36,24 @@ class GetListCategory extends ProductEvent {
 class GetProductDetail extends ProductEvent {
   final String productId;
   final String categoryId;
-  const GetProductDetail({required this.productId, required this.categoryId});
+  final String userId;
+  const GetProductDetail(
+      {required this.productId,
+      required this.categoryId,
+      required this.userId});
+}
+
+class UpdateWistlist extends ProductEvent {
+  final String productId;
+
+  final String userId;
+  final bool isLike;
+  const UpdateWistlist(
+      {required this.productId, required this.userId, required this.isLike});
+}
+
+class GetWistlist extends ProductEvent {
+  final String userId;
+
+  const GetWistlist({required this.userId});
 }

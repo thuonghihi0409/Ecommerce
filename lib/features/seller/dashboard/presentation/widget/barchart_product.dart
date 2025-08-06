@@ -132,15 +132,6 @@ class BarChartProductState extends State<BarChartProduct> {
         ),
       );
 
-  LinearGradient get _barsGradient => const LinearGradient(
-        colors: [
-          AppColor.greenColor,
-          AppColor.yellowColor,
-        ],
-        begin: Alignment.bottomCenter,
-        end: Alignment.topCenter,
-      );
-
   double get maxYValue {
     final maxRevenue = (widget.topOrderedProductModel ?? [])
         .map((e) => (e.totalOrdered ?? 0).toDouble())
