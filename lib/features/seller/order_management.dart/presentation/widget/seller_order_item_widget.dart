@@ -167,6 +167,34 @@ class _SellerOrderItemWidgetState extends State<SellerOrderItemWidget> {
                     )
                   ],
                 ),
+              if (widget.orderItem.status == OrderStatus.returnRequested)
+                Row(
+                  children: [
+                    CustomButton(
+                      isMinWidth: true,
+                      text: "key_cancel".tr(),
+                      onPressed: () {
+                        _bloc.add(UpdateOrder(
+                            id: context.read<ProfileBloc>().state.store?.id ??
+                                "",
+                            order: widget.orderItem,
+                            newStatus: OrderStatus.delivered));
+                      },
+                    ),
+                    40.w,
+                    CustomButton(
+                      text: "key_confirm".tr(),
+                      isMinWidth: true,
+                      onPressed: () {
+                        _bloc.add(UpdateOrder(
+                            id: context.read<ProfileBloc>().state.store?.id ??
+                                "",
+                            order: widget.orderItem,
+                            newStatus: OrderStatus.returned));
+                      },
+                    )
+                  ],
+                ),
             ],
           )
         ],

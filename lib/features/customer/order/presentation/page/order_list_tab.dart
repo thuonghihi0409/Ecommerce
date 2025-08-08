@@ -51,6 +51,12 @@ class _OrderListTabState extends State<OrderListTab> {
         case OrderStatus.delivering:
           _data = state.listOrderDelivering;
           break;
+        case OrderStatus.returnRequested:
+          _data = state.listOrderReturnRequested;
+          break;
+        case OrderStatus.returned:
+          _data = state.listOrderReturned;
+          break;
       }
       if ((_data.results ?? []).isEmpty) {
         return Center(

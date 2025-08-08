@@ -71,16 +71,12 @@ class _InitPageState extends State<InitPage> {
                           headerCustom: Column(
                             children: store
                                 .map((st) => InkWell(
-                                      child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 20, horizontal: 12),
-                                          decoration: BoxDecoration(
-                                              color: AppColor.greyColor
-                                                  .withAlpha(100)),
-                                          child: Text(
-                                            st.name ?? "",
-                                            style: AppTextStyles.textSize18(),
-                                          )),
+                                      child: ListTile(
+                                        title: Text(
+                                          st.name ?? "",
+                                          style: AppTextStyles.textSize18(),
+                                        ),
+                                      ),
                                       onTap: () async {
                                         bloc.add(SetStore(store: st));
                                         final prefs = await SharedPreferences
@@ -106,12 +102,23 @@ class _InitPageState extends State<InitPage> {
                       .popUntilRootAndReplace(const LoginScreen());
                 }));
           } else {
-            NavigationService.instance
-                .popUntilRootAndReplace(const IntroPage());
+            if (kIsWeb) {
+              NavigationService.instance
+                  .popUntilRootAndReplace(const LoginScreen());
+            } else {
+              NavigationService.instance
+                  .popUntilRootAndReplace(const IntroPage());
+            }
           }
         }, onError: (message) {
           Helper.showToastBottom(message: message);
-          NavigationService.instance.popUntilRootAndReplace(const IntroPage());
+          if (kIsWeb) {
+            NavigationService.instance
+                .popUntilRootAndReplace(const LoginScreen());
+          } else {
+            NavigationService.instance
+                .popUntilRootAndReplace(const IntroPage());
+          }
         }));
   }
 

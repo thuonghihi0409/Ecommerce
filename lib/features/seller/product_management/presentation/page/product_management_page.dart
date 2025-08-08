@@ -98,8 +98,17 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                                 style: AppTextStyles.textSize20(),
                               ),
                               SizedBox(
-                                width: context.widthScreen * 0.5,
+                                width: context.widthScreen * 0.3,
                               ),
+                              Expanded(
+                                  child: CustomButton(
+                                text: "key_promotion".tr(),
+                                onPressed: () {
+                                  NavigationService.instance
+                                      .pushNamed("promotion_management");
+                                },
+                              )),
+                              20.w,
                               Expanded(
                                 child: CustomButton(
                                   text: "key_add_product".tr(),
@@ -295,14 +304,26 @@ class ProductDataSource extends DataTableSource {
             icon: const Icon(Icons.read_more),
             tooltip: "key_restock_product".tr(),
             onPressed: () {
-              _bloc.add(SellerGetProductDetail(productId: product.productId));
+              _bloc.add(SellerGetProductDetail(
+                  productId: product.productId, onSuccess: () {}));
               NavigationService.instance.pushNamed("product_restock");
             },
           ),
           IconButton(
             icon: const Icon(Icons.visibility),
             tooltip: "key_detail".tr(),
-            onPressed: () {},
+            onPressed: () {
+              NavigationService.instance.pushNamed("product_detail",
+                  arguments: ({"id": product.productId}));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            tooltip: "key_update".tr(),
+            onPressed: () {
+              NavigationService.instance.pushNamed("update_product",
+                  arguments: {"id": product.productId});
+            },
           ),
           IconButton(
             icon: const Icon(Icons.lock),

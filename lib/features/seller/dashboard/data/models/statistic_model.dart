@@ -24,7 +24,7 @@ class StatisticModel extends StatisticEntity {
     TransactionEntity? transactions,
     List<TopProductEntity>? topOrderedProducts,
     List<RevenueEntity>? revenue,
-    double? totalRevenue,
+    int? totalRevenue,
   }) =>
       StatisticModel(
         topAvgRatingProducts: topAvgRatingProducts ?? this.topAvgRatingProducts,

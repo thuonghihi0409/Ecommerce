@@ -86,6 +86,7 @@ class ProductManagementBloc
         productDetailModel: product,
         getProductDetailError: "",
       ));
+      event.onSuccess?.call();
     } catch (e) {
       emit(state.copyWith(
           isGetDetail: false,

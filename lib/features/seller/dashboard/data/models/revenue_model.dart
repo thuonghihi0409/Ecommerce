@@ -6,7 +6,7 @@ class RevenueModel extends RevenueEntity {
   @override
   RevenueModel copyWith({
     String? key,
-    double? value,
+    int? value,
   }) =>
       RevenueModel(
         key: key ?? this.key,

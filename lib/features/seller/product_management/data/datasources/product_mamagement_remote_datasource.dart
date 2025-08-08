@@ -1,8 +1,11 @@
 import 'package:thuongmaidientu/features/customer/product/data/models/category_model.dart';
 import 'package:thuongmaidientu/features/customer/product/data/models/product_detail_model.dart';
+import 'package:thuongmaidientu/features/customer/product/data/models/promotion_model.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/category.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/promotion.dart';
 import 'package:thuongmaidientu/features/seller/product_management/data/models/seller_product_model.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/entities/seller_product.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
@@ -13,6 +16,10 @@ abstract class ProductManagementRemoteDatasource {
   Future<List<Category>> getListCategory();
   Future<void> updateVariants(List<Variant> variants);
   Future<void> updateProduct(ProductDetail product);
+  Future<void> createPromotion(
+      Promotion promotion, List<SellerProduct> product);
+  Future<List<PromotionModel>> getListPrmotion(String id);
+  Future<void> updatePromotion(Promotion promotion);
 }
 
 class ProductManagementRemoteDataSourceImpl
@@ -24,7 +31,8 @@ class ProductManagementRemoteDataSourceImpl
     final data = await supabase.from("Products").select('''
       *,
       variants : Variants(*),
-      category: Categories(*)
+      category: Categories(*),
+      promotion: ProductPromotion(promotion:Promotions(*)))
       ''').eq("store_id", storeId);
     final result = ListModel(
         results: data
@@ -40,7 +48,8 @@ class ProductManagementRemoteDataSourceImpl
       *,
       images : Images(*),
       variants : Variants(*),
-      store : Stores(*)
+      store : Stores(*),
+      promotion: ProductPromotion(promotion:Promotions(*)))
       ''').eq("id", id).single();
 
     return ProductDetailModel.fromJson(data);
@@ -114,4 +123,44 @@ class ProductManagementRemoteDataSourceImpl
       }).eq('id', variant.id);
     }
   }
+
+  @override
+  Future<void> createPromotion(
+      Promotion promotion, List<SellerProduct> products) async {
+    final result = await supabase
+        .from("Promotions")
+        .insert({
+          "store_id": promotion.storeId,
+          "end_time": (promotion.endTime ?? DateTime.now()).toIso8601String(),
+          "start_time":
+              (promotion.startTime ?? DateTime.now()).toIso8601String(),
+          "type": "per",
+          "amount": promotion.amount,
+          "name": promotion.name,
+        })
+        .select()
+        .single();
+
+    final promotionId = result["id"];
+
+    final productPromotionList = products.map((item) {
+      return {
+        "promotion_id": promotionId,
+        "product_id": item.productId,
+      };
+    }).toList();
+
+    // 3. Insert vào bảng trung gian ProductPromotion
+    await supabase.from("ProductPromotion").insert(productPromotionList);
+  }
+
+  @override
+  Future<List<PromotionModel>> getListPrmotion(String id) async {
+    final result =
+        await supabase.from("Promotions").select('''*''').eq("store_id", id);
+    return result.map((e) => PromotionModel.fromJson(e)).toList();
+  }
+
+  @override
+  Future<void> updatePromotion(Promotion promotion) async {}
 }

@@ -19,6 +19,7 @@ import 'package:thuongmaidientu/features/review/presentation/bloc/review_bloc/re
 import 'package:thuongmaidientu/features/seller/dashboard/presentation/bloc/dashboard_bloc/dashboard_bloc.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/promotion_bloc/promotion_bloc.dart';
 import 'package:thuongmaidientu/get_it.dart';
 import 'package:thuongmaidientu/init_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
@@ -68,7 +69,8 @@ void main() async {
           BlocProvider(create: (_) => sl<OrderBloc>()),
           BlocProvider(create: (_) => sl<DashboardBloc>()),
           BlocProvider(create: (_) => sl<ProductManagementBloc>()),
-          BlocProvider(create: (_) => sl<OrderManagementBloc>())
+          BlocProvider(create: (_) => sl<OrderManagementBloc>()),
+          BlocProvider(create: (_) => sl<PromotionBloc>())
         ], child: const MyApp()),
       )));
 }

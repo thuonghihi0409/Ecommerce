@@ -1,5 +1,6 @@
 import 'package:thuongmaidientu/features/customer/product/domain/entities/category.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/promotion.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/entities/seller_product.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
@@ -10,4 +11,8 @@ abstract class ProductManagementRepository {
   Future<void> createProductDetail(ProductDetail product);
   Future<void> updateVariants(List<Variant> variants);
   Future<void> updateProduct(ProductDetail product);
+  Future<void> createPromotion(
+      Promotion promotion, List<SellerProduct> product);
+  Future<List<Promotion>> getListPrmotion(String id);
+  Future<void> updatePromotion(Promotion promotion);
 }

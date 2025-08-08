@@ -1,14 +1,14 @@
 import 'package:thuongmaidientu/features/customer/product/domain/entities/promotion.dart';
 
 class PromotionModel extends Promotion {
-  PromotionModel({
-    required super.id,
-    super.name,
-    super.amount,
-    super.startTime,
-    super.endTime,
-    super.type,
-  });
+  PromotionModel(
+      {required super.id,
+      super.name,
+      super.amount,
+      super.startTime,
+      super.endTime,
+      super.type,
+      super.storeId});
 
   factory PromotionModel.fromJson(Map<String, dynamic> json) {
     return PromotionModel(

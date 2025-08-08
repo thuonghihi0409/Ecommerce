@@ -1,5 +1,7 @@
 import 'package:thuongmaidientu/features/seller/dashboard/data/models/statistic_model.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/domain/entities/top_ordered_product_entity.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/domain/entities/transaction_entity.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/domain/entities/transaction_status_entity.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 
 abstract class DashboardRemoteDatasource {
@@ -45,13 +47,31 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDatasource {
     final totalOrdersRes =
         await supabase.from('Orders').select('id').eq('store_id', storeId);
     final totalOrder = totalOrdersRes.length;
+
+    final revenues = await supabase
+        .from('Orders')
+        .select('''*''')
+        .eq('store_id', storeId)
+        .eq("is_payment", true);
+    int totalRevenue = 0;
+    revenues
+        .map((item) =>
+            totalRevenue += (int.tryParse(item["total"].toString()) ?? 0))
+        .toList();
+    final transaction = supabase.from("Transactions").select();
+    final fail = await transaction.eq("status", "failed");
+    final succes = await transaction.eq("status", "success");
     return StatisticModel(
         topAvgRatingProducts: listRatingPrduct,
         totalOrders: totalOrder,
         totalProducts: totalProduct,
         topOrderedProducts: listPrduct,
-        transactions: null,
+        transactions:
+            TransactionEntity(total: fail.length + succes.length, statuses: [
+          TransactionStatusEntity(status: "success", count: succes.length),
+          TransactionStatusEntity(status: "failed", count: fail.length),
+        ]),
         revenue: null,
-        totalRevenue: null);
+        totalRevenue: totalRevenue);
   }
 }

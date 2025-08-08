@@ -9,15 +9,20 @@ import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_b
 import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/customer/product/presentation/page/product_page.dart';
-import 'package:thuongmaidientu/features/customer/product/presentation/page/store_detail.dart';
 import 'package:thuongmaidientu/features/notification/presentation/bloc/notification_bloc/notification_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/setting_screen.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/presentation/page/dashboard_page.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/page/order_management_page.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/page/create_product_page.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/create_promotion.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/page/product_management_page.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/page/product_restock_page.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/promotion_management_page.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/seller_product_detail_page.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/seller_review_page.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/seller_store_detail.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/seller_update_product_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -186,8 +191,11 @@ class _WebMainDrawerState extends State<WebMainDrawer> {
                         case "setting":
                           child = const AccountSettingsScreen();
                           break;
-                        case "product_detail":
-                          child = const ProductPage();
+                        case "update_product":
+                          final args =
+                              settings.arguments as Map<String, dynamic>?;
+                          final id = args?["id"] ?? "";
+                          child = SellerUpdateProductPage(id: id);
                           break;
                         case "conversation":
                           child = const ConversationPage();
@@ -202,8 +210,26 @@ class _WebMainDrawerState extends State<WebMainDrawer> {
                           child = const ProductRestockPage();
                           break;
                         case "profile_store":
-                          child = StoreDetail(
+                          child = SellerStoreDetailPage(
                               store: context.read<ProfileBloc>().state.store);
+                          break;
+                        case "product_detail":
+                          final args =
+                              settings.arguments as Map<String, dynamic>?;
+                          final id = args?["id"] ?? "";
+                          child = SellerProductDetailPage(id: id);
+                          break;
+                        case "review":
+                          final args =
+                              settings.arguments as Map<String, dynamic>?;
+                          final id = args?["id"] ?? "";
+                          child = SellerReviewPage(productId: id);
+                          break;
+                        case "promotion_management":
+                          child = const PromotionManagementPage();
+                          break;
+                        case "create_promotion":
+                          child = const CreatePromotionPage();
                           break;
                       }
 

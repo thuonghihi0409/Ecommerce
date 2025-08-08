@@ -9,6 +9,8 @@ enum OrderStatus {
   delivering, // Đang giao
   delivered, // Đã giao
   cancelled, // Đã hủy
+  returnRequested, // Yêu cầu trả hàng
+  returned, // Đã trả hàng
 }
 
 OrderStatus orderStatusFromString(String status) {
@@ -23,7 +25,10 @@ OrderStatus orderStatusFromString(String status) {
       return OrderStatus.delivered;
     case 'cancelled':
       return OrderStatus.cancelled;
-
+    case 'returnRequested':
+      return OrderStatus.returnRequested;
+    case 'returned':
+      return OrderStatus.returned;
     default:
       throw Exception('Unknown order status: $status');
   }
@@ -41,6 +46,10 @@ String orderStatusToString(OrderStatus status) {
       return 'delivered';
     case OrderStatus.cancelled:
       return 'cancelled';
+    case OrderStatus.returnRequested:
+      return 'returnRequested';
+    case OrderStatus.returned:
+      return 'returned';
   }
 }
 
@@ -56,6 +65,10 @@ String orderStatusToText(OrderStatus status) {
       return 'Đã giao';
     case OrderStatus.cancelled:
       return 'Đã hủy';
+    case OrderStatus.returnRequested:
+      return 'Yêu cầu trả hàng';
+    case OrderStatus.returned:
+      return 'Đã trả hàng';
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,11 +31,12 @@ class _ProductRestockPageState extends State<ProductRestockPage> {
 
   void applySameStock() {
     if (samePriceValue != null) {
+      log(" ap dung");
       for (var input in variantInputs) {
         input.controller.text = samePriceValue.toString();
       }
     }
-    setState(() {});
+    //  setState(() {});
   }
 
   void onSubmit() {

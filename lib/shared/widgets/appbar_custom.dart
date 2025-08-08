@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -28,7 +29,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       {super.key,
       this.title,
       this.titleStyle,
-      this.backgroundColor = AppColor.primary,
+      this.backgroundColor = kIsWeb ? AppColor.whiteColor : AppColor.primary,
       this.showLeading = true,
       this.leading,
       this.actions,
@@ -51,7 +52,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       AppTextStyles.textSize18(fontWeight: FontWeight.w400),
                 )
               : null),
-      centerTitle: true,
+      centerTitle: !kIsWeb,
       backgroundColor: backgroundColor,
       automaticallyImplyLeading: false,
       leading: showLeading
@@ -71,7 +72,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             )
           : null,
       actions: [
-        if (isShowChatIcon)
+        if (isShowChatIcon && !kIsWeb)
           BadgeIcon(
             icon: SvgPicture.asset(
               AppAssets.chatIcon,
@@ -83,8 +84,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               NavigationService.instance.push(const ConversationPage());
             },
           ),
-        if (isShowCartIcon && isShowCartIcon) 10.w,
-        if (isShowCartIcon)
+        if (isShowCartIcon && isShowCartIcon && !kIsWeb) 10.w,
+        if (isShowCartIcon && !kIsWeb)
           BlocBuilder<CartBloc, CartState>(builder: (context, state) {
             return BadgeIcon(
               icon: SvgPicture.asset(

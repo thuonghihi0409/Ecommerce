@@ -137,61 +137,64 @@ class Helper {
         context: context,
         barrierDismissible: barrierDismissible,
         builder: (dialogContext) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            physics:
-                isNeverScroll ? const NeverScrollableScrollPhysics() : null,
-            child: ValueListenableBuilder(
-                valueListenable: isDisablePrimaryButton ?? ValueNotifier(false),
-                builder: (context, isDisableButton, child) {
-                  return Dialog(
-                    insetPadding: kIsWeb
-                        ? EdgeInsets.symmetric(
-                            horizontal: context.widthScreen * 0.3)
-                        : const EdgeInsets.symmetric(horizontal: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+          return ValueListenableBuilder(
+            valueListenable: isDisablePrimaryButton ?? ValueNotifier(false),
+            builder: (context, isDisableButton, child) {
+              return Dialog(
+                insetPadding: kIsWeb
+                    ? EdgeInsets.symmetric(
+                        horizontal: context.widthScreen * 0.3)
+                    : const EdgeInsets.symmetric(horizontal: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    physics: isNeverScroll
+                        ? const NeverScrollableScrollPhysics()
+                        : null,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (message != null)
+                          Text(
+                            message,
+                            style: AppTextStyles.textSize18(),
+                          ),
+                        headerCustom ?? const SizedBox(),
+                        Row(
+                          mainAxisAlignment:
+                              isShowPrimaryButton && isShowSecondButton
+                                  ? MainAxisAlignment.spaceAround
+                                  : (isShowPrimaryButton
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start),
+                          children: [
+                            if (isShowSecondButton)
+                              CustomButton(
+                                text: "key_cancel".tr(),
+                                isMinWidth: true,
+                                onPressed: onClose ??
+                                    () {
+                                      NavigationService.instance.goBack();
+                                    },
+                              ),
+                            if (isShowPrimaryButton)
+                              CustomButton(
+                                text: "key_ok".tr(),
+                                isMinWidth: true,
+                                onPressed: onPressPrimaryButton,
+                              )
+                          ],
+                        )
+                      ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          if (message != null)
-                            Text(
-                              message,
-                              style: AppTextStyles.textSize18(),
-                            ),
-                          headerCustom ?? const SizedBox(),
-                          Row(
-                            mainAxisAlignment:
-                                isShowPrimaryButton && isShowSecondButton
-                                    ? MainAxisAlignment.spaceAround
-                                    : (isShowPrimaryButton
-                                        ? MainAxisAlignment.end
-                                        : MainAxisAlignment.start),
-                            children: [
-                              if (isShowSecondButton)
-                                CustomButton(
-                                  text: "key_cancel".tr(),
-                                  isMinWidth: true,
-                                  onPressed: onClose ??
-                                      () {
-                                        NavigationService.instance.goBack();
-                                      },
-                                ),
-                              if (isShowPrimaryButton)
-                                CustomButton(
-                                  text: "key_ok".tr(),
-                                  isMinWidth: true,
-                                  onPressed: onPressPrimaryButton,
-                                )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                }),
+                  ),
+                ),
+              );
+            },
           );
         });
   }

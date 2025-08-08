@@ -23,6 +23,7 @@ import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
@@ -98,7 +99,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             headerCustom: Column(
                               children: store
                                   .map((st) => InkWell(
-                                        child: Text(st.name ?? ""),
+                                        child: ListTile(
+                                          leading: CustomCacheImageNetwork(
+                                            imageUrl: st.logoUrl,
+                                            height: 30,
+                                            width: 30,
+                                            borderRadius: 15,
+                                          ),
+                                          title: Text(
+                                            st.name ?? "",
+                                            style: AppTextStyles.textSize18(),
+                                          ),
+                                        ),
                                         onTap: () async {
                                           bloc.add(SetStore(store: st));
                                           final prefs = await SharedPreferences
@@ -147,6 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }),
       child: Scaffold(
         appBar: CustomAppBar(
+          showLeading: !kIsWeb,
           title: "key_login".tr(),
           isShowCartIcon: false,
           isShowChatIcon: false,

@@ -5,6 +5,7 @@ class Promotion {
   final DateTime? startTime;
   final DateTime? endTime;
   final String? type;
+  final String? storeId;
 
   Promotion(
       {required this.id,
@@ -12,5 +13,6 @@ class Promotion {
       required this.amount,
       required this.startTime,
       required this.endTime,
-      required this.type});
+      required this.type,
+      required this.storeId});
 }

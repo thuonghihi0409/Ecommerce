@@ -10,7 +10,7 @@ class StatisticEntity extends Equatable {
   final List<TopProductEntity>? topOrderedProducts;
   final List<TopProductEntity>? topAvgRatingProducts;
   final List<RevenueEntity>? revenue;
-  final double? totalRevenue;
+  final int? totalRevenue;
 
   const StatisticEntity(
       {required this.totalOrders,
@@ -28,7 +28,7 @@ class StatisticEntity extends Equatable {
     List<TopProductEntity>? topOrderedProducts,
     List<TopProductEntity>? topAvgRatingProducts,
     List<RevenueEntity>? revenue,
-    double? totalRevenue,
+    int? totalRevenue,
   }) =>
       StatisticEntity(
           totalOrders: totalOrders ?? this.totalOrders,

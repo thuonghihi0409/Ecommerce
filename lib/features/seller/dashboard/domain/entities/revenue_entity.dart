@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class RevenueEntity extends Equatable {
   final String? key;
-  final double? value;
+  final int? value;
 
   const RevenueEntity({
     required this.key,
@@ -11,7 +11,7 @@ class RevenueEntity extends Equatable {
 
   RevenueEntity copyWith({
     String? key,
-    double? value,
+    int? value,
   }) =>
       RevenueEntity(
         key: key ?? this.key,

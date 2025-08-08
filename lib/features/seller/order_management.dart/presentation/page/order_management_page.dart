@@ -18,7 +18,9 @@ class _OrderPageState extends State<OrderManagementPage>
     OrderStatus.awaiting,
     OrderStatus.delivering,
     OrderStatus.delivered,
+    OrderStatus.returnRequested,
     OrderStatus.cancelled,
+    OrderStatus.returned
   ];
 
   late final TabController _tabController;

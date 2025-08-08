@@ -82,7 +82,12 @@ class _VerifyPageState extends State<VerifyPage> {
                       headerCustom: Column(
                         children: store
                             .map((st) => InkWell(
-                                  child: Text(st.name ?? ""),
+                                  child: ListTile(
+                                    title: Text(
+                                      st.name ?? "",
+                                      style: AppTextStyles.textSize18(),
+                                    ),
+                                  ),
                                   onTap: () async {
                                     bloc.add(SetStore(store: st));
                                     final prefs =

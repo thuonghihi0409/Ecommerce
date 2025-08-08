@@ -83,6 +83,16 @@ class OrderManagementBloc
           listOrderCancelled:
               state.listOrderCancelled.copyWith(isLoading: isLoading),
         );
+      case OrderStatus.returnRequested:
+        return state.copyWith(
+          listOrderReturnRequested:
+              state.listOrderReturnRequested.copyWith(isLoading: isLoading),
+        );
+      case OrderStatus.returned:
+        return state.copyWith(
+          listOrderReturned:
+              state.listOrderReturned.copyWith(isLoading: isLoading),
+        );
     }
   }
 
@@ -99,6 +109,10 @@ class OrderManagementBloc
         return state.copyWith(listOrderDelivered: data);
       case OrderStatus.cancelled:
         return state.copyWith(listOrderCancelled: data);
+      case OrderStatus.returnRequested:
+        return state.copyWith(listOrderReturnRequested: data);
+      case OrderStatus.returned:
+        return state.copyWith(listOrderReturned: data);
     }
   }
 

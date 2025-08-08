@@ -25,8 +25,10 @@ class SellerGetListCategory extends ProductManagementEvent {
 
 class SellerGetProductDetail extends ProductManagementEvent {
   final String productId;
+  final Function? onSuccess;
 
-  const SellerGetProductDetail({required this.productId});
+  const SellerGetProductDetail(
+      {required this.productId, required this.onSuccess});
 }
 
 class SellerCreateProduct extends ProductManagementEvent {

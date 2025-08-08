@@ -96,7 +96,7 @@ class BarChartProductState extends State<BarChartRatingProduct> {
                 child: SizedBox(
                   width: width - 10,
                   child: Transform.rotate(
-                    angle: -0.5,
+                    angle: -0.4,
                     child: Text(
                       widget.topOrderedProductModel?[index].name ?? "",
                       style: AppTextStyles.textSize14(),

@@ -10,6 +10,7 @@ import 'package:thuongmaidientu/features/customer/product/domain/entities/catego
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/page/create_product_page.dart';
 import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
@@ -18,19 +19,24 @@ import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/upload_image_widget.dart';
 
-class CreateProductPage extends StatefulWidget {
-  const CreateProductPage({super.key});
+class SellerUpdateProductPage extends StatefulWidget {
+  final String id;
+  const SellerUpdateProductPage({
+    super.key,
+    required this.id,
+  });
 
   @override
-  State<CreateProductPage> createState() => _CreateProductPageState();
+  State<SellerUpdateProductPage> createState() =>
+      _SellerUpdateProductPageState();
 }
 
-class _CreateProductPageState extends State<CreateProductPage> {
+class _SellerUpdateProductPageState extends State<SellerUpdateProductPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _productNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  final List<VariantForm> _variants = [VariantForm()];
+  List<VariantForm> _variants = [VariantForm()];
 
   late ProductManagementBloc _bloc;
   List<Uint8List> images = [];
@@ -40,6 +46,27 @@ class _CreateProductPageState extends State<CreateProductPage> {
   void initState() {
     super.initState();
     _bloc = context.read<ProductManagementBloc>();
+    _bloc.add(SellerGetProductDetail(
+        productId: widget.id,
+        onSuccess: () {
+          initData();
+        }));
+  }
+
+  initData() {
+    final product = _bloc.state.productDetailModel;
+    _productNameController.text = product?.productName ?? "";
+    _descriptionController.text = product?.description ?? "";
+    _priceController.text = (product?.price ?? 0).toString();
+    _variants = (product?.variants ?? [])
+        .map((e) => VariantForm(
+              imageInput: e.cover,
+              name: e.name,
+              id: e.id,
+              stock: e.stock.toString(),
+              price: e.price.toString(),
+            ))
+        .toList();
   }
 
   void _addVariant() {
@@ -118,10 +145,14 @@ class _CreateProductPageState extends State<CreateProductPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductManagementBloc, ProductManagementState>(
         builder: (context, state) {
+      if (state.isGetDetail) {
+        return const SizedBox();
+      }
+
       return Scaffold(
-        appBar: AppBar(title: const Text('Tạo sản phẩm mới')),
+        appBar: AppBar(title: Text("key_product_detail".tr())),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+          padding: const EdgeInsets.all(24.0),
           child: Form(
             key: _formKey,
             child: Column(
@@ -245,7 +276,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                 ),
                 32.h,
                 CustomButton(
-                  text: 'Tạo sản phẩm',
+                  text: 'Lưu sản phẩm',
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _submit();
@@ -258,77 +289,5 @@ class _CreateProductPageState extends State<CreateProductPage> {
         ),
       );
     });
-  }
-}
-
-class VariantForm extends StatelessWidget {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
-  final TextEditingController stockController = TextEditingController();
-  late Uint8List image;
-
-  final String? id;
-  final String? imageInput;
-  final String? name;
-  final String? price;
-  final String? stock;
-
-  VariantForm(
-      {super.key, this.id, this.imageInput, this.name, this.price, this.stock});
-
-  @override
-  Widget build(BuildContext context) {
-    nameController.text = name ?? "";
-    priceController.text = price ?? "";
-    stockController.text = stock ?? "";
-    return Column(
-      children: [
-        TextFormField(
-          controller: nameController,
-          decoration: const InputDecoration(
-            labelText: 'Tên biến thể',
-            border: OutlineInputBorder(),
-          ),
-          validator: (value) =>
-              value == null || value.isEmpty ? 'Bắt buộc' : null,
-        ),
-        20.h,
-        Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: priceController,
-                decoration: const InputDecoration(
-                  labelText: 'Giá (VNĐ)',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-            ),
-            30.w,
-            Expanded(
-              child: TextFormField(
-                controller: stockController,
-                decoration: const InputDecoration(
-                  labelText: 'Số lượng tồn kho',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-            ),
-          ],
-        ),
-        30.h,
-        MultiImagePickerWidget(
-          allowMultiple: false,
-          onSuccess: (p0) {
-            if (p0.isNotEmpty) {
-              image = p0[0];
-            }
-          },
-        ),
-        30.h,
-      ],
-    );
   }
 }

@@ -122,7 +122,7 @@ class BarChartWidgetState extends State<BarChartWidget> {
   double get maxYValue {
     final maxRevenue = (widget.revenue ?? [])
         .map((e) => e.value ?? 0)
-        .fold<double>(0, (prev, value) => value > prev ? value : prev);
+        .fold<int>(0, (prev, value) => value > prev ? value : prev);
 
     double estimatedMax = maxRevenue * 1.2;
 
@@ -140,7 +140,7 @@ class BarChartWidgetState extends State<BarChartWidget> {
           barRods: [
             BarChartRodData(
               width: width,
-              toY: entry.value.value ?? 0,
+              toY: (entry.value.value ?? 0).toDouble(),
               // gradient: _barsGradient,
               color: AppColor.greenColor,
               borderRadius: BorderRadius.zero,
