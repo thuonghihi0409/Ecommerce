@@ -43,9 +43,9 @@ class _ProductRestockPageState extends State<ProductRestockPage> {
     context.read<ProductManagementBloc>().add(SellerUpdateVariant(
         variants: variantInputs
             .map((item) => Variant(
+                prices: item.prices,
                 id: item.id,
                 name: item.name,
-                price: item.price,
                 stock: item.stock + (int.tryParse(item.controller.text) ?? 0),
                 cover: item.cover,
                 totalSold: 0))
@@ -72,9 +72,9 @@ class _ProductRestockPageState extends State<ProductRestockPage> {
         }
         variantInputs = (state.productDetailModel?.variants ?? [])
             .map((variant) => VariantInput(
+                prices: variant.prices,
                 id: variant.id,
                 name: variant.name ?? "",
-                price: variant.price ?? 0,
                 stock: variant.stock ?? 0,
                 cover: variant.cover))
             .toList();
@@ -149,7 +149,7 @@ class _ProductRestockPageState extends State<ProductRestockPage> {
                                     ),
                                     10.h,
                                     Text(
-                                      '${"key_price".tr()}: ${Helper.formatCurrencyVND(item.price.toString())}',
+                                      '${"key_price".tr()}: ${Helper.formatCurrencyVND(item.prices?.price.toString())}',
                                       style: AppTextStyles.textSize16(),
                                     ),
                                     10.h,

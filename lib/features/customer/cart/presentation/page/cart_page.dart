@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
+import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/customer/cart/domain/entities/cart_item.dart';
 import 'package:thuongmaidientu/features/customer/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/customer/cart/presentation/widget/cart_item_widget.dart';
@@ -27,6 +28,7 @@ class _CartPageState extends State<CartPage> {
   final ScrollController _scrollController = ScrollController();
   late List<CartItem?> _listCarts;
   int _total = 0;
+  int _subtotal = 0;
 
   @override
   void initState() {
@@ -82,13 +84,20 @@ class _CartPageState extends State<CartPage> {
                         onChangeSelect: (item) {
                           setState(() {
                             _total = 0;
+                            _subtotal = 0;
 
                             _listCarts[index] = item;
 
                             for (var item in _listCarts) {
                               if (item != null) {
                                 for (var product in item.productItem) {
-                                  _total += (product.variant?.price ?? 0);
+                                  _total +=
+                                      (product.variant?.prices?.price ?? 0) *
+                                          product.number;
+                                  _subtotal += Helper.getDiscount(
+                                          product.variant?.prices?.price ?? 0,
+                                          product.productDetail?.promotion) *
+                                      product.number;
                                 }
                               }
                             }
@@ -101,8 +110,17 @@ class _CartPageState extends State<CartPage> {
                 Row(
                   children: [
                     if (_total != 0)
-                      Text(
-                          "${"key_sum".tr()}: ${Helper.formatCurrencyVND(_total)}"),
+                      Column(
+                        children: [
+                          Text(
+                              "${"key_sum".tr()}: ${Helper.formatCurrencyVND(_subtotal)}"),
+                          2.h,
+                          Text(
+                            "Tiết kiệm: ${Helper.formatCurrencyVND(_total - _subtotal)}",
+                            style: AppTextStyles.textSize12(),
+                          ),
+                        ],
+                      ),
                     if (_total != 0) 10.w,
                     Expanded(
                         child: CustomButton(
@@ -117,6 +135,7 @@ class _CartPageState extends State<CartPage> {
                                 .where((item) => item != null)
                                 .toList(),
                             total: _total,
+                            subtotal: _subtotal,
                           ),
                         );
                       },

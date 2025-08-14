@@ -9,6 +9,7 @@ class OrderItemModel extends OrderItem {
       {required super.store,
       required super.productItem,
       required super.id,
+      required super.isPayment,
       required super.paymentMethod,
       required super.address,
       required super.status,
@@ -17,6 +18,7 @@ class OrderItemModel extends OrderItem {
 
   factory OrderItemModel.fromJson(Map<String, dynamic> map) {
     return OrderItemModel(
+      isPayment: map["is_payment"],
       paymentMethod: map["payment_method"],
       total: map['total'],
       subtotal: map['subtotal'],

@@ -2,6 +2,7 @@ class Promotion {
   final String id;
   final String? name;
   final double? amount;
+  final int? max;
   final DateTime? startTime;
   final DateTime? endTime;
   final String? type;
@@ -13,6 +14,7 @@ class Promotion {
       required this.amount,
       required this.startTime,
       required this.endTime,
+      required this.max,
       required this.type,
       required this.storeId});
 }

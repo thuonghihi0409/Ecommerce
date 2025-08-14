@@ -127,20 +127,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                      Helper.formatCurrencyVND(((state
-                                                  .productDetailModel
-                                                  ?.variants?[_index]
-                                                  .price ??
-                                              0) -
-                                          (state.productDetailModel?.promotion
-                                                      ?.amount ??
-                                                  0) *
-                                              (state
+                                      Helper.formatCurrencyVND(
+                                          Helper.getDiscount(
+                                              state
                                                       .productDetailModel
                                                       ?.variants?[_index]
-                                                      .price ??
-                                                  0) *
-                                              0.01)),
+                                                      .prices
+                                                      ?.price ??
+                                                  0,
+                                              state.productDetailModel
+                                                  ?.promotion)),
                                       style: AppTextStyles.textSize14(
                                           color: AppColor.primary)),
                                   IconButton(
@@ -170,7 +166,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                     Helper.formatCurrencyVND(state
                                         .productDetailModel
                                         ?.variants?[_index]
-                                        .price),
+                                        .prices
+                                        ?.price),
                                     style: AppTextStyles.textSize10(
                                         color: AppColor.primary,
                                         decoration:
@@ -405,25 +402,29 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               try {
                                 log("hihihii");
                                 NavigationService.instance.push(CreateOrderPage(
-                                    cartItems: [
-                                      CartItem(
-                                          store:
-                                              state.productDetailModel!.store!,
-                                          productItem: [
-                                            ProductItem(
-                                                id: "",
-                                                productDetail:
-                                                    state.productDetailModel!,
-                                                variant: state
-                                                    .productDetailModel!
-                                                    .variants![index],
-                                                number: quantity)
-                                          ],
-                                          id: "")
-                                    ],
-                                    total: state.productDetailModel!
-                                            .variants![index].price! *
-                                        quantity));
+                                  cartItems: [
+                                    CartItem(
+                                        store: state.productDetailModel!.store!,
+                                        productItem: [
+                                          ProductItem(
+                                              id: "",
+                                              productDetail:
+                                                  state.productDetailModel!,
+                                              variant: state.productDetailModel!
+                                                  .variants![index],
+                                              number: quantity)
+                                        ],
+                                        id: "")
+                                  ],
+                                  total: state.productDetailModel!
+                                          .variants![index].prices!.price! *
+                                      quantity,
+                                  subtotal: Helper.getDiscount(
+                                          state.productDetailModel!
+                                              .variants![index].prices!.price!,
+                                          state.productDetailModel?.promotion) *
+                                      quantity,
+                                ));
                               } catch (e) {
                                 log(ParseError.fromJson(e).message);
                               }

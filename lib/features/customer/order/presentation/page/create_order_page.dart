@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
+import 'package:live_currency_rate/live_currency_rate.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/customer/cart/domain/entities/cart_item.dart';
@@ -24,9 +25,11 @@ import 'package:thuongmaidientu/shared/widgets/location_widget.dart';
 class CreateOrderPage extends StatefulWidget {
   final List<CartItem?> cartItems;
   final int total;
+  final int subtotal;
   final bool isDeleteCart;
   const CreateOrderPage(
       {super.key,
+      required this.subtotal,
       required this.cartItems,
       required this.total,
       this.isDeleteCart = false});
@@ -70,14 +73,15 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     10.h,
                     ...widget.cartItems.map((product) => OrderItemWidget(
                           isCreating: true,
-                          orderItem: OrderItem.copyFromCartItem(product!, null),
+                          orderItem: OrderItem.copyFromCartItem(
+                              product!, null, "cash", false),
                         )),
                     10.h,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("${"key_total_currency".tr()}: "),
-                        Text(Helper.formatCurrencyVND(widget.total))
+                        Text(Helper.formatCurrencyVND(widget.subtotal))
                       ],
                     ),
                     20.h,
@@ -123,9 +127,6 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                       title: Text("key_payment_after_recieve_product".tr(),
                           style: AppTextStyles.textSize16()),
                     ),
-                    CustomButton(
-                      text: "key_payment".tr(),
-                    )
                   ],
                 ),
               ),
@@ -145,9 +146,12 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                   child: CustomButton(
                     isEnable: addresses.isNotEmpty,
                     text: _isOnline ? "key_payment".tr() : "key_ordering".tr(),
-                    onPressed: () {
+                    onPressed: () async {
                       final userId =
                           context.read<ProfileBloc>().state.profile?.id ?? "";
+                      final totalUSD = await LiveCurrencyRate.convertCurrency(
+                          "VND", "USD", widget.total.toDouble());
+
                       if (_isOnline) {
                         NavigationService.instance.push(
                           PaypalCheckoutView(
@@ -155,15 +159,16 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                             clientId: dotenv.env["PAYPAL_CLIENT_ID"]!,
                             secretKey:
                                 "", // Có thể bỏ qua nếu không dùng server
-                            transactions: const [
+                            transactions: [
                               {
                                 "amount": {
-                                  "total": '10',
+                                  "total": totalUSD.result.round().toString(),
                                   "currency": 'USD',
                                   "details": {
-                                    "subtotal": '10',
+                                    "subtotal":
+                                        totalUSD.result.round().toString(),
                                     "shipping": '0',
-                                    "shipping_discount": 0
+                                    "shipping_discount": '0'
                                   }
                                 },
                                 "description": "Mua sản phẩm công nghệ",
@@ -172,7 +177,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     {
                                       "name": "Tai nghe Bluetooth",
                                       "quantity": 1,
-                                      "price": '10',
+                                      "price":
+                                          totalUSD.result.round().toString(),
                                       "currency": 'USD'
                                     }
                                   ],
@@ -197,7 +203,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   userId: userId,
                                   orders: widget.cartItems
                                       .map((item) => OrderItem.copyFromCartItem(
-                                          item!, addresses[0]))
+                                          item!, addresses[0], "online", true))
                                       .toList()));
                               Navigator.pop(context);
                             },
@@ -222,7 +228,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                             userId: userId,
                             orders: widget.cartItems
                                 .map((item) => OrderItem.copyFromCartItem(
-                                    item!, addresses[0]))
+                                    item!, addresses[0], "cash", false))
                                 .toList()));
                       }
                     },

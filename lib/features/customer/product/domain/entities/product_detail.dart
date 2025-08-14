@@ -8,7 +8,7 @@ class ProductDetail {
   final int? price;
   final Store? store;
   final String? categoryId;
-  final Promotion? promotion;
+  final List<Promotion>? promotion;
   final List<ImageItem>? images;
   final List<Variant>? variants;
   final double? avgRating;
@@ -34,7 +34,7 @@ class ProductDetail {
       required this.isLike});
 
   ProductDetail copyWith({
-    Promotion? promotion,
+    List<Promotion>? promotion,
     String? productId,
     String? productName,
     String? description,
@@ -84,15 +84,24 @@ class Variant {
   final String id;
   final String? cover;
   final String? name;
-  final int? price;
+
+  final Price? prices;
   final int? stock;
   final int? totalSold;
 
   Variant(
       {required this.id,
       required this.name,
-      required this.price,
+      required this.prices,
       required this.stock,
       required this.cover,
       required this.totalSold});
+}
+
+class Price {
+  final String id;
+  final int? price;
+  final DateTime? startTime;
+
+  Price({required this.id, required this.price, required this.startTime});
 }

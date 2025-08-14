@@ -71,10 +71,13 @@ class _CreateProductPageState extends State<CreateProductPage> {
         return Variant(
             id: "",
             name: variant.nameController.text,
-            price: int.tryParse(variant.priceController.text) ?? 0,
             stock: int.tryParse(variant.stockController.text) ?? 0,
             cover: url,
-            totalSold: 0);
+            totalSold: 0,
+            prices: Price(
+                id: "",
+                price: int.tryParse(variant.priceController.text) ?? 0,
+                startTime: DateTime.now()));
       }));
 
       final product = ProductDetail(
@@ -271,10 +274,17 @@ class VariantForm extends StatelessWidget {
   final String? imageInput;
   final String? name;
   final String? price;
+  final Price? prices;
   final String? stock;
 
   VariantForm(
-      {super.key, this.id, this.imageInput, this.name, this.price, this.stock});
+      {super.key,
+      this.id,
+      this.prices,
+      this.imageInput,
+      this.name,
+      this.price,
+      this.stock});
 
   @override
   Widget build(BuildContext context) {

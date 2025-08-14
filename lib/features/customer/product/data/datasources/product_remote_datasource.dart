@@ -69,13 +69,26 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
 
   @override
   Future<ProductDetailModel> getProductDetail(String id, String userId) async {
-    final data = await supabase.from("Products").select('''
+    final data = await supabase
+        .from("Products")
+        .select('''
       *,
-      images : Images(*),
-      variants : Variants(*),
-      store : Stores(*),
-       promotion: ProductPromotion(promotion:Promotions(*))
-      ''').eq("id", id).single();
+      images:Images(*),
+      variants:Variants(
+        *,
+        prices:Prices!inner(*)
+      ),
+      store:Stores(*),
+      promotion:ProductPromotion(promotion:Promotions(*))
+    ''')
+        .eq("id", id)
+        .order('created_at',
+            ascending: false,
+            referencedTable: 'variants.prices') // sắp xếp bảng con
+        .limit(1,
+            referencedTable:
+                'variants.prices') // giới hạn 1 bản ghi cho bảng con
+        .single();
     final isLike = await supabase
         .from("Wishlist")
         .select('''*''')

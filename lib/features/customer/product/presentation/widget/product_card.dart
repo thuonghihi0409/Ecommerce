@@ -68,10 +68,8 @@ class ProductCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                    Helper.formatCurrencyVND(((product.price ?? 0) -
-                        (product.promotion?.amount ?? 0) *
-                            (product.price ?? 0) *
-                            0.01)),
+                    Helper.formatCurrencyVND((Helper.getDiscount(
+                        product.price ?? 0, product.promotion))),
                     style: AppTextStyles.textSize14(color: AppColor.primary)),
                 Text(
                   "${"key_solded".tr()} ${Helper.formatNumber(

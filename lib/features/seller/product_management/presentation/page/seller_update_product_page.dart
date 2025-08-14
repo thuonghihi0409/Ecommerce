@@ -42,6 +42,7 @@ class _SellerUpdateProductPageState extends State<SellerUpdateProductPage> {
   List<Uint8List> images = [];
   String categoryId = "";
   bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +56,7 @@ class _SellerUpdateProductPageState extends State<SellerUpdateProductPage> {
 
   initData() {
     final product = _bloc.state.productDetailModel;
+
     _productNameController.text = product?.productName ?? "";
     _descriptionController.text = product?.description ?? "";
     _priceController.text = (product?.price ?? 0).toString();
@@ -64,7 +66,7 @@ class _SellerUpdateProductPageState extends State<SellerUpdateProductPage> {
               name: e.name,
               id: e.id,
               stock: e.stock.toString(),
-              price: e.price.toString(),
+              prices: e.prices,
             ))
         .toList();
   }
@@ -98,7 +100,13 @@ class _SellerUpdateProductPageState extends State<SellerUpdateProductPage> {
         return Variant(
             id: "",
             name: variant.nameController.text,
-            price: int.tryParse(variant.priceController.text) ?? 0,
+            prices: int.tryParse(variant.priceController.text) ==
+                    variant.prices?.price
+                ? variant.prices
+                : Price(
+                    id: "",
+                    price: int.tryParse(variant.priceController.text),
+                    startTime: DateTime.now()),
             stock: int.tryParse(variant.stockController.text) ?? 0,
             cover: url,
             totalSold: 0);

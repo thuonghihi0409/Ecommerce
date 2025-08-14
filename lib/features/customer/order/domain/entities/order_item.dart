@@ -2,6 +2,7 @@ import 'package:thuongmaidientu/features/customer/cart/domain/entities/cart_item
 import 'package:thuongmaidientu/features/customer/order/domain/entities/order_product_item.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
+import 'package:thuongmaidientu/shared/utils/helper.dart';
 
 enum OrderStatus {
   pending, // Chờ duyệt
@@ -79,6 +80,7 @@ class OrderItem {
   final int total;
   final OrderStatus status;
   final String? paymentMethod;
+  final bool? isPayment;
   final List<OrderProductItem> productItem;
   final AddressEntity? address;
 
@@ -89,11 +91,14 @@ class OrderItem {
       required this.status,
       required this.address,
       required this.subtotal,
+      required this.isPayment,
       required this.paymentMethod,
       required this.total});
-  factory OrderItem.copyFromCartItem(CartItem item, AddressEntity? address) {
+  factory OrderItem.copyFromCartItem(CartItem item, AddressEntity? address,
+      String? paymentMethod, bool? isPayment) {
     return OrderItem(
-        paymentMethod: null,
+        paymentMethod: paymentMethod,
+        isPayment: isPayment,
         store: item.store,
         productItem: item.productItem
             .map((item) => OrderProductItem(
@@ -106,14 +111,22 @@ class OrderItem {
         id: item.id,
         status: OrderStatus.pending,
         address: address,
-        subtotal: item.productItem
-            .fold(0, (sum, item) => sum + (item.variant?.price ?? 0)),
-        total: item.productItem
-            .fold(0, (sum, item) => sum + (item.variant?.price ?? 0)));
+        subtotal: item.productItem.fold(
+            0,
+            (sum, item) =>
+                sum + (item.variant?.prices?.price ?? 0) * item.number),
+        total: item.productItem.fold(
+            0,
+            (sum, item) =>
+                sum +
+                (Helper.getDiscount(item.variant?.prices?.price ?? 0,
+                        item.productDetail?.promotion)) *
+                    item.number));
   }
 
   OrderItem copyWith({required OrderStatus? orderStatus}) {
     return OrderItem(
+        isPayment: isPayment,
         paymentMethod: paymentMethod,
         store: store,
         productItem: productItem,

@@ -75,19 +75,16 @@ class _AddCartWidgetState extends State<AddCartWidget> {
                         ],
                       ),
                       Text(
-                          Helper.formatCurrencyVND(((widget.productDetail
-                                      ?.variants?[_selectedIndex].price ??
-                                  0) -
-                              (widget.productDetail?.promotion?.amount ?? 0) *
-                                  (widget.productDetail
-                                          ?.variants?[_selectedIndex].price ??
-                                      0) *
-                                  0.01)),
+                          Helper.formatCurrencyVND(Helper.getDiscount(
+                              widget.productDetail?.variants?[_selectedIndex]
+                                      .prices?.price ??
+                                  0,
+                              widget.productDetail?.promotion)),
                           style: AppTextStyles.textSize14(
                               color: AppColor.primary)),
                       Text(
-                        Helper.formatCurrencyVND(widget
-                            .productDetail?.variants?[_selectedIndex].price),
+                        Helper.formatCurrencyVND(widget.productDetail
+                            ?.variants?[_selectedIndex].prices?.price),
                         style: AppTextStyles.textSize10(
                             color: AppColor.primary,
                             decoration: TextDecoration.lineThrough),

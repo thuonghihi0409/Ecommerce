@@ -6,13 +6,15 @@ class PromotionModel extends Promotion {
       super.name,
       super.amount,
       super.startTime,
+      super.max,
       super.endTime,
       super.type,
       super.storeId});
 
   factory PromotionModel.fromJson(Map<String, dynamic> json) {
     return PromotionModel(
-      id: json['id'] as String,
+      max: json["max"],
+      id: json['id'],
       name: json['name'] as String?,
       amount: (json['amount'] as num?)?.toDouble(),
       startTime: json['start_time'] != null

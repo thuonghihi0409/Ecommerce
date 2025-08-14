@@ -124,23 +124,29 @@ class _ReviewPageState extends State<ReviewPage> {
                           onTap: (productItem, index, quantity) {
                             try {
                               NavigationService.instance.push(CreateOrderPage(
-                                  cartItems: [
-                                    CartItem(
-                                        store: widget.productDetail!.store!,
-                                        productItem: [
-                                          ProductItem(
-                                              id: "",
-                                              productDetail:
-                                                  widget.productDetail!,
-                                              variant: widget.productDetail!
-                                                  .variants![index],
-                                              number: quantity)
-                                        ],
-                                        id: "")
-                                  ],
-                                  total: widget.productDetail!.variants![index]
-                                          .price! *
-                                      quantity));
+                                cartItems: [
+                                  CartItem(
+                                      store: widget.productDetail!.store!,
+                                      productItem: [
+                                        ProductItem(
+                                            id: "",
+                                            productDetail:
+                                                widget.productDetail!,
+                                            variant: widget.productDetail!
+                                                .variants![index],
+                                            number: quantity)
+                                      ],
+                                      id: "")
+                                ],
+                                total: widget.productDetail!.variants![index]
+                                        .prices!.price! *
+                                    quantity,
+                                subtotal: Helper.getDiscount(
+                                        widget.productDetail!.variants![index]
+                                            .prices!.price!,
+                                        widget.productDetail?.promotion) *
+                                    quantity,
+                              ));
                             } catch (e) {}
                           },
                         ),

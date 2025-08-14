@@ -18,7 +18,9 @@ class ProductModel extends Product {
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
         promotion: json["promotion"] != null && json["promotion"].isNotEmpty
-            ? PromotionModel.fromJson(json["promotion"][0]["promotion"])
+            ? (json["promotion"] as List)
+                .map((item) => PromotionModel.fromJson(item["promotion"]))
+                .toList()
             : null,
         productId: json['id'],
         cover: json['cover'],

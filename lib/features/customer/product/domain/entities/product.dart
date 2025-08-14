@@ -8,7 +8,7 @@ class Product {
   final String? categoryId;
   final String? productName;
   final String? description;
-  final Promotion? promotion;
+  final List<Promotion>? promotion;
   final int? price;
   final double? avgRating;
   final int? totalSold;

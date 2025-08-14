@@ -91,7 +91,7 @@ class ProductManagementBloc
       emit(state.copyWith(
           isGetDetail: false,
           getProductDetailError: ParseError.fromJson(e).message));
-      log(ParseError.fromJson(e).message);
+      log("${ParseError.fromJson(e).message}hihi");
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
   }

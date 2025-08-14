@@ -17,19 +17,34 @@ class CartRemoteDataSourceImpl implements CartRemoteDatasource {
 
   @override
   Future<ListModel<CartItemModel>> getListCart(String userId) async {
-    final data = await supabase.from("Carts").select('''
+    final data = await supabase
+        .from("Carts")
+        .select('''
       *,
       store: Stores(*),
       product_carts: ProductCarts(
       id,
       product: Products(*,
         images : Images(*),
-        variants : Variants(*),
-        store: Stores(*)),
+        variants : Variants(
+        *,
+        prices:Prices!inner(*)
+      ),
+        store: Stores(*),
+        promotion:ProductPromotion(promotion:Promotions(*))),
       number,
-      variant: Variants(*)
+      variant: Variants(
+        *,
+        prices:Prices!inner(*)
       )
-      ''').eq('user_id', userId);
+      )
+      ''')
+        .eq('user_id', userId)
+        .order('created_at',
+            ascending: false,
+            referencedTable:
+                'product_carts.product.variants.prices') // sắp xếp bảng con
+        .limit(1, referencedTable: 'product_carts.product.variants.prices');
 
     final result = ListModel(
         results: data.map((item) => CartItemModel.fromJson(item)).toList());

@@ -12,6 +12,7 @@ import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
 
 class OrderItemWidget extends StatefulWidget {
   final OrderItem orderItem;
@@ -94,7 +95,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                             children: [
                               Text(
                                 Helper.formatCurrencyVND(
-                                    (entrie.value.variant?.price ?? 0)),
+                                    (entrie.value.variant?.prices?.price ?? 0)),
                                 style: AppTextStyles.textSize12(),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -217,11 +218,21 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                       isMinWidth: true,
                       text: "key_return_requested".tr(),
                       onPressed: () {
+                        final control = TextEditingController();
                         Helper.showCustomDialog(
                             message: "Xác nhận gửi yêu cầu trả hàng ?",
                             isShowPrimaryButton: true,
                             isShowSecondButton: true,
                             context: context,
+                            headerCustom: Column(
+                              children: [
+                                CustomTextField(
+                                  controller: control,
+                                  labelText: "Lý do trả hàng",
+                                ),
+                                20.h
+                              ],
+                            ),
                             onPressPrimaryButton: () {
                               _bloc.add(UpdateOrder(
                                   id: context

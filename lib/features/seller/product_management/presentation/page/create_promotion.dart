@@ -84,6 +84,7 @@ class _CreatePromotionPageState extends State<CreatePromotionPage> {
 
     context.read<PromotionBloc>().add(SellerCreatePromotion(
         promotion: Promotion(
+            max: 20000,
             id: "",
             name: _titleController.text,
             amount: double.tryParse(_discountController.text) ?? 0,

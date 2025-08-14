@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
-import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
@@ -28,12 +27,10 @@ class SellerProductDetailPage extends StatefulWidget {
 }
 
 class _SellerProductDetailPageState extends State<SellerProductDetailPage> {
-  late String _userId;
-  final int _index = 0;
   @override
   void initState() {
     super.initState();
-    _userId = context.read<ProfileBloc>().state.profile?.id ?? "";
+
     _getDate();
   }
 
@@ -98,26 +95,15 @@ class _SellerProductDetailPageState extends State<SellerProductDetailPage> {
                                 ),
                                 5.h,
                                 Text(
-                                    Helper.formatCurrencyVND(((state
-                                                .productDetailModel
-                                                ?.variants?[_index]
-                                                .price ??
-                                            0) -
-                                        (state.productDetailModel?.promotion
-                                                    ?.amount ??
-                                                0) *
-                                            (state.productDetailModel
-                                                    ?.variants?[_index].price ??
-                                                0) *
-                                            0.01)),
+                                    Helper.formatCurrencyVND(Helper.getDiscount(
+                                        state.productDetailModel?.price ?? 0,
+                                        state.productDetailModel?.promotion)),
                                     style: AppTextStyles.textSize20(
                                         color: AppColor.primary)),
                                 if (state.productDetailModel?.promotion != null)
                                   Text(
-                                      Helper.formatCurrencyVND(state
-                                          .productDetailModel
-                                          ?.variants?[_index]
-                                          .price),
+                                      Helper.formatCurrencyVND(
+                                          state.productDetailModel?.price),
                                       style: AppTextStyles.textSize16(
                                           color: AppColor.primary,
                                           decoration:
@@ -246,24 +232,14 @@ class _SellerProductDetailPageState extends State<SellerProductDetailPage> {
                                                 ),
                                                 10.h,
                                                 Text(
-                                                    Helper.formatCurrencyVND(((state
+                                                    Helper.formatCurrencyVND(
+                                                        Helper.getDiscount(
+                                                            variant.prices
+                                                                    ?.price ??
+                                                                0,
+                                                            state
                                                                 .productDetailModel
-                                                                ?.variants?[
-                                                                    _index]
-                                                                .price ??
-                                                            0) -
-                                                        (state
-                                                                    .productDetailModel
-                                                                    ?.promotion
-                                                                    ?.amount ??
-                                                                0) *
-                                                            (state
-                                                                    .productDetailModel
-                                                                    ?.variants?[
-                                                                        _index]
-                                                                    .price ??
-                                                                0) *
-                                                            0.01)),
+                                                                ?.promotion)),
                                                     style: AppTextStyles
                                                         .textSize18(
                                                             color: AppColor
@@ -273,11 +249,8 @@ class _SellerProductDetailPageState extends State<SellerProductDetailPage> {
                                                     null)
                                                   Text(
                                                       Helper.formatCurrencyVND(
-                                                          state
-                                                              .productDetailModel
-                                                              ?.variants?[
-                                                                  _index]
-                                                              .price),
+                                                          variant
+                                                              .prices?.price),
                                                       style: AppTextStyles
                                                           .textSize16(
                                                               color: AppColor

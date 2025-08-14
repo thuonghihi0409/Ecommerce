@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +8,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/promotion.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
@@ -375,7 +376,7 @@ class Helper {
                     if (isOne == true) {
                       final path =
                           await pickerService.pickSingleImageFromGallery();
-                      log(" path = $path");
+
                       onPicker?.call(path);
                     } else {
                       final paths =
@@ -438,5 +439,40 @@ class Helper {
       case MessageType.product:
         return "[${"key_product".tr()}] ${message?.product?.productName ?? ""}";
     }
+  }
+
+  static int getDiscount(int price, List<Promotion>? list) {
+    int minPrice = price;
+    if (list == null || list.isEmpty) return minPrice;
+    for (var element in list) {
+      minPrice = min(
+          minPrice,
+          price -
+              min((price * (element.amount ?? 0) * 0.01).round(),
+                  element.max ?? 0));
+    }
+    return minPrice;
+  }
+
+  double? getBestDiscountAmount(int price, List<Promotion>? list) {
+    if (list == null || list.isEmpty) return null;
+
+    double? bestAmount; // phần trăm hoặc giá trị giảm
+    int minPrice = price;
+
+    for (var element in list) {
+      int discountedPrice = price -
+          min(
+            (price * (element.amount ?? 0) * 0.01).round(),
+            element.max ?? 0,
+          );
+
+      if (discountedPrice < minPrice) {
+        minPrice = discountedPrice;
+        bestAmount = element.amount; // Lưu lại amount tương ứng
+      }
+    }
+
+    return bestAmount;
   }
 }

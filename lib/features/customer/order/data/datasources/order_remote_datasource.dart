@@ -16,20 +16,35 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
   @override
   Future<ListModel<OrderItemModel>> getListOrder(
       String userId, String status) async {
-    final data = await supabase.from("Orders").select('''
+    final data = await supabase
+        .from("Orders")
+        .select('''
       *,
       store: Stores(*),
       product_orders: ProductOrders(
       *,
       product: Products(*,
         images : Images(*),
-        variants : Variants(*),
+        variants : Variants(
+        *,
+        prices:Prices!inner(*)
+      ),
         store: Stores(*)),
       number,
-      variant: Variants(*)
+      variant: Variants(
+        *,
+        prices:Prices!inner(*)
+      )
       
       ),address: Address(*)
-      ''').eq('user_id', userId).eq('status', status);
+      ''')
+        .eq('user_id', userId)
+        .eq('status', status)
+        .order('created_at',
+            ascending: false,
+            referencedTable:
+                'product_orders.product.variants.prices') // sắp xếp bảng con
+        .limit(1, referencedTable: 'product_orders.product.variants.prices');
 
     final result = ListModel(
         results: data.map((item) => OrderItemModel.fromJson(item)).toList());
@@ -42,6 +57,8 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
     final newdata = await supabase
         .from("Orders")
         .insert({
+          'payment_method': order.paymentMethod,
+          'is_payment': order.isPayment,
           'user_id': userId,
           'store_id': order.store.id,
           'address_id': order.address?.id,
