@@ -141,6 +141,7 @@
     "key_variants": "Các biến thể",
     "key_delete": "Xóa",
     "key_edit":"Chỉnh sửa",
-    "key_block": "Khóa"
+    "key_block": "Khóa",
+    "key_return_requested": "Trả hàng"
 
 }

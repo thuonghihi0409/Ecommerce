@@ -23,7 +23,7 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final ScrollController _scrollController = ScrollController();
-
+  late ProductBloc _bloc;
   final List<Map<String, dynamic>> _filters = [
     {"label": "Tất cả", "max": null, "min": null},
     {"label": "Dưới 1 triệu", "max": 1000000, "min": null},
@@ -39,18 +39,26 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     super.initState();
+
+    _bloc = context.read<ProductBloc>();
     _getDate();
     context.read<ProductBloc>().add(const GetListCategory());
   }
 
   _getDate({bool isLoading = true}) async {
-    context.read<ProductBloc>().add(GetListProduct(
+    _bloc.add(GetListProduct(
         search: _search,
         categoryId: _categoryId,
         isLoading: isLoading,
         maxPrice: _categoryId != null ? _max : null,
         minPrice: _categoryId != null ? _min : null,
         storeId: null));
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -101,12 +109,16 @@ class _ProductPageState extends State<ProductPage> {
                                       setState(() {
                                         _selectCategory = e.key;
                                         _categoryId = e.value.id;
+                                        _min = null;
+                                        _max = null;
+
                                         _getDate();
                                       });
                                     } else {
                                       setState(() {
                                         _selectCategory = -1;
                                         _categoryId = null;
+
                                         _getDate();
                                       });
                                     }
@@ -143,62 +155,65 @@ class _ProductPageState extends State<ProductPage> {
                         height: 30,
                         width: 100,
                         child: DropdownSearch<Map<String, dynamic>>(
-                          popupProps: const PopupProps.bottomSheet(),
-                          suffixProps: const DropdownSuffixProps(
-                            dropdownButtonProps: DropdownButtonProps(
-                              isVisible: false,
-                            ),
-                          ),
-                          dropdownBuilder: (context, filter) => Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  overflow: TextOverflow.ellipsis,
-                                  filter != null
-                                      ? filter["label"].toString()
-                                      : "",
-                                  style: AppTextStyles.textSize10(),
-                                ),
+                            popupProps: const PopupProps.bottomSheet(),
+                            suffixProps: const DropdownSuffixProps(
+                              dropdownButtonProps: DropdownButtonProps(
+                                isVisible: false,
                               ),
-                              const Icon(
-                                Icons.arrow_drop_down_outlined,
-                                size: 20,
-                              )
-                            ],
-                          ),
-                          itemAsString: (item) => item["label"].toString(),
-                          items: (filter, loadProps) => _filters,
-                          compareFn: (item1, item2) {
-                            return item1 != item2;
-                          },
-                          decoratorProps: DropDownDecoratorProps(
-                            decoration: InputDecoration(
-                                filled: true,
-                                hint: Text(
-                                  "key_price".tr(),
-                                  style: AppTextStyles.textSize10(),
+                            ),
+                            dropdownBuilder: (context, filter) => Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        filter != null
+                                            ? filter["label"].toString()
+                                            : "",
+                                        style: AppTextStyles.textSize10(),
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.arrow_drop_down_outlined,
+                                      size: 20,
+                                    )
+                                  ],
                                 ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 5),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
-                                        width: 0.5, color: AppColor.primary)),
-                                focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: AppColor.greyColor)),
-                                enabledBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0.5,
-                                        color: AppColor.greyColor))),
-                          ),
-                          onChanged: (value) {
-                            _min = value?["min"];
-                            _max = value?["max"];
-                            _getDate(isLoading: false);
-                          },
-                        ),
+                            itemAsString: (item) => item["label"].toString(),
+                            items: (filter, loadProps) => _filters,
+                            compareFn: (item1, item2) {
+                              return item1 != item2;
+                            },
+                            decoratorProps: DropDownDecoratorProps(
+                              decoration: InputDecoration(
+                                  filled: true,
+                                  hint: Text(
+                                    "key_price".tr(),
+                                    style: AppTextStyles.textSize10(),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 5),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: const BorderSide(
+                                          width: 0.5, color: AppColor.primary)),
+                                  focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 0.5,
+                                          color: AppColor.greyColor)),
+                                  enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 0.5,
+                                          color: AppColor.greyColor))),
+                            ),
+                            onChanged: (value) {
+                              if (!mounted) return;
+
+                              _min = value?["min"];
+                              _max = value?["max"];
+
+                              _getDate(isLoading: false);
+                            }),
                       ),
                       10.w
                     ],

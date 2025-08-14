@@ -161,8 +161,11 @@ class Helper {
                         if (message != null)
                           Text(
                             message,
-                            style: AppTextStyles.textSize18(),
+                            style: AppTextStyles.textSize18(
+                                fontWeight: FontWeight.bold,
+                                color: AppColor.primary),
                           ),
+                        30.h,
                         headerCustom ?? const SizedBox(),
                         Row(
                           mainAxisAlignment:
@@ -174,6 +177,8 @@ class Helper {
                           children: [
                             if (isShowSecondButton)
                               CustomButton(
+                                padding: const EdgeInsetsGeometry.symmetric(
+                                    horizontal: 8, vertical: 5),
                                 text: "key_cancel".tr(),
                                 isMinWidth: true,
                                 onPressed: onClose ??
@@ -183,7 +188,9 @@ class Helper {
                               ),
                             if (isShowPrimaryButton)
                               CustomButton(
-                                text: "key_ok".tr(),
+                                padding: const EdgeInsetsGeometry.symmetric(
+                                    horizontal: 8, vertical: 5),
+                                text: "key_confirm".tr(),
                                 isMinWidth: true,
                                 onPressed: onPressPrimaryButton,
                               )

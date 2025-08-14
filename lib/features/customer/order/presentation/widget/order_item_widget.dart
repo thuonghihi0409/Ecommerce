@@ -161,11 +161,23 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                       isMinWidth: true,
                       text: "key_cancel_order".tr(),
                       onPressed: () {
-                        _bloc.add(UpdateOrder(
-                            id: context.read<ProfileBloc>().state.profile?.id ??
-                                "",
-                            order: widget.orderItem,
-                            newStatus: OrderStatus.cancelled));
+                        Helper.showCustomDialog(
+                            message: "Xác nhận hủy đơn hàng ?",
+                            isShowPrimaryButton: true,
+                            isShowSecondButton: true,
+                            context: context,
+                            onPressPrimaryButton: () {
+                              _bloc.add(UpdateOrder(
+                                  id: context
+                                          .read<ProfileBloc>()
+                                          .state
+                                          .profile
+                                          ?.id ??
+                                      "",
+                                  order: widget.orderItem,
+                                  newStatus: OrderStatus.cancelled));
+                              NavigationService.instance.goBack();
+                            });
                       },
                     ),
                   ],
@@ -177,17 +189,57 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                       isMinWidth: true,
                       text: "key_cancel_order".tr(),
                       onPressed: () {
-                        _bloc.add(UpdateOrder(
-                            id: context.read<ProfileBloc>().state.profile?.id ??
-                                "",
-                            order: widget.orderItem,
-                            newStatus: OrderStatus.cancelled));
+                        Helper.showCustomDialog(
+                            message: "Xác nhận hủy đơn hàng ?",
+                            isShowPrimaryButton: true,
+                            isShowSecondButton: true,
+                            context: context,
+                            onPressPrimaryButton: () {
+                              _bloc.add(UpdateOrder(
+                                  id: context
+                                          .read<ProfileBloc>()
+                                          .state
+                                          .profile
+                                          ?.id ??
+                                      "",
+                                  order: widget.orderItem,
+                                  newStatus: OrderStatus.cancelled));
+                              NavigationService.instance.goBack();
+                            });
+                      },
+                    ),
+                  ],
+                ),
+              if (widget.orderItem.status == OrderStatus.delivered)
+                Row(
+                  children: [
+                    CustomButton(
+                      isMinWidth: true,
+                      text: "key_return_requested".tr(),
+                      onPressed: () {
+                        Helper.showCustomDialog(
+                            message: "Xác nhận gửi yêu cầu trả hàng ?",
+                            isShowPrimaryButton: true,
+                            isShowSecondButton: true,
+                            context: context,
+                            onPressPrimaryButton: () {
+                              _bloc.add(UpdateOrder(
+                                  id: context
+                                          .read<ProfileBloc>()
+                                          .state
+                                          .profile
+                                          ?.id ??
+                                      "",
+                                  order: widget.orderItem,
+                                  newStatus: OrderStatus.returnRequested));
+                              NavigationService.instance.goBack();
+                            });
                       },
                     ),
                   ],
                 ),
             ],
-          )
+          ),
         ],
       ),
     );
