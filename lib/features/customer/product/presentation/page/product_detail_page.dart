@@ -324,8 +324,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                       child: ProductCard(
                                           product: item,
                                           onTap: () {
-                                            // NavigationService.instance.replace(
-                                            //     ProductDetailPage(product: item));
+                                            NavigationService.instance
+                                                .replace(ProductDetailPage(
+                                              productId: item.productId,
+                                              categoryId: item.categoryId ?? "",
+                                            ));
                                           }),
                                     ))
                                 .toList(),

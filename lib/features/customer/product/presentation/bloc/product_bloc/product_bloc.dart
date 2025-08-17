@@ -113,6 +113,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         productDetailModel:
             state.productDetailModel!.copyWith(isLike: event.isLike),
       ));
+      add(GetWistlist(userId: event.userId));
     } catch (e) {
       emit(state.copyWith(
           isGetDetail: false,

@@ -40,10 +40,6 @@ class _ReviewPageState extends State<ReviewPage> {
         .add(GetListReview(id: widget.productDetail?.productId ?? ""));
   }
 
-  void _onRefresh() {}
-
-  void _onLoading() {}
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ReviewBloc, ReviewState>(builder: (context, state) {
@@ -55,6 +51,12 @@ class _ReviewPageState extends State<ReviewPage> {
           if (state.isLoading) {
             return const CustomLoading(
               isLoading: true,
+            );
+          }
+          if (state.listReview.results == null ||
+              state.listReview.results!.isEmpty) {
+            return const Center(
+              child: Text("Chưa có đánh giá nào !"),
             );
           }
           return Column(

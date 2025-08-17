@@ -34,7 +34,8 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
       variant: Variants(
         *,
         prices:Prices!inner(*)
-      )
+      ),
+      price: Prices(*)
       
       ),address: Address(*)
       ''')
@@ -75,6 +76,7 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
               'order_id': id,
               'product_id': item.productDetail?.productId,
               'variant_id': item.variant?.id,
+              'price_id': item.price?.id,
               'number': item.number
             })
         .toList());

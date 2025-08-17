@@ -105,6 +105,7 @@ class OrderItem {
                 id: item.id,
                 productDetail: item.productDetail,
                 variant: item.variant,
+                price: item.variant?.prices,
                 number: item.number,
                 isReviewed: false))
             .toList(),

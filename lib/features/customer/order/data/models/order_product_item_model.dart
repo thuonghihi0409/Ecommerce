@@ -6,6 +6,7 @@ class OrderProductItemModel extends OrderProductItem {
       {required super.id,
       required super.productDetail,
       required super.variant,
+      required super.price,
       required super.number,
       required super.isReviewed});
 
@@ -13,6 +14,7 @@ class OrderProductItemModel extends OrderProductItem {
     return OrderProductItemModel(
         id: map['id'],
         productDetail: ProductDetailModel.fromJson(map['product']),
+        price: PriceModel.fromJson(map['price']),
         variant: VariantModel.fromJson(map['variant']),
         number: map['number'] ?? 1,
         isReviewed: map["is_reviewed"]);

@@ -7,6 +7,7 @@ import 'package:thuongmaidientu/features/customer/order/domain/entities/order_it
 import 'package:thuongmaidientu/features/customer/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/page/create_review_page.dart';
+import 'package:thuongmaidientu/features/review/presentation/page/review_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -95,7 +96,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                             children: [
                               Text(
                                 Helper.formatCurrencyVND(
-                                    (entrie.value.variant?.prices?.price ?? 0)),
+                                    (entrie.value.price?.price ?? 0)),
                                 style: AppTextStyles.textSize12(),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -134,9 +135,8 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                                   isMinWidth: true,
                                   text: "key_view_review".tr(),
                                   onPressed: () {
-                                    NavigationService.instance
-                                        .push(CreateReviewPage(
-                                      product: entrie.value,
+                                    NavigationService.instance.push(ReviewPage(
+                                      productDetail: entrie.value.productDetail,
                                     ));
                                   },
                                 ),

@@ -143,7 +143,10 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
     final data = await supabase
         .from("Wishlist")
         .select('''*, product : Products(*, images : Images(*),
-      variants : Variants(*), store: Stores(*),  promotion: ProductPromotion(promotion:Promotions(*)))''').eq("user_id", userId);
+      variants : Variants(
+        *,
+        prices:Prices!inner(*)
+      ), store: Stores(*),  promotion: ProductPromotion(promotion:Promotions(*)))''').eq("user_id", userId);
     return data.map((item) {
       item["product"].addAll({"is_like": true});
       return ProductDetailModel.fromJson(item["product"]);

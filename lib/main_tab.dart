@@ -12,7 +12,6 @@ import 'package:thuongmaidientu/features/customer/product/presentation/page/prod
 import 'package:thuongmaidientu/features/notification/presentation/page/notification_screen.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/account_screen.dart';
-import 'package:thuongmaidientu/features/video/presentation/page/video_page.dart';
 import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/widgets/badge_icon.dart';
 
@@ -29,7 +28,7 @@ class _MainTabState extends State<MainTab> {
 
   final List<Widget> _screens = [
     const ProductPage(),
-    const VideosPage(),
+    // const VideosPage(),
     const OrderPage(),
     const NotificationScreen(),
     const AccountScreen()
@@ -90,14 +89,14 @@ class _MainTabState extends State<MainTab> {
                 size: 25,
               ),
               index: 0,
-              label: 'Trang Chu',
+              label: 'Trang Chủ',
             ),
-            _buildNavItem(
-              icon: const Icon(Icons.live_tv_outlined),
-              activeIcon: const Icon(Icons.live_tv_outlined),
-              index: 1,
-              label: 'Video',
-            ),
+            // _buildNavItem(
+            //   icon: const Icon(Icons.live_tv_outlined),
+            //   activeIcon: const Icon(Icons.live_tv_outlined),
+            //   index: 1,
+            //   label: 'Video',
+            // ),
             _buildNavItem(
               icon:
                   BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
@@ -124,19 +123,19 @@ class _MainTabState extends State<MainTab> {
                 );
               }),
               index: 2,
-              label: 'Don Hang',
+              label: 'Đơn Hàng',
             ),
             _buildNavItem(
               icon: const Icon(Icons.notifications),
               activeIcon: const Icon(Icons.notifications),
               index: 3,
-              label: 'Thong bao',
+              label: 'Thông báo',
             ),
             _buildNavItem(
               icon: const Icon(Icons.account_circle_outlined),
               activeIcon: const Icon(Icons.account_circle_outlined),
               index: 4,
-              label: 'Tai khoan',
+              label: 'Tài khỏan',
             ),
           ],
         ),

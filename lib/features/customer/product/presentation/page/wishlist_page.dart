@@ -64,7 +64,12 @@ class _WishlistPageState extends State<WishlistPage> {
                               categoryId: products[index].categoryId ?? ""));
                         },
                         trailing: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            context.read<ProductBloc>().add(UpdateWistlist(
+                                productId: products[index].productId,
+                                userId: _userId,
+                                isLike: false));
+                          },
                           child: SvgPicture.asset(
                             height: 30,
                             width: 30,
