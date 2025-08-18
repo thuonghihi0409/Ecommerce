@@ -454,7 +454,7 @@ class Helper {
     return minPrice;
   }
 
-  double? getBestDiscountAmount(int price, List<Promotion>? list) {
+  static double? getBestDiscountAmount(int price, List<Promotion>? list) {
     if (list == null || list.isEmpty) return null;
 
     double? bestAmount; // phần trăm hoặc giá trị giảm

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
+import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
 import 'package:thuongmaidientu/features/customer/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/customer/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/customer/order/presentation/page/order_page.dart';
@@ -26,7 +27,7 @@ class _MainTabState extends State<MainTab> {
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
 
-  final List<Widget> _screens = [
+  List<Widget> _screens = [
     const ProductPage(),
     // const VideosPage(),
     const OrderPage(),
@@ -36,13 +37,21 @@ class _MainTabState extends State<MainTab> {
 
   @override
   void initState() {
+    final id = context.read<ProfileBloc>().state.profile?.id;
     super.initState();
     FirebaseService.init();
     _getData();
+    _screens = [
+      const ProductPage(),
+      id == null ? const LoginScreen() : const OrderPage(),
+      id == null ? const LoginScreen() : const NotificationScreen(),
+      id == null ? const LoginScreen() : const AccountScreen()
+    ];
   }
 
   _getData() async {
     final userId = context.read<ProfileBloc>().state.profile?.id ?? "";
+    if (userId.isEmpty) return;
     log("userId =$userId");
     context.read<OrderBloc>().add(GetCountOrder(userId: userId));
     context.read<CartBloc>().add(GetCountCart(userId: userId));

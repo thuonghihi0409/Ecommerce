@@ -42,6 +42,7 @@ class ProductManagementRemoteDataSourceImpl
       promotion: ProductPromotion(promotion:Promotions(*)))
       ''')
         .eq("store_id", storeId)
+        .eq("is_deleted", false)
         .order('created_at',
             ascending: false,
             referencedTable: 'variants.prices') // sắp xếp bảng con

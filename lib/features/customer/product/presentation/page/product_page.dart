@@ -218,31 +218,41 @@ class _ProductPageState extends State<ProductPage> {
                       10.w
                     ],
                   ),
-                Expanded(
-                  child: GridView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 5,
-                      mainAxisSpacing: 5,
-                      childAspectRatio: 0.67,
+                Builder(builder: (context) {
+                  if (state.listProduct.results == null ||
+                      state.listProduct.results!.isEmpty) {
+                    return const Expanded(
+                      child: Center(
+                        child: Text("Không tìm thấy sản phẩm"),
+                      ),
+                    );
+                  }
+                  return Expanded(
+                    child: GridView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 5,
+                        mainAxisSpacing: 5,
+                        childAspectRatio: 0.67,
+                      ),
+                      itemCount: state.listProduct.results?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final product = state.listProduct.results?[index];
+                        return ProductCard(
+                            product: product!,
+                            onTap: () {
+                              NavigationService.instance.push(ProductDetailPage(
+                                productId: product.productId,
+                                categoryId: product.categoryId ?? "",
+                              ));
+                            });
+                      },
                     ),
-                    itemCount: state.listProduct.results?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      final product = state.listProduct.results?[index];
-                      return ProductCard(
-                          product: product!,
-                          onTap: () {
-                            NavigationService.instance.push(ProductDetailPage(
-                              productId: product.productId,
-                              categoryId: product.categoryId ?? "",
-                            ));
-                          });
-                    },
-                  ),
-                ),
+                  );
+                }),
               ],
             ),
           );

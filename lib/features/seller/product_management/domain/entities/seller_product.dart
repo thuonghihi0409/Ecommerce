@@ -8,7 +8,7 @@ class SellerProduct {
   final int? price;
 
   final Category category;
-
+  final String? status;
   final List<Variant>? variants;
   final double? avgRating;
   final int? totalSold;
@@ -21,6 +21,7 @@ class SellerProduct {
       required this.description,
       required this.price,
       required this.category,
+      required this.status,
       required this.variants,
       required this.avgRating,
       required this.totalRating,

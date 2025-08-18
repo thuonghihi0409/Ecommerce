@@ -35,8 +35,12 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
     int? maxPrice,
     String? storeId,
   }) async {
-    var query = supabase.from("Products").select('''*, store: Stores(*),
-         promotion: ProductPromotion(promotion:Promotions(*))''');
+    var query = supabase
+        .from("Products")
+        .select('''*, store: Stores(*),
+         promotion: ProductPromotion(promotion:Promotions(*))''')
+        .eq("status", "active")
+        .eq("is_deleted", false);
 
     if (search != null && search.isNotEmpty) {
       query = query.ilike('product_name', '%$search%');

@@ -11,7 +11,6 @@ import 'package:thuongmaidientu/features/customer/product/domain/entities/produc
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/page/create_product_page.dart';
-import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -89,57 +88,50 @@ class _SellerUpdateProductPageState extends State<SellerUpdateProductPage> {
         isLoading = true;
       });
       final store = context.read<ProfileBloc>().state.store;
-      final listImage = await Future.wait(images.map((image) async {
-        final url = await FirebaseService.instance.uploadImagesData(image);
-        return ImageItem(id: "", url: url, alt: "image");
-      }));
 
-      final listVariant = await Future.wait(_variants.map((variant) async {
+      final listVariant =
+          await Future.wait(_variants.asMap().entries.map((variant) async {
         late String url;
-        url = await FirebaseService.instance.uploadImagesData(variant.image);
+
         return Variant(
-            id: "",
-            name: variant.nameController.text,
-            prices: int.tryParse(variant.priceController.text) ==
-                    variant.prices?.price
-                ? variant.prices
+            id: _bloc.state.productDetailModel?.variants?[variant.key].id ?? "",
+            name: variant.value.nameController.text,
+            prices: int.tryParse(variant.value.priceController.text) ==
+                    variant.value.prices?.price
+                ? variant.value.prices
                 : Price(
                     id: "",
-                    price: int.tryParse(variant.priceController.text),
+                    price: int.tryParse(variant.value.priceController.text),
                     startTime: DateTime.now()),
-            stock: int.tryParse(variant.stockController.text) ?? 0,
-            cover: url,
+            stock: int.tryParse(variant.value.stockController.text) ?? 0,
+            cover: "",
             totalSold: 0);
       }));
 
       final product = ProductDetail(
-          productId: "",
+          productId: _bloc.state.productDetailModel?.productId ?? "",
           productName: _productNameController.text,
           description: _descriptionController.text,
           price: int.tryParse(_priceController.text) ?? 0,
           store: store,
           categoryId: categoryId,
-          images: listImage,
+          images: [],
           variants: listVariant,
           avgRating: 0.0,
           totalRating: 0,
           isLike: false,
           totalSold: 0,
-          cover: listImage[0].url);
-      _bloc.add(SellerCreateProduct(
-          productDetail: product,
-          onSuccess: () {
-            setState(() {
-              isLoading = false;
-            });
-            Helper.showToastBottom(message: ("key_create_success".tr()));
-            NavigationService.instance.pushNamed("productmanagement");
-          },
-          onError: () {
-            setState(() {
-              isLoading = false;
-            });
-          }));
+          cover: "");
+      _bloc.add(SellerUpdateProduct(
+        productDetail: product,
+        onSuccess: () {
+          setState(() {
+            isLoading = false;
+          });
+          Helper.showToastBottom(message: ("key_create_success".tr()));
+          NavigationService.instance.pushNamed("product_management");
+        },
+      ));
     } catch (e) {
       setState(() {
         isLoading = false;

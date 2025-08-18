@@ -231,7 +231,17 @@ class _CreatePromotionPageState extends State<CreatePromotionPage> {
                   runSpacing: 10,
                   children: selectedProducts
                       .map((product) => Chip(
-                            label: Text(product.productName ?? ""),
+                            label: Row(
+                              children: [
+                                Text(product.productName ?? ""),
+                                20.w,
+                                Text(
+                                  "Tồn kho: ${product.totalSold}",
+                                ),
+                                20.w,
+                                Text("Đánh giá: ${product.avgRating}")
+                              ],
+                            ),
                             deleteIcon: const Icon(Icons.close),
                             onDeleted: () {
                               setState(() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
+import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
@@ -164,7 +165,23 @@ class _SellerProductDetailPageState extends State<SellerProductDetailPage> {
                                     Expanded(
                                       child: CustomButton(
                                         text: "key_delete".tr(),
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          await supabase
+                                              .from("Products")
+                                              .update({"is_deleted": true}).eq(
+                                                  "id",
+                                                  state.productDetailModel
+                                                          ?.productId ??
+                                                      "");
+                                          NavigationService.instance
+                                              .replaceNamed(
+                                                  "product_management",
+                                                  arguments: {
+                                                "id": state.productDetailModel
+                                                        ?.productId ??
+                                                    ""
+                                              });
+                                        },
                                         isMinWidth: true,
                                       ),
                                     ),
@@ -187,7 +204,16 @@ class _SellerProductDetailPageState extends State<SellerProductDetailPage> {
                                     Expanded(
                                       child: CustomButton(
                                         text: "key_block".tr(),
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          await supabase
+                                              .from("Products")
+                                              .update({"status": "block"}).eq(
+                                                  "id",
+                                                  state.productDetailModel
+                                                          ?.productId ??
+                                                      "");
+                                          _getDate();
+                                        },
                                         isMinWidth: true,
                                       ),
                                     )

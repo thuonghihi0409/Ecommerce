@@ -40,6 +40,7 @@ class CreateOrderPage extends StatefulWidget {
 
 class _CreateOrderPageState extends State<CreateOrderPage> {
   bool _isOnline = true;
+  int index = 0;
   @override
   void initState() {
     super.initState();
@@ -68,7 +69,35 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                       style: AppTextStyles.textSize16(),
                     ),
                     (addresses).isNotEmpty
-                        ? LocationWidget(address: addresses[0])
+                        ? LocationWidget(
+                            address: addresses[index],
+                            onTap: () {
+                              Helper.showCustomDialog(
+                                  context: context,
+                                  onPressPrimaryButton: () {},
+                                  isShowPrimaryButton: false,
+                                  message: "Chọn địa chỉ giao hàng",
+                                  headerCustom: Column(
+                                    children: [
+                                      ...addresses
+                                          .map(((item) => LocationWidget(
+                                                address: item,
+                                                onTap: () {
+                                                  setState(
+                                                    () {
+                                                      index = addresses
+                                                          .indexOf(item);
+                                                    },
+                                                  );
+                                                  NavigationService.instance
+                                                      .goBack();
+                                                },
+                                              ))),
+                                      _addLocation()
+                                    ],
+                                  ));
+                            },
+                          )
                         : _addLocation(),
                     10.h,
                     ...widget.cartItems.map((product) => OrderItemWidget(
@@ -228,7 +257,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                             userId: userId,
                             orders: widget.cartItems
                                 .map((item) => OrderItem.copyFromCartItem(
-                                    item!, addresses[0], "cash", false))
+                                    item!, addresses[index], "cash", false))
                                 .toList()));
                       }
                     },

@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
+import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/conversation_page.dart';
 import 'package:thuongmaidientu/features/customer/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/customer/cart/presentation/page/cart_page.dart';
@@ -81,6 +82,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             onTap: () {
               final id = context.read<ProfileBloc>().state.profile?.id;
+              if (id == null) {
+                NavigationService.instance.push(const LoginScreen());
+                return;
+              }
               NavigationService.instance.push(const ConversationPage());
             },
           ),
@@ -94,6 +99,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 width: 25,
               ),
               onTap: () {
+                final id = context.read<ProfileBloc>().state.profile?.id;
+                if (id == null) {
+                  NavigationService.instance.push(const LoginScreen());
+                  return;
+                }
                 NavigationService.instance.push(const CartPage());
               },
               count: state.totalProduct,

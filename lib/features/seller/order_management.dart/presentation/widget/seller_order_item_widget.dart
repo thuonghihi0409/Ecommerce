@@ -7,7 +7,7 @@ import 'package:thuongmaidientu/features/customer/order/domain/entities/order_it
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/domain/entities/seller_order_item.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';
-import 'package:thuongmaidientu/features/seller/product_management/presentation/widget/category_create.dart';
+import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/widget/seller_order_detail.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -38,7 +38,9 @@ class _SellerOrderItemWidgetState extends State<SellerOrderItemWidget> {
       onTap: () {
         Helper.showCustomDialog(
             context: context,
-            headerCustom: CategoryCreate(),
+            headerCustom: OrderDetailPage(
+              order: widget.orderItem,
+            ),
             onPressPrimaryButton: () {});
       },
       child: Container(

@@ -7,6 +7,7 @@ import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/
 import 'package:thuongmaidientu/features/seller/product_management/domain/entities/seller_product.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
+import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
@@ -88,7 +89,7 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                     Expanded(
                       child: SingleChildScrollView(
                         child: PaginatedDataTable(
-                          columnSpacing: 35,
+                          columnSpacing: 15,
                           header: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
@@ -161,8 +162,21 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                                 style: AppTextStyles.textSize16(),
                               ),
                               numeric: true,
-                              onSort: (i, asc) => _dataSource.sort<int>(
-                                getField: (p) => p.price ?? 0,
+                              onSort: (i, asc) => _dataSource.sort<String>(
+                                getField: (p) => p.category.name ?? "",
+                                ascending: asc,
+                                columnIndex: i,
+                                refresh: () => setState(() {}),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Trạng thái',
+                                style: AppTextStyles.textSize16(),
+                              ),
+                              numeric: true,
+                              onSort: (i, asc) => _dataSource.sort<String>(
+                                getField: (p) => p.status ?? "",
                                 ascending: asc,
                                 columnIndex: i,
                                 refresh: () => setState(() {}),
@@ -188,7 +202,7 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                               ),
                               numeric: true,
                               onSort: (i, asc) => _dataSource.sort<int>(
-                                getField: (p) => p.price ?? 0,
+                                getField: (p) => p.totalSold ?? 0,
                                 ascending: asc,
                                 columnIndex: i,
                                 refresh: () => setState(() {}),
@@ -200,8 +214,8 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                                 style: AppTextStyles.textSize16(),
                               ),
                               numeric: true,
-                              onSort: (i, asc) => _dataSource.sort<int>(
-                                getField: (p) => p.price ?? 0,
+                              onSort: (i, asc) => _dataSource.sort<double>(
+                                getField: (p) => p.avgRating ?? 0,
                                 ascending: asc,
                                 columnIndex: i,
                                 refresh: () => setState(() {}),
@@ -287,6 +301,7 @@ class ProductDataSource extends DataTableSource {
           style: AppTextStyles.textSize16())),
       DataCell(
           Text(product.category.name ?? "", style: AppTextStyles.textSize16())),
+      DataCell(Text(product.status ?? "", style: AppTextStyles.textSize16())),
       DataCell(Text(instock.toString(), style: AppTextStyles.textSize16())),
       DataCell(
           Text('${product.totalSold ?? 0}', style: AppTextStyles.textSize16())),
@@ -326,9 +341,16 @@ class ProductDataSource extends DataTableSource {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.lock),
+            icon:
+                Icon(product.status == "active" ? Icons.lock : Icons.lock_open),
             tooltip: "key_block_product".tr(),
-            onPressed: () {},
+            onPressed: () async {
+              await supabase.from("Products").update({
+                "status": product.status == "active" ? "block" : "active"
+              }).eq("id", product.productId);
+              NavigationService.instance.replaceNamed("product_management",
+                  arguments: {"id": product.productId});
+            },
           ),
         ],
       )),

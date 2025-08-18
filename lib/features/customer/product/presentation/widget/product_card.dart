@@ -51,14 +51,25 @@ class ProductCard extends StatelessWidget {
             ),
             5.h,
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("${product.avgRating}", style: AppTextStyles.textSize14()),
-                3.w,
-                const Icon(
-                  Icons.star_half,
-                  color: AppColor.yellowColor,
-                  size: 28,
+                Row(
+                  children: [
+                    Text("${product.avgRating}",
+                        style: AppTextStyles.textSize14()),
+                    3.w,
+                    const Icon(
+                      Icons.star_half,
+                      color: AppColor.yellowColor,
+                      size: 28,
+                    ),
+                  ],
                 ),
+                if (product.promotion != null && product.promotion!.isNotEmpty)
+                  Text(
+                    "-${Helper.getBestDiscountAmount(product.price ?? 0, product.promotion)}%",
+                    style: AppTextStyles.textSize14(color: Colors.red),
+                  )
               ],
             ),
             5.h,
