@@ -16,12 +16,14 @@ import 'package:thuongmaidientu/features/auth/presentation/page/register_page.da
 import 'package:thuongmaidientu/features/auth/presentation/page/verify_page.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/features/profile/presentation/page/create_store.dart';
 import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
@@ -65,13 +67,14 @@ class _LoginScreenState extends State<LoginScreen> {
           switch (val) {
             case AppConstraint.login:
               context.read<ProfileBloc>().add(GetProfile(
-                  email: _usernameController.text ?? "",
+                  email: _usernameController.text,
                   onSuccess: () async {
                     if (kIsWeb) {
                       final bloc = context.read<ProfileBloc>();
                       List<Store> store = bloc.state.listStores ?? [];
                       if (store.isEmpty) {
-                        // create business
+                        NavigationService.instance
+                            .push(const CreateStorePage());
                       } else if (store.length == 1) {
                         bloc.add(SetStore(store: store[0]));
                         NavigationService.instance
@@ -88,6 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               .popUntilRootAndReplace(const WebMainDrawer());
                           return;
                         }
+                        if (!mounted) return;
                         Helper.showCustomDialog(
                             context: context,
                             onPressPrimaryButton: () {},
@@ -95,7 +99,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             headerCustom: Column(
                               children: store
                                   .map((st) => InkWell(
-                                        child: Text(st.name ?? ""),
+                                        child: ListTile(
+                                          leading: CustomCacheImageNetwork(
+                                            imageUrl: st.logoUrl,
+                                            height: 30,
+                                            width: 30,
+                                            borderRadius: 15,
+                                          ),
+                                          title: Text(
+                                            st.name ?? "",
+                                            style: AppTextStyles.textSize18(),
+                                          ),
+                                        ),
                                         onTap: () async {
                                           bloc.add(SetStore(store: st));
                                           final prefs = await SharedPreferences
@@ -144,6 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }),
       child: Scaffold(
         appBar: CustomAppBar(
+          showLeading: !kIsWeb,
           title: "key_login".tr(),
           isShowCartIcon: false,
           isShowChatIcon: false,
@@ -151,6 +167,12 @@ class _LoginScreenState extends State<LoginScreen> {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
           child: SingleChildScrollView(
+            padding: kIsWeb
+                ? EdgeInsets.symmetric(
+                    horizontal: context.widthScreen > 1000
+                        ? context.widthScreen * 0.2
+                        : context.widthScreen * 0.1)
+                : EdgeInsets.zero,
             child: Column(
               children: [
                 30.h,

@@ -16,10 +16,12 @@ abstract class ProductRemoteDatasource {
     int? maxPrice,
     String? storeId,
   });
-  Future<ProductDetailModel> getProductDetail(String id);
+  Future<ProductDetailModel> getProductDetail(String id, String userId);
   Future<Store> getStore();
   Future<List<ProductModel>> getListProductSummerice(String categoryId);
   Future<List<Category>> getListCategory();
+  Future<void> updateWishlist(String id, String userId, bool isLike);
+  Future<List<ProductDetailModel>> getWishlist(String userId);
 }
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
@@ -33,7 +35,12 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
     int? maxPrice,
     String? storeId,
   }) async {
-    var query = supabase.from("Products").select('''*, store: Stores(*)''');
+    var query = supabase
+        .from("Products")
+        .select('''*, store: Stores(*),
+         promotion: ProductPromotion(promotion:Promotions(*))''')
+        .eq("status", "active")
+        .eq("is_deleted", false);
 
     if (search != null && search.isNotEmpty) {
       query = query.ilike('product_name', '%$search%');
@@ -65,15 +72,50 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
   }
 
   @override
-  Future<ProductDetailModel> getProductDetail(String id) async {
-    final data = await supabase.from("Products").select('''
+  Future<ProductDetailModel> getProductDetail(String id, String userId) async {
+    final data = await supabase
+        .from("Products")
+        .select('''
       *,
-      images : Images(*),
-      variants : Variants(*),
-      store : Stores(*)
-      ''').eq("id", id).single();
-
+      images:Images(*),
+      variants:Variants(
+        *,
+        prices:Prices!inner(*)
+      ),
+      store:Stores(*),
+      promotion:ProductPromotion(promotion:Promotions(*))
+    ''')
+        .eq("id", id)
+        .order('created_at',
+            ascending: false,
+            referencedTable: 'variants.prices') // sắp xếp bảng con
+        .limit(1,
+            referencedTable:
+                'variants.prices') // giới hạn 1 bản ghi cho bảng con
+        .single();
+    final isLike = await supabase
+        .from("Wishlist")
+        .select('''*''')
+        .eq("user_id", userId)
+        .eq("product_id", id)
+        .maybeSingle();
+    data.addAll({"is_like": isLike == null ? false : true});
     return ProductDetailModel.fromJson(data);
+  }
+
+  @override
+  Future<void> updateWishlist(String id, String userId, bool isLike) async {
+    if (isLike) {
+      await supabase
+          .from("Wishlist")
+          .insert({"user_id": userId, "product_id": id});
+    } else {
+      await supabase
+          .from("Wishlist")
+          .delete()
+          .eq("user_id", userId)
+          .eq("product_id", id);
+    }
   }
 
   @override
@@ -87,7 +129,8 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
   Future<List<ProductModel>> getListProductSummerice(String categoryId) async {
     final data = await supabase
         .from("Products")
-        .select('''*,store : Stores(*)''').eq("category_id", categoryId);
+        .select('''*,store : Stores(*), promotion: ProductPromotion(promotion:Promotions(*))''').eq(
+            "category_id", categoryId);
 
     return data.map((product) => ProductModel.fromJson(product)).toList();
   }
@@ -97,5 +140,20 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
     final data = await supabase.from("Categories").select('''*''');
 
     return data.map((item) => CategoryModel.fromJson(item)).toList();
+  }
+
+  @override
+  Future<List<ProductDetailModel>> getWishlist(String userId) async {
+    final data = await supabase
+        .from("Wishlist")
+        .select('''*, product : Products(*, images : Images(*),
+      variants : Variants(
+        *,
+        prices:Prices!inner(*)
+      ), store: Stores(*),  promotion: ProductPromotion(promotion:Promotions(*)))''').eq("user_id", userId);
+    return data.map((item) {
+      item["product"].addAll({"is_like": true});
+      return ProductDetailModel.fromJson(item["product"]);
+    }).toList();
   }
 }

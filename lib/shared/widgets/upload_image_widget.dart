@@ -9,9 +9,13 @@ import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
 class MultiImagePickerWidget extends StatefulWidget {
   final Function(List<Uint8List>)? onSuccess;
   final bool allowMultiple;
+  final bool isShowDescription;
 
   const MultiImagePickerWidget(
-      {super.key, this.allowMultiple = true, this.onSuccess});
+      {super.key,
+      this.allowMultiple = true,
+      this.onSuccess,
+      this.isShowDescription = true});
 
   @override
   State<MultiImagePickerWidget> createState() => _MultiImagePickerWidgetState();

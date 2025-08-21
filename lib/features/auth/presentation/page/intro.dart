@@ -8,7 +8,6 @@ import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
-import 'package:thuongmaidientu/web_main_drawer.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -115,18 +114,13 @@ class _IntroPageState extends State<IntroPage> {
                 },
               ),
               20.h,
-              if (isLastPage)
+              if (isLastPage && !kIsWeb)
                 CustomButton(
                   backgroundColor: AppColor.greyColor,
                   text: "key_skip".tr(),
                   onPressed: () {
-                    if (kIsWeb) {
-                      NavigationService.instance
-                          .popUntilRootAndReplace(const WebMainDrawer());
-                    } else {
-                      NavigationService.instance
-                          .popUntilRootAndReplace(const MainTab());
-                    }
+                    NavigationService.instance
+                        .popUntilRootAndReplace(const MainTab());
                   },
                 ),
               20.h,

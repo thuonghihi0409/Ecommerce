@@ -22,7 +22,7 @@ class ProductMessageWidget extends StatelessWidget {
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        height: kIsWeb ? context.widthScreen * 0.3 : context.widthScreen * 0.6,
+        height: kIsWeb ? context.widthScreen * 0.35 : context.widthScreen * 0.7,
         width: kIsWeb ? context.widthScreen * 0.25 : context.widthScreen * 0.5,
         decoration: BoxDecoration(
           color: Colors.white,

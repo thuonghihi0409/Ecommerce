@@ -51,14 +51,25 @@ class ProductCard extends StatelessWidget {
             ),
             5.h,
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("${product.avgRating}", style: AppTextStyles.textSize14()),
-                3.w,
-                const Icon(
-                  Icons.star_half,
-                  color: AppColor.yellowColor,
-                  size: 28,
+                Row(
+                  children: [
+                    Text("${product.avgRating}",
+                        style: AppTextStyles.textSize14()),
+                    3.w,
+                    const Icon(
+                      Icons.star_half,
+                      color: AppColor.yellowColor,
+                      size: 28,
+                    ),
+                  ],
                 ),
+                if (product.promotion != null && product.promotion!.isNotEmpty)
+                  Text(
+                    "-${Helper.getBestDiscountAmount(product.price ?? 0, product.promotion)}%",
+                    style: AppTextStyles.textSize14(color: Colors.red),
+                  )
               ],
             ),
             5.h,
@@ -67,7 +78,9 @@ class ProductCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(Helper.formatCurrencyVND(product.price),
+                Text(
+                    Helper.formatCurrencyVND((Helper.getDiscount(
+                        product.price ?? 0, product.promotion))),
                     style: AppTextStyles.textSize14(color: AppColor.primary)),
                 Text(
                   "${"key_solded".tr()} ${Helper.formatNumber(
@@ -78,6 +91,11 @@ class ProductCard extends StatelessWidget {
                 )
               ],
             ),
+            if (product.promotion != null)
+              Text(Helper.formatCurrencyVND(product.price),
+                  style: AppTextStyles.textSize10(
+                      color: AppColor.primary,
+                      decoration: TextDecoration.lineThrough))
           ],
         ),
       ),

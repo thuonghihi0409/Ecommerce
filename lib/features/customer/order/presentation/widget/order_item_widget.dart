@@ -7,11 +7,13 @@ import 'package:thuongmaidientu/features/customer/order/domain/entities/order_it
 import 'package:thuongmaidientu/features/customer/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/page/create_review_page.dart';
+import 'package:thuongmaidientu/features/review/presentation/page/review_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/textfield_custom.dart';
 
 class OrderItemWidget extends StatefulWidget {
   final OrderItem orderItem;
@@ -94,7 +96,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                             children: [
                               Text(
                                 Helper.formatCurrencyVND(
-                                    (entrie.value.variant?.price ?? 0)),
+                                    (entrie.value.price?.price ?? 0)),
                                 style: AppTextStyles.textSize12(),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -133,9 +135,8 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                                   isMinWidth: true,
                                   text: "key_view_review".tr(),
                                   onPressed: () {
-                                    NavigationService.instance
-                                        .push(CreateReviewPage(
-                                      product: entrie.value,
+                                    NavigationService.instance.push(ReviewPage(
+                                      productDetail: entrie.value.productDetail,
                                     ));
                                   },
                                 ),
@@ -161,11 +162,23 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                       isMinWidth: true,
                       text: "key_cancel_order".tr(),
                       onPressed: () {
-                        _bloc.add(UpdateOrder(
-                            id: context.read<ProfileBloc>().state.profile?.id ??
-                                "",
-                            order: widget.orderItem,
-                            newStatus: OrderStatus.cancelled));
+                        Helper.showCustomDialog(
+                            message: "Xác nhận hủy đơn hàng ?",
+                            isShowPrimaryButton: true,
+                            isShowSecondButton: true,
+                            context: context,
+                            onPressPrimaryButton: () {
+                              _bloc.add(UpdateOrder(
+                                  id: context
+                                          .read<ProfileBloc>()
+                                          .state
+                                          .profile
+                                          ?.id ??
+                                      "",
+                                  order: widget.orderItem,
+                                  newStatus: OrderStatus.cancelled));
+                              NavigationService.instance.goBack();
+                            });
                       },
                     ),
                   ],
@@ -177,17 +190,67 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                       isMinWidth: true,
                       text: "key_cancel_order".tr(),
                       onPressed: () {
-                        _bloc.add(UpdateOrder(
-                            id: context.read<ProfileBloc>().state.profile?.id ??
-                                "",
-                            order: widget.orderItem,
-                            newStatus: OrderStatus.cancelled));
+                        Helper.showCustomDialog(
+                            message: "Xác nhận hủy đơn hàng ?",
+                            isShowPrimaryButton: true,
+                            isShowSecondButton: true,
+                            context: context,
+                            onPressPrimaryButton: () {
+                              _bloc.add(UpdateOrder(
+                                  id: context
+                                          .read<ProfileBloc>()
+                                          .state
+                                          .profile
+                                          ?.id ??
+                                      "",
+                                  order: widget.orderItem,
+                                  newStatus: OrderStatus.cancelled));
+                              NavigationService.instance.goBack();
+                            });
+                      },
+                    ),
+                  ],
+                ),
+              if (widget.orderItem.status == OrderStatus.delivered)
+                Row(
+                  children: [
+                    CustomButton(
+                      isMinWidth: true,
+                      text: "key_return_requested".tr(),
+                      onPressed: () {
+                        final control = TextEditingController();
+                        Helper.showCustomDialog(
+                            message: "Xác nhận gửi yêu cầu trả hàng ?",
+                            isShowPrimaryButton: true,
+                            isShowSecondButton: true,
+                            context: context,
+                            headerCustom: Column(
+                              children: [
+                                CustomTextField(
+                                  controller: control,
+                                  labelText: "Lý do trả hàng",
+                                ),
+                                20.h
+                              ],
+                            ),
+                            onPressPrimaryButton: () {
+                              _bloc.add(UpdateOrder(
+                                  id: context
+                                          .read<ProfileBloc>()
+                                          .state
+                                          .profile
+                                          ?.id ??
+                                      "",
+                                  order: widget.orderItem,
+                                  newStatus: OrderStatus.returnRequested));
+                              NavigationService.instance.goBack();
+                            });
                       },
                     ),
                   ],
                 ),
             ],
-          )
+          ),
         ],
       ),
     );

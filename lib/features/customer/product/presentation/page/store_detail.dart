@@ -43,6 +43,9 @@ class _StoreDetailState extends State<StoreDetail>
         );
       }),
       child: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
+        final countList = (state.listProduct.results ?? [])
+            .where((pro) => pro.promotion != null)
+            .toList();
         return Scaffold(
             body: DefaultTabController(
           length: 2,
@@ -102,7 +105,7 @@ class _StoreDetailState extends State<StoreDetail>
                       crossAxisCount: 2,
                       crossAxisSpacing: 5,
                       mainAxisSpacing: 5,
-                      childAspectRatio: 0.7,
+                      childAspectRatio: 0.67,
                     ),
                     itemBuilder: (context, index) {
                       return ProductCard(
@@ -110,20 +113,17 @@ class _StoreDetailState extends State<StoreDetail>
                           onTap: () {});
                     }),
                 GridView.builder(
+                    itemCount: countList.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 5,
                       mainAxisSpacing: 5,
-                      childAspectRatio: 0.7,
+                      childAspectRatio: 0.67,
                     ),
                     itemBuilder: (context, index) {
-                      return Container(
-                        height: 60,
-                        width: 80,
-                        color: Colors.amber,
-                        child: Text(index.toString()),
-                      );
+                      return ProductCard(
+                          product: countList[index], onTap: () {});
                     }),
               ],
             ),

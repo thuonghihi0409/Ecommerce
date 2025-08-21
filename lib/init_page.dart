@@ -12,6 +12,7 @@ import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/features/profile/presentation/page/create_store.dart';
 import 'package:thuongmaidientu/main_tab.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
@@ -45,7 +46,7 @@ class _InitPageState extends State<InitPage> {
                     final bloc = context.read<ProfileBloc>();
                     List<Store> store = bloc.state.listStores ?? [];
                     if (store.isEmpty) {
-                      // create business
+                      NavigationService.instance.push(const CreateStorePage());
                     } else if (store.length == 1) {
                       bloc.add(SetStore(store: store[0]));
                       NavigationService.instance
@@ -70,16 +71,12 @@ class _InitPageState extends State<InitPage> {
                           headerCustom: Column(
                             children: store
                                 .map((st) => InkWell(
-                                      child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 20, horizontal: 12),
-                                          decoration: BoxDecoration(
-                                              color: AppColor.greyColor
-                                                  .withAlpha(100)),
-                                          child: Text(
-                                            st.name ?? "",
-                                            style: AppTextStyles.textSize18(),
-                                          )),
+                                      child: ListTile(
+                                        title: Text(
+                                          st.name ?? "",
+                                          style: AppTextStyles.textSize18(),
+                                        ),
+                                      ),
                                       onTap: () async {
                                         bloc.add(SetStore(store: st));
                                         final prefs = await SharedPreferences
@@ -105,12 +102,23 @@ class _InitPageState extends State<InitPage> {
                       .popUntilRootAndReplace(const LoginScreen());
                 }));
           } else {
-            NavigationService.instance
-                .popUntilRootAndReplace(const IntroPage());
+            if (kIsWeb) {
+              NavigationService.instance
+                  .popUntilRootAndReplace(const LoginScreen());
+            } else {
+              NavigationService.instance
+                  .popUntilRootAndReplace(const IntroPage());
+            }
           }
         }, onError: (message) {
           Helper.showToastBottom(message: message);
-          NavigationService.instance.popUntilRootAndReplace(const IntroPage());
+          if (kIsWeb) {
+            NavigationService.instance
+                .popUntilRootAndReplace(const LoginScreen());
+          } else {
+            NavigationService.instance
+                .popUntilRootAndReplace(const IntroPage());
+          }
         }));
   }
 

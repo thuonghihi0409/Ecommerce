@@ -13,18 +13,21 @@ class StatisticModel extends StatisticEntity {
       required super.transactions,
       required super.topOrderedProducts,
       required super.revenue,
-      required super.totalRevenue});
+      required super.totalRevenue,
+      required super.topAvgRatingProducts});
 
   @override
   StatisticModel copyWith({
+    List<TopProductEntity>? topAvgRatingProducts,
     int? totalOrders,
     int? totalProducts,
     TransactionEntity? transactions,
-    List<TopOrderedProductEntity>? topOrderedProducts,
+    List<TopProductEntity>? topOrderedProducts,
     List<RevenueEntity>? revenue,
-    double? totalRevenue,
+    int? totalRevenue,
   }) =>
       StatisticModel(
+        topAvgRatingProducts: topAvgRatingProducts ?? this.topAvgRatingProducts,
         totalOrders: totalOrders ?? this.totalOrders,
         totalProducts: totalProducts ?? this.totalProducts,
         transactions: transactions ?? this.transactions,
@@ -34,19 +37,22 @@ class StatisticModel extends StatisticEntity {
       );
 
   factory StatisticModel.fromJson(Map<String, dynamic> json) => StatisticModel(
-        totalOrders: json["totalOrders"],
-        totalProducts: json["totalProducts"],
-        transactions: TransactionModel.fromJson(json["transactions"]),
-        topOrderedProducts: json["topOrderedProducts"] == null
-            ? []
-            : List<TopOrderedProductModel>.from(json["topOrderedProducts"]!
-                .map((x) => TopOrderedProductModel.fromJson(x))),
-        revenue: json["revenue"] == null
-            ? []
-            : List<RevenueModel>.from(
-                json["revenue"]!.map((x) => RevenueModel.fromJson(x))),
-        totalRevenue: json["totalRevenue"]?.toDouble(),
-      );
+      totalOrders: json["totalOrders"],
+      totalProducts: json["totalProducts"],
+      transactions: TransactionModel.fromJson(json["transactions"]),
+      topOrderedProducts: json["topOrderedProducts"] == null
+          ? []
+          : List<TopProductModel>.from(json["topOrderedProducts"]!
+              .map((x) => TopProductModel.fromJson(x))),
+      revenue: json["revenue"] == null
+          ? []
+          : List<RevenueModel>.from(
+              json["revenue"]!.map((x) => RevenueModel.fromJson(x))),
+      totalRevenue: json["totalRevenue"]?.toDouble(),
+      topAvgRatingProducts: json["topAvgRating"] == null
+          ? []
+          : List<TopProductEntity>.from(json["topOrderedProducts"]!
+              .map((x) => TopProductEntity.fromJson(x))));
 
   @override
   List<Object?> get props => [
@@ -55,6 +61,7 @@ class StatisticModel extends StatisticEntity {
         transactions,
         topOrderedProducts,
         revenue,
-        totalRevenue
+        totalRevenue,
+        topAvgRatingProducts
       ];
 }

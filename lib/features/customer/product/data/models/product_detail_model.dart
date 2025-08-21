@@ -1,3 +1,4 @@
+import 'package:thuongmaidientu/features/customer/product/data/models/promotion_model.dart';
 import 'package:thuongmaidientu/features/customer/product/data/models/store_model.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 
@@ -13,11 +14,19 @@ class ProductDetailModel extends ProductDetail {
       required super.variants,
       required super.avgRating,
       required super.totalRating,
+      required super.isLike,
       required super.totalSold,
+      required super.promotion,
       required super.cover});
 
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
     return ProductDetailModel(
+      promotion: json["promotion"] != null && json["promotion"].isNotEmpty
+          ? (json["promotion"] as List)
+              .map((item) => PromotionModel.fromJson(item["promotion"]))
+              .toList()
+          : null,
+      isLike: json["is_like"] ?? false,
       cover: json["cover"],
       totalRating: json['total_rating'],
       avgRating: json['avg_rating'].toDouble(),
@@ -79,16 +88,16 @@ class VariantModel extends Variant {
   VariantModel(
       {required super.id,
       required super.name,
-      required super.price,
+      required super.prices,
       required super.stock,
       required super.cover,
       required super.totalSold});
 
   factory VariantModel.fromJson(Map<String, dynamic> json) {
     return VariantModel(
+        prices: PriceModel.fromJson(json["prices"]?[0] ?? {}),
         id: json['id'],
         name: json['name'],
-        price: json['price'],
         stock: json['stock'] ?? 0,
         cover: json['cover'] ?? "",
         totalSold: json['total_sold']);
@@ -98,8 +107,33 @@ class VariantModel extends Variant {
     return {
       'id': id,
       'name': name,
-      'price': price,
       'stock': stock,
+    };
+  }
+}
+
+class PriceModel extends Price {
+  PriceModel({
+    required super.id,
+    required super.price,
+    required super.startTime,
+  });
+
+  /// Convert JSON → PriceModel
+  factory PriceModel.fromJson(Map<String, dynamic> json) {
+    return PriceModel(
+      id: json['id'] as String,
+      price: (json['price']).toInt(),
+      startTime: DateTime.parse(json['created_at'] as String),
+    );
+  }
+
+  /// Convert PriceModel → JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'price': price,
+      'startTime': (startTime ?? DateTime.now()).toIso8601String(),
     };
   }
 }

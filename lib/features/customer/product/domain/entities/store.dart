@@ -6,6 +6,7 @@ class Store {
   final String? address;
   final double? averageRating;
   final int? totalProducts;
+  final String? phone;
 
   const Store({
     required this.id,
@@ -15,10 +16,12 @@ class Store {
     required this.averageRating,
     required this.totalProducts,
     required this.backgroundUrl,
+    required this.phone,
   });
 
   factory Store.fromJson(Map<String, dynamic> json) {
     return Store(
+      phone: json["phone"],
       id: json['id'] as String,
       name: json['name'] as String?,
       logoUrl: json['logo_url'] as String?,

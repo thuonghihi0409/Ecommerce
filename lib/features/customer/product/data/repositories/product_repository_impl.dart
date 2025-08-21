@@ -30,8 +30,8 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<ProductDetail> getProductDetail(String id) async {
-    final productdetail = await remoteDataSource.getProductDetail(id);
+  Future<ProductDetail> getProductDetail(String id, String userId) async {
+    final productdetail = await remoteDataSource.getProductDetail(id, userId);
     return productdetail;
   }
 
@@ -52,5 +52,16 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<List<Category>> getListCategory() async {
     final listCategory = await remoteDataSource.getListCategory();
     return listCategory;
+  }
+
+  @override
+  Future<void> updateWishlist(String id, String userId, bool isLike) async {
+    await remoteDataSource.updateWishlist(id, userId, isLike);
+  }
+
+  @override
+  Future<List<ProductDetail>> getWishlist(String userId) async {
+    final data = await remoteDataSource.getWishlist(userId);
+    return data;
   }
 }

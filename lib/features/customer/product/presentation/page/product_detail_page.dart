@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,8 +7,10 @@ import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/chat_detail_page.dart';
+import 'package:thuongmaidientu/features/customer/cart/domain/entities/cart_item.dart';
+import 'package:thuongmaidientu/features/customer/cart/domain/entities/product_item.dart';
 import 'package:thuongmaidientu/features/customer/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
-import 'package:thuongmaidientu/features/customer/product/domain/entities/product.dart';
+import 'package:thuongmaidientu/features/customer/order/presentation/page/create_order_page.dart';
 import 'package:thuongmaidientu/features/customer/product/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:thuongmaidientu/features/customer/product/presentation/page/store_detail.dart';
 import 'package:thuongmaidientu/features/customer/product/presentation/widget/product_card.dart';
@@ -15,6 +19,7 @@ import 'package:thuongmaidientu/features/review/presentation/page/review_page.da
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
+import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
 import 'package:thuongmaidientu/shared/widgets/add_to_cart_widget.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
@@ -24,24 +29,30 @@ import 'package:thuongmaidientu/shared/widgets/laoding_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/overlay_custom.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  final Product product;
-  const ProductDetailPage({super.key, required this.product});
+  final String productId;
+  final String categoryId;
+  const ProductDetailPage(
+      {super.key, required this.productId, required this.categoryId});
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
+  late String _userId;
+  int _index = 0;
   @override
   void initState() {
     super.initState();
+    _userId = context.read<ProfileBloc>().state.profile?.id ?? "";
     _getDate();
   }
 
   _getDate() async {
     context.read<ProductBloc>().add(GetProductDetail(
-        productId: widget.product.productId,
-        categoryId: widget.product.categoryId ?? ""));
+        userId: _userId,
+        productId: widget.productId,
+        categoryId: widget.categoryId));
   }
 
   @override
@@ -92,11 +103,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                     final variant =
                                         (state.productDetailModel!.variants ??
                                             [])[index];
-                                    return CustomCacheImageNetwork(
-                                      borderRadius: 5,
-                                      imageUrl: variant.cover,
-                                      height: 80,
-                                      width: 70,
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          _index = index;
+                                        });
+                                      },
+                                      child: CustomCacheImageNetwork(
+                                        borderRadius: 5,
+                                        imageUrl: variant.cover,
+                                        height: 80,
+                                        width: 70,
+                                      ),
                                     );
                                   },
                                   separatorBuilder: (context, index) =>
@@ -104,12 +122,56 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 ),
                               ),
                               10.h,
-                              Text(
-                                Helper.formatCurrencyVND(
-                                    state.productDetailModel?.price),
-                                style: AppTextStyles.textSize20(
-                                    color: AppColor.primary),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      Helper.formatCurrencyVND(
+                                          Helper.getDiscount(
+                                              state
+                                                      .productDetailModel
+                                                      ?.variants?[_index]
+                                                      .prices
+                                                      ?.price ??
+                                                  0,
+                                              state.productDetailModel
+                                                  ?.promotion)),
+                                      style: AppTextStyles.textSize14(
+                                          color: AppColor.primary)),
+                                  IconButton(
+                                      onPressed: () {
+                                        context.read<ProductBloc>().add(
+                                            UpdateWistlist(
+                                                productId: state
+                                                        .productDetailModel
+                                                        ?.productId ??
+                                                    "",
+                                                userId: _userId,
+                                                isLike: !(state
+                                                        .productDetailModel
+                                                        ?.isLike ??
+                                                    false)));
+                                      },
+                                      icon: Icon(
+                                          !(state.productDetailModel?.isLike ??
+                                                  false)
+                                              ? Icons.favorite_border_outlined
+                                              : Icons.favorite,
+                                          color: Colors.red)),
+                                ],
                               ),
+                              if (state.productDetailModel?.promotion != null)
+                                Text(
+                                    Helper.formatCurrencyVND(state
+                                        .productDetailModel
+                                        ?.variants?[_index]
+                                        .prices
+                                        ?.price),
+                                    style: AppTextStyles.textSize10(
+                                        color: AppColor.primary,
+                                        decoration:
+                                            TextDecoration.lineThrough)),
                               10.h,
                               Text(
                                 state.productDetailModel?.productName ?? "",
@@ -262,8 +324,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                       child: ProductCard(
                                           product: item,
                                           onTap: () {
-                                            // NavigationService.instance.replace(
-                                            //     ProductDetailPage(product: item));
+                                            NavigationService.instance
+                                                .replace(ProductDetailPage(
+                                              productId: item.productId,
+                                              categoryId: item.categoryId ?? "",
+                                            ));
                                           }),
                                     ))
                                 .toList(),
@@ -313,7 +378,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   "";
                               context.read<CartBloc>().add(AddToCart(
                                   userId: userId,
-                                  productId: widget.product.productId,
+                                  productId: widget.productId,
                                   storeId:
                                       state.productDetailModel?.store?.id ?? "",
                                   variantId: state.productDetailModel
@@ -336,7 +401,37 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           headerCustom: AddCartWidget(
                             productDetail: state.productDetailModel,
                             lableButton: "key_buy_now".tr(),
-                            onTap: (productItem, index, quantity) {},
+                            onTap: (productItem, index, quantity) {
+                              try {
+                                log("hihihii");
+                                NavigationService.instance.push(CreateOrderPage(
+                                  cartItems: [
+                                    CartItem(
+                                        store: state.productDetailModel!.store!,
+                                        productItem: [
+                                          ProductItem(
+                                              id: "",
+                                              productDetail:
+                                                  state.productDetailModel!,
+                                              variant: state.productDetailModel!
+                                                  .variants![index],
+                                              number: quantity)
+                                        ],
+                                        id: "")
+                                  ],
+                                  total: state.productDetailModel!
+                                          .variants![index].prices!.price! *
+                                      quantity,
+                                  subtotal: Helper.getDiscount(
+                                          state.productDetailModel!
+                                              .variants![index].prices!.price!,
+                                          state.productDetailModel?.promotion) *
+                                      quantity,
+                                ));
+                              } catch (e) {
+                                log(ParseError.fromJson(e).message);
+                              }
+                            },
                           ),
                           context: context,
                         );

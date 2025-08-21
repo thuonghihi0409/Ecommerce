@@ -1,13 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation_entity.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/widgets/product_message_widget.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
-import 'package:thuongmaidientu/shared/utils/helper.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final String? productId;
@@ -25,6 +27,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   late String _currentId;
   late ConversationEntity? _conversationEntity;
 
+  late ChatBloc _chatBloc;
+  late String currentUserId;
+  late var _channel;
   @override
   void initState() {
     super.initState();
@@ -37,6 +42,27 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     if (widget.productId != null) {
       _sendMessage(widget.productId ?? "", MessageType.product);
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      currentUserId = kIsWeb
+          ? context.read<ProfileBloc>().state.store?.id ?? ""
+          : (context.read<ProfileBloc>().state.profile?.id ?? "");
+      _chatBloc = context.read<ChatBloc>();
+      _channel = supabase
+          .channel('public:Messages')
+          .onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'public',
+            table: 'Messages',
+            callback: (payload) {
+              if (payload.eventType == PostgresChangeEvent.insert ||
+                  payload.eventType == PostgresChangeEvent.update) {
+                context.read<ChatBloc>().add(const GetMessage());
+              }
+            },
+          )
+          .subscribe((status, ob) {});
+    });
   }
 
   void _onScroll() {
@@ -131,13 +157,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 if (msg?.messageType == MessageType.product)
                                   ProductMessageWidget(
                                       product: msg?.product, onTap: () {}),
-                                const SizedBox(height: 4),
-                                Text(
-                                  Helper.formatTime(
-                                      msg?.timesend ?? DateTime.now()),
-                                  style: const TextStyle(
-                                      fontSize: 10, color: Colors.white70),
-                                ),
+                                // const SizedBox(height: 4),
+                                // Text(
+                                //   Helper.formatTime(
+                                //       msg?.timesend ?? DateTime.now()),
+                                //   style: const TextStyle(
+                                //       fontSize: 10, color: Colors.white70),
+                                // ),
                               ],
                             ),
                           ),

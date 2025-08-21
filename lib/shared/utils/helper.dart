@@ -1,14 +1,18 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/promotion.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
+import 'package:thuongmaidientu/shared/utils/extension.dart';
+import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Toast type
@@ -119,6 +123,7 @@ class Helper {
     String? message,
     Function()? onClose,
     bool isShowSecondButton = false,
+    bool isShowPrimaryButton = false,
     required Function() onPressPrimaryButton,
     onPressSecondButton,
     String? labelPrimary,
@@ -133,29 +138,71 @@ class Helper {
         context: context,
         barrierDismissible: barrierDismissible,
         builder: (dialogContext) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            physics:
-                isNeverScroll ? const NeverScrollableScrollPhysics() : null,
-            child: ValueListenableBuilder(
-                valueListenable: isDisablePrimaryButton ?? ValueNotifier(false),
-                builder: (context, isDisableButton, child) {
-                  return Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+          return ValueListenableBuilder(
+            valueListenable: isDisablePrimaryButton ?? ValueNotifier(false),
+            builder: (context, isDisableButton, child) {
+              return Dialog(
+                insetPadding: kIsWeb
+                    ? EdgeInsets.symmetric(
+                        horizontal: context.widthScreen * 0.3)
+                    : const EdgeInsets.symmetric(horizontal: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    physics: isNeverScroll
+                        ? const NeverScrollableScrollPhysics()
+                        : null,
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         if (message != null)
                           Text(
                             message,
-                            style: AppTextStyles.textSize18(),
+                            style: AppTextStyles.textSize18(
+                                fontWeight: FontWeight.bold,
+                                color: AppColor.primary),
                           ),
+                        30.h,
                         headerCustom ?? const SizedBox(),
+                        Row(
+                          mainAxisAlignment:
+                              isShowPrimaryButton && isShowSecondButton
+                                  ? MainAxisAlignment.spaceAround
+                                  : (isShowPrimaryButton
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start),
+                          children: [
+                            if (isShowSecondButton)
+                              CustomButton(
+                                padding: const EdgeInsetsGeometry.symmetric(
+                                    horizontal: 8, vertical: 5),
+                                text: "key_cancel".tr(),
+                                isMinWidth: true,
+                                onPressed: onClose ??
+                                    () {
+                                      NavigationService.instance.goBack();
+                                    },
+                              ),
+                            if (isShowPrimaryButton)
+                              CustomButton(
+                                padding: const EdgeInsetsGeometry.symmetric(
+                                    horizontal: 8, vertical: 5),
+                                text: "key_confirm".tr(),
+                                isMinWidth: true,
+                                onPressed: onPressPrimaryButton,
+                              )
+                          ],
+                        )
                       ],
                     ),
-                  );
-                }),
+                  ),
+                ),
+              );
+            },
           );
         });
   }
@@ -329,7 +376,7 @@ class Helper {
                     if (isOne == true) {
                       final path =
                           await pickerService.pickSingleImageFromGallery();
-                      log(" path = $path");
+
                       onPicker?.call(path);
                     } else {
                       final paths =
@@ -392,5 +439,40 @@ class Helper {
       case MessageType.product:
         return "[${"key_product".tr()}] ${message?.product?.productName ?? ""}";
     }
+  }
+
+  static int getDiscount(int price, List<Promotion>? list) {
+    int minPrice = price;
+    if (list == null || list.isEmpty) return minPrice;
+    for (var element in list) {
+      minPrice = min(
+          minPrice,
+          price -
+              min((price * (element.amount ?? 0) * 0.01).round(),
+                  element.max ?? 0));
+    }
+    return minPrice;
+  }
+
+  static double? getBestDiscountAmount(int price, List<Promotion>? list) {
+    if (list == null || list.isEmpty) return null;
+
+    double? bestAmount; // phần trăm hoặc giá trị giảm
+    int minPrice = price;
+
+    for (var element in list) {
+      int discountedPrice = price -
+          min(
+            (price * (element.amount ?? 0) * 0.01).round(),
+            element.max ?? 0,
+          );
+
+      if (discountedPrice < minPrice) {
+        minPrice = discountedPrice;
+        bestAmount = element.amount; // Lưu lại amount tương ứng
+      }
+    }
+
+    return bestAmount;
   }
 }

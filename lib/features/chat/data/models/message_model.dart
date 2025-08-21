@@ -33,7 +33,7 @@ class MessageModel extends MessageEntity {
         id: json['id'],
         content: json['content'],
         isRead: json['is_read'] ?? true,
-        timesend: DateTime.parse(json['created_at']).toUtc(),
+        timesend: DateTime.parse(json['created_at']).toLocal(),
         conversationId: json['conversation_id'],
         senderId: json['sender_id'],
         receiverId: json['receiver_id'],

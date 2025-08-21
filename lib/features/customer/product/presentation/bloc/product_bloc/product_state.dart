@@ -3,6 +3,7 @@ part of 'product_bloc.dart';
 class ProductState extends Equatable {
   final ListModel<Product> listProduct;
   final List<Category>? listCategory;
+  final List<ProductDetail>? wishlist;
   final ProductDetail? productDetailModel;
 
   final List<Product>? productSummerice;
@@ -21,6 +22,7 @@ class ProductState extends Equatable {
     this.isLoading = false,
     this.isLoadingMore = false,
     this.isRefreshing = false,
+    this.wishlist,
     this.productSummerice,
   });
 
@@ -33,6 +35,7 @@ class ProductState extends Equatable {
         isLoading: false,
         isLoadingMore: false,
         isRefreshing: false,
+        wishlist: null,
         productSummerice: null,
         listCategory: null);
   }
@@ -47,8 +50,10 @@ class ProductState extends Equatable {
       bool? isRefreshing,
       List<Product>? listProductSummerice,
       Store? store,
+      List<ProductDetail>? wishlist,
       List<Category>? listCategory}) {
     return ProductState(
+        wishlist: wishlist ?? this.wishlist,
         listProduct: listProduct ?? this.listProduct,
         isLoading: isLoading ?? this.isLoading,
         isLoadingMore: isLoadingMore ?? this.isLoadingMore,

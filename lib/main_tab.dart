@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:thuongmaidientu/core/app_assets.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
+import 'package:thuongmaidientu/features/auth/presentation/page/login_page.dart';
 import 'package:thuongmaidientu/features/customer/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:thuongmaidientu/features/customer/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/customer/order/presentation/page/order_page.dart';
@@ -12,7 +13,6 @@ import 'package:thuongmaidientu/features/customer/product/presentation/page/prod
 import 'package:thuongmaidientu/features/notification/presentation/page/notification_screen.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/profile/presentation/page/account_screen.dart';
-import 'package:thuongmaidientu/features/video/presentation/page/video_page.dart';
 import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/widgets/badge_icon.dart';
 
@@ -27,9 +27,9 @@ class _MainTabState extends State<MainTab> {
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
 
-  final List<Widget> _screens = [
+  List<Widget> _screens = [
     const ProductPage(),
-    const VideosPage(),
+    // const VideosPage(),
     const OrderPage(),
     const NotificationScreen(),
     const AccountScreen()
@@ -37,13 +37,21 @@ class _MainTabState extends State<MainTab> {
 
   @override
   void initState() {
+    final id = context.read<ProfileBloc>().state.profile?.id;
     super.initState();
     FirebaseService.init();
     _getData();
+    _screens = [
+      const ProductPage(),
+      id == null ? const LoginScreen() : const OrderPage(),
+      id == null ? const LoginScreen() : const NotificationScreen(),
+      id == null ? const LoginScreen() : const AccountScreen()
+    ];
   }
 
   _getData() async {
     final userId = context.read<ProfileBloc>().state.profile?.id ?? "";
+    if (userId.isEmpty) return;
     log("userId =$userId");
     context.read<OrderBloc>().add(GetCountOrder(userId: userId));
     context.read<CartBloc>().add(GetCountCart(userId: userId));
@@ -90,14 +98,14 @@ class _MainTabState extends State<MainTab> {
                 size: 25,
               ),
               index: 0,
-              label: 'Trang Chu',
+              label: 'Trang Chủ',
             ),
-            _buildNavItem(
-              icon: const Icon(Icons.live_tv_outlined),
-              activeIcon: const Icon(Icons.live_tv_outlined),
-              index: 1,
-              label: 'Video',
-            ),
+            // _buildNavItem(
+            //   icon: const Icon(Icons.live_tv_outlined),
+            //   activeIcon: const Icon(Icons.live_tv_outlined),
+            //   index: 1,
+            //   label: 'Video',
+            // ),
             _buildNavItem(
               icon:
                   BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
@@ -124,19 +132,19 @@ class _MainTabState extends State<MainTab> {
                 );
               }),
               index: 2,
-              label: 'Don Hang',
+              label: 'Đơn Hàng',
             ),
             _buildNavItem(
               icon: const Icon(Icons.notifications),
               activeIcon: const Icon(Icons.notifications),
               index: 3,
-              label: 'Thong bao',
+              label: 'Thông báo',
             ),
             _buildNavItem(
               icon: const Icon(Icons.account_circle_outlined),
               activeIcon: const Icon(Icons.account_circle_outlined),
               index: 4,
-              label: 'Tai khoan',
+              label: 'Tài khỏan',
             ),
           ],
         ),

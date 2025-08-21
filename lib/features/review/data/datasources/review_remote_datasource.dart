@@ -18,7 +18,10 @@ class ReviewRemoteDataSourceImpl implements ReviewRemoteDatasource {
     *,
     image_urls: Images(url),
     user: Users(*),
-    variant: Variants(*)
+    variant: Variants(
+        *,
+        prices:Prices!inner(*)
+      )
     ''').eq("product_id", id);
 
     final result = ListModel(

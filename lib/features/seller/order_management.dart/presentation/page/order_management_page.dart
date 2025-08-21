@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/features/customer/order/domain/entities/order_item.dart';
-import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/bloc/order_management_bloc/order_management_bloc.dart';
 import 'package:thuongmaidientu/features/seller/order_management.dart/presentation/page/seller_order_list_tab.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 
@@ -15,13 +13,14 @@ class OrderManagementPage extends StatefulWidget {
 
 class _OrderPageState extends State<OrderManagementPage>
     with TickerProviderStateMixin {
-  late OrderManagementBloc _bloc;
   final List<OrderStatus> _tabs = [
     OrderStatus.pending,
     OrderStatus.awaiting,
     OrderStatus.delivering,
     OrderStatus.delivered,
+    OrderStatus.returnRequested,
     OrderStatus.cancelled,
+    OrderStatus.returned
   ];
 
   late final TabController _tabController;
@@ -30,7 +29,6 @@ class _OrderPageState extends State<OrderManagementPage>
   void initState() {
     _tabController = TabController(length: _tabs.length, vsync: this);
     super.initState();
-    _bloc = BlocProvider.of<OrderManagementBloc>(context);
   }
 
   @override

@@ -8,11 +8,13 @@ import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.
 import 'package:thuongmaidientu/features/profile/domain/entities/province_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/ward_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/add_address_usecase.dart';
+import 'package:thuongmaidientu/features/profile/domain/usecases/create_store_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_address_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_list_store_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_provinces_usecase.dart';
 import 'package:thuongmaidientu/features/profile/domain/usecases/get_wards_usecase.dart';
+import 'package:thuongmaidientu/features/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
 
@@ -26,13 +28,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   GetWardsUsecase getWardsUsecase;
   AddAddressUsecase addAddressUsecase;
   GetListStoreUsecase getListStoreUsecase;
+  CreateStoreUsecase createStoreUsecase;
+  UpdateProfileUsecase updateProfileUsecase;
   ProfileBloc(
       this.getProfileUsecase,
       this.getAddressUsecase,
       this.getProvincesUsecase,
       this.getWardsUsecase,
       this.addAddressUsecase,
-      this.getListStoreUsecase)
+      this.getListStoreUsecase,
+      this.createStoreUsecase,
+      this.updateProfileUsecase)
       : super(ProfileState.empty()) {
     on<GetProfile>(getProfile);
     on<GetAddress>(getAddress);
@@ -40,6 +46,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<GetWards>(getWards);
     on<AddAddress>(addAddress);
     on<SetStore>(setStore);
+    on<CreateStore>(createStore);
+    on<UpdateProfile>(updateProfile);
   }
 
   void getProfile(GetProfile event, Emitter<ProfileState> emit) async {
@@ -55,6 +63,24 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       event.onSuccess?.call();
 
       add(GetAddress(id: state.profile?.id ?? ""));
+    } catch (e) {
+      event.onError?.call();
+      emit(state.copyWith(isLoading: false));
+      log(ParseError.fromJson(e).message);
+      Helper.showToastBottom(message: ParseError.fromJson(e).message);
+    }
+  }
+
+  void updateProfile(UpdateProfile event, Emitter<ProfileState> emit) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      await updateProfileUsecase.call(profile: event.profile);
+
+      emit(state.copyWith(
+        isLoading: false,
+        profile: event.profile,
+      ));
+      event.onSuccess?.call();
     } catch (e) {
       event.onError?.call();
       emit(state.copyWith(isLoading: false));
@@ -122,6 +148,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       emit(state.copyWith(store: event.store));
     } catch (e) {
+      Helper.showToastBottom(message: ParseError.fromJson(e).message);
+    }
+  }
+
+  void createStore(CreateStore event, Emitter<ProfileState> emit) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final store = await createStoreUsecase.call(
+          store: event.store, userId: state.profile?.id ?? "");
+      emit(state.copyWith(store: store, isLoading: false));
+      event.onSuccess?.call();
+    } catch (e) {
+      emit(state.copyWith(isLoading: false));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
   }

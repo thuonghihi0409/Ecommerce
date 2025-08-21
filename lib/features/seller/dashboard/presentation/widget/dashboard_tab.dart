@@ -7,6 +7,7 @@ import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/
 import 'package:thuongmaidientu/features/seller/dashboard/domain/entities/statistic_entity.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/presentation/bloc/dashboard_bloc/dashboard_bloc.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/presentation/widget/barchart_product.dart';
+import 'package:thuongmaidientu/features/seller/dashboard/presentation/widget/barchart_rating_product.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/presentation/widget/barchart_widget.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/presentation/widget/piechart_widget.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
@@ -214,6 +215,16 @@ class _DashboardTabState extends State<DashboardTab>
                     )
                   ],
                 ),
+                20.h,
+                Text(
+                  "key_top_rating_product".tr(),
+                  style: AppTextStyles.textSize14(),
+                ),
+                15.h,
+                Container(
+                    child: BarChartRatingProduct(
+                  topOrderedProductModel: _static?.topAvgRatingProducts,
+                )),
                 20.h,
                 Text(
                   "key_top_ordered_product".tr(),

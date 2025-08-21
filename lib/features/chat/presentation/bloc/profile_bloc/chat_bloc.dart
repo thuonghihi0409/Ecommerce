@@ -39,7 +39,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> getListConversation(
       GetListConversation event, Emitter<ChatState> emit) async {
     try {
-      emit(state.copyWith(isLoading: true));
+      emit(state.copyWith(isLoading: event.isLoading));
 
       final listConversation =
           await getListConversationUseCase.call(event.userId);
@@ -67,11 +67,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         emit(state.copyWith(
           isLoading: false,
           conversation: ConversationEntity(
-              id: "", user: event.user, store: event.store, unreadCount: 0),
+              id: "",
+              user: event.user,
+              store: event.store,
+              unreadCount: 0,
+              unreadCountStore: 0),
         ));
         event.onSuccess?.call(
             ConversationEntity(
-                id: "", user: event.user, store: event.store, unreadCount: 0),
+                id: "",
+                user: event.user,
+                store: event.store,
+                unreadCount: 0,
+                unreadCountStore: 0),
             true);
       } else {
         event.onSuccess?.call(response, false);

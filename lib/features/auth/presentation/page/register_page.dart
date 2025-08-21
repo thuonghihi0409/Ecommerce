@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -99,7 +100,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         body: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            padding: kIsWeb
+                ? EdgeInsets.symmetric(
+                    horizontal: context.widthScreen > 1000
+                        ? context.widthScreen * 0.2
+                        : context.widthScreen * 0.1)
+                : const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [

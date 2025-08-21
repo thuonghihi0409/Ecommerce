@@ -19,20 +19,35 @@ class OrderManagementRemoteDataSourceImpl
   @override
   Future<ListModel<SellerOrderItemModel>> getListOrder(
       String storeId, String status) async {
-    final data = await supabase.from("Orders").select('''
+    final data = await supabase
+        .from("Orders")
+        .select('''
       *,
       user: Users(*),
       product_orders: ProductOrders(
       id,
       product: Products(*,
         images : Images(*),
-        variants : Variants(*),
+        variants : Variants(
+        *,
+        prices:Prices!inner(*)
+      ),
         store: Stores(*)),
       number,
-      variant: Variants(*)
+      variant: Variants(
+        *,
+        prices:Prices!inner(*)
+      )
       
       ),address: Address(*)
-      ''').eq('store_id', storeId).eq('status', status);
+      ''')
+        .eq('store_id', storeId)
+        .eq('status', status)
+        .order('created_at',
+            ascending: false,
+            referencedTable:
+                'product_orders.product.variants.prices') // sắp xếp bảng con
+        .limit(1, referencedTable: 'product_orders.product.variants.prices');
 
     final result = ListModel(
         results:

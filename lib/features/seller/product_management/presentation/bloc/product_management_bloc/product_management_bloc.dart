@@ -6,6 +6,7 @@ import 'package:thuongmaidientu/features/customer/product/domain/entities/catego
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
+import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/entities/seller_product.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/create_product_usecase.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_list_category_usecase.dart';
@@ -86,11 +87,12 @@ class ProductManagementBloc
         productDetailModel: product,
         getProductDetailError: "",
       ));
+      event.onSuccess?.call();
     } catch (e) {
       emit(state.copyWith(
           isGetDetail: false,
           getProductDetailError: ParseError.fromJson(e).message));
-      log(ParseError.fromJson(e).message);
+      log("${ParseError.fromJson(e).message}hihi");
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
   }
@@ -114,7 +116,30 @@ class ProductManagementBloc
       SellerUpdateProduct event, Emitter<ProductManagementState> emit) async {
     try {
       emit(state.copyWith(isGetDetail: true));
-      await _updateProductUsecase.call(event.productDetail);
+      //await _updateProductUsecase.call(event.productDetail);
+      log(event.productDetail.productId.toString());
+      await supabase.from("Products").update({
+        'product_name': event.productDetail.productName,
+        'description': event.productDetail.description,
+        'price': event.productDetail.price,
+        'category_id': event.productDetail.categoryId,
+        'avg_rating': event.productDetail.avgRating,
+        'total_sold': event.productDetail.totalSold,
+        'total_rating': event.productDetail.totalRating,
+      }).eq("id", event.productDetail.productId);
+
+      for (Variant variant in event.productDetail.variants!) {
+        await supabase.from('Variants').update({
+          'product_id': event.productDetail.productId,
+          'name': variant.name,
+          'stock': variant.stock,
+        }).eq('id', variant.id);
+        await supabase.from("Prices").insert({
+          'variant_id': variant.id,
+          'price': variant.prices?.price ?? 0,
+        });
+      }
+
       event.onSuccess?.call();
       emit(state.copyWith(isGetDetail: false));
     } catch (e) {

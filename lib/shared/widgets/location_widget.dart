@@ -16,6 +16,7 @@ class LocationWidget extends StatelessWidget {
         onTap?.call();
       },
       child: Container(
+        margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
             border: Border.all(width: 0.5, color: AppColor.blackColor),
             borderRadius: BorderRadius.circular(5)),

@@ -63,6 +63,7 @@ dependencies:
   fl_chart: ^1.0.0
   shared_preferences: ^2.5.3
   flutter_paypal_payment: ^1.0.8
+  live_currency_rate: ^1.0.8
 dev_dependencies:
   flutter_test:
     sdk: flutter

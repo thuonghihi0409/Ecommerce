@@ -2,18 +2,23 @@ import 'package:thuongmaidientu/features/seller/product_management/data/datasour
 import 'package:thuongmaidientu/features/seller/product_management/data/repositories/product_management_repository_impl.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/repositories/product_management_repository.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/create_product_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/create_promotion_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/get_list_promotion_usecase.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_list_category_usecase.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_list_product_usecase.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_get_product_detail_usecase.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_update_product_usecase.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/seller_update_variant_usecase.dart';
+import 'package:thuongmaidientu/features/seller/product_management/domain/usecases/update_promotion_uaecase.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
+import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/promotion_bloc/promotion_bloc.dart';
 import 'package:thuongmaidientu/get_it.dart';
 
 class ProductManagementDependecy {
   static void init() {
     sl.registerFactory(
         () => ProductManagementBloc(sl(), sl(), sl(), sl(), sl(), sl()));
+    sl.registerFactory(() => PromotionBloc(sl(), sl(), sl()));
 
     //// Product Management UseCase
     sl.registerLazySingleton(() => CreateProductUsecase(sl()));
@@ -22,6 +27,10 @@ class ProductManagementDependecy {
     sl.registerLazySingleton(() => SellerGetListCategoryUseCase(sl()));
     sl.registerLazySingleton(() => SellerUpdateProductUseCase(sl()));
     sl.registerLazySingleton(() => SellerUpdateVariantUseCase(sl()));
+
+    sl.registerLazySingleton(() => CreatePromotionUsecase(sl()));
+    sl.registerLazySingleton(() => UpdatePromotionUsecase(sl()));
+    sl.registerLazySingleton(() => GetListPromotionUsecase(sl()));
 
     sl.registerLazySingleton<ProductManagementRepository>(
         () => ProductManagementRepositoryImpl(sl()));

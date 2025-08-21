@@ -5,7 +5,7 @@ import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/seller/dashboard/domain/entities/top_ordered_product_entity.dart';
 
 class BarChartProduct extends StatefulWidget {
-  final List<TopOrderedProductEntity>? topOrderedProductModel;
+  final List<TopProductEntity>? topOrderedProductModel;
   const BarChartProduct({super.key, this.topOrderedProductModel});
 
   @override
@@ -27,7 +27,7 @@ class BarChartProductState extends State<BarChartProduct> {
     }
     return LayoutBuilder(builder: (context, constrains) {
       return AspectRatio(
-        aspectRatio: 2,
+        aspectRatio: 2.3,
         child: BarChart(
           BarChartData(
             barTouchData: barTouchData,
@@ -64,12 +64,13 @@ class BarChartProductState extends State<BarChartProduct> {
   BarTouchData get barTouchData => BarTouchData(
         enabled: true,
         touchTooltipData: BarTouchTooltipData(
+          getTooltipColor: (_) => Colors.transparent,
           fitInsideVertically: true,
           tooltipPadding: EdgeInsets.zero,
           tooltipMargin: 0,
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
             return BarTooltipItem(
-                rod.toY.round().toString(), AppTextStyles.textSize10());
+                rod.toY.round().toString(), AppTextStyles.textSize18());
           },
         ),
       );
@@ -90,10 +91,10 @@ class BarChartProductState extends State<BarChartProduct> {
                 child: SizedBox(
                   width: width - 10,
                   child: Transform.rotate(
-                    angle: -0.5,
+                    angle: -0.4,
                     child: Text(
                       widget.topOrderedProductModel?[index].name ?? "",
-                      style: AppTextStyles.textSize8(),
+                      style: AppTextStyles.textSize14(),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
@@ -107,20 +108,20 @@ class BarChartProductState extends State<BarChartProduct> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 30,
+            reservedSize: 60,
             interval: maxYValue / 5,
-            getTitlesWidget: (value, meta) {
-              return SideTitleWidget(
-                space: 2,
-                //   axisSide: AxisSide.left,
-                meta: meta,
-                child: Text(
-                  value.toInt().toString(),
-                  style: AppTextStyles.textSize10(),
-                  textAlign: TextAlign.end,
-                ),
-              );
-            },
+            // getTitlesWidget: (value, meta) {
+            //   return SideTitleWidget(
+            //     space: 2,
+            //     //   axisSide: AxisSide.left,
+            //     meta: meta,
+            //     child: Text(
+            //       value.toInt().toString(),
+            //       style: AppTextStyles.textSize18(),
+            //       textAlign: TextAlign.end,
+            //     ),
+            //   );
+            // },
           ),
         ),
         topTitles: const AxisTitles(
@@ -129,15 +130,6 @@ class BarChartProductState extends State<BarChartProduct> {
         rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-      );
-
-  LinearGradient get _barsGradient => const LinearGradient(
-        colors: [
-          AppColor.greenColor,
-          AppColor.yellowColor,
-        ],
-        begin: Alignment.bottomCenter,
-        end: Alignment.topCenter,
       );
 
   double get maxYValue {
@@ -159,7 +151,7 @@ class BarChartProductState extends State<BarChartProduct> {
               x: entry.key,
               barRods: [
                 BarChartRodData(
-                  width: (width ?? 0) * 0.6,
+                  width: (width ?? 0) * 0.4,
                   toY: entry.value.totalOrdered?.toDouble() ?? 0,
                   // gradient: _barsGradient,
                   color: AppColor.primary,

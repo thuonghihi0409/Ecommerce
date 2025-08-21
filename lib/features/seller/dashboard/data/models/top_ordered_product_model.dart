@@ -1,27 +1,27 @@
 import 'package:thuongmaidientu/features/seller/dashboard/domain/entities/top_ordered_product_entity.dart';
 
-class TopOrderedProductModel extends TopOrderedProductEntity {
-  const TopOrderedProductModel(
-      {required super.id, required super.totalOrdered, required super.name});
+class TopProductModel extends TopProductEntity {
+  const TopProductModel(
+      {required super.id,
+      required super.totalOrdered,
+      required super.name,
+      required super.avgRating});
 
   @override
-  TopOrderedProductModel copyWith({
-    String? id,
-    int? totalOdered,
-    String? name,
-  }) =>
-      TopOrderedProductModel(
-        id: id ?? this.id,
-        totalOrdered: totalOdered ?? totalOrdered,
-        name: name ?? this.name,
-      );
+  TopProductModel copyWith(
+          {String? id, int? totalOdered, String? name, double? avgRating}) =>
+      TopProductModel(
+          id: id ?? this.id,
+          totalOrdered: totalOdered ?? totalOrdered,
+          name: name ?? this.name,
+          avgRating: avgRating ?? this.avgRating);
 
-  factory TopOrderedProductModel.fromJson(Map<String, dynamic> json) =>
-      TopOrderedProductModel(
-        id: json["id"],
-        totalOrdered: json["totalOrdered"],
-        name: json["name"],
-      );
+  factory TopProductModel.fromJson(Map<String, dynamic> json) =>
+      TopProductModel(
+          id: json["id"],
+          totalOrdered: json["totalOrdered"],
+          name: json["name"],
+          avgRating: json["avg_rating"]);
 
   @override
   Map<String, dynamic> toJson() => {

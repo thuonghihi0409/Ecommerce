@@ -10,13 +10,13 @@ import 'package:thuongmaidientu/features/customer/product/domain/entities/catego
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/seller/product_management/presentation/bloc/product_management_bloc/product_management_bloc.dart';
-import 'package:thuongmaidientu/features/seller/product_management/presentation/widget/upload_image_widget.dart';
 import 'package:thuongmaidientu/shared/service/firebase_service.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
 import 'package:thuongmaidientu/shared/widgets/button_custom.dart';
+import 'package:thuongmaidientu/shared/widgets/upload_image_widget.dart';
 
 class CreateProductPage extends StatefulWidget {
   const CreateProductPage({super.key});
@@ -71,10 +71,13 @@ class _CreateProductPageState extends State<CreateProductPage> {
         return Variant(
             id: "",
             name: variant.nameController.text,
-            price: int.tryParse(variant.priceController.text) ?? 0,
             stock: int.tryParse(variant.stockController.text) ?? 0,
             cover: url,
-            totalSold: 0);
+            totalSold: 0,
+            prices: Price(
+                id: "",
+                price: int.tryParse(variant.priceController.text) ?? 0,
+                startTime: DateTime.now()));
       }));
 
       final product = ProductDetail(
@@ -88,6 +91,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
           variants: listVariant,
           avgRating: 0.0,
           totalRating: 0,
+          isLike: false,
           totalSold: 0,
           cover: listImage[0].url);
       _bloc.add(SellerCreateProduct(
@@ -120,7 +124,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
       return Scaffold(
         appBar: AppBar(title: const Text('Tạo sản phẩm mới')),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
           child: Form(
             key: _formKey,
             child: Column(
@@ -266,10 +270,27 @@ class VariantForm extends StatelessWidget {
   final TextEditingController stockController = TextEditingController();
   late Uint8List image;
 
-  VariantForm({super.key});
+  final String? id;
+  final String? imageInput;
+  final String? name;
+  final String? price;
+  final Price? prices;
+  final String? stock;
+
+  VariantForm(
+      {super.key,
+      this.id,
+      this.prices,
+      this.imageInput,
+      this.name,
+      this.price,
+      this.stock});
 
   @override
   Widget build(BuildContext context) {
+    nameController.text = name ?? "";
+    priceController.text = price ?? "";
+    stockController.text = stock ?? "";
     return Column(
       children: [
         TextFormField(

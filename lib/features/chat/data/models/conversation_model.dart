@@ -9,11 +9,13 @@ class ConversationModel extends ConversationEntity {
       required super.user,
       required super.store,
       required super.unreadCount,
-      required super.lastMessage});
+      required super.lastMessage,
+      required super.unreadCountStore});
 
   // From JSON
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
+      unreadCountStore: json["unread_count_store"],
       id: json['id'],
       user: ProfileEntityModel.fromJson(json['user']),
       store: StoreModel.fromJson(json['store']),

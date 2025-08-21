@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/page/chat_detail_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/widgets/appbar_custom.dart';
 import 'package:thuongmaidientu/shared/widgets/image_cache_custom.dart';
@@ -22,18 +26,47 @@ class ConversationPage extends StatefulWidget {
 class _ConversationPageState extends State<ConversationPage> {
   late ChatBloc _chatBloc;
   late String currentUserId;
+  late var _channel;
   @override
   void initState() {
     super.initState();
-    currentUserId = kIsWeb
-        ? context.read<ProfileBloc>().state.store?.id ?? ""
-        : (context.read<ProfileBloc>().state.profile?.id ?? "");
-    _chatBloc = context.read<ChatBloc>();
-    _getData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      currentUserId = kIsWeb
+          ? context.read<ProfileBloc>().state.store?.id ?? ""
+          : (context.read<ProfileBloc>().state.profile?.id ?? "");
+      _chatBloc = context.read<ChatBloc>();
+      _getData();
+
+      _channel = supabase
+          .channel('public:Conversations')
+          .onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'public',
+            table: 'Conversations',
+            callback: (payload) {
+              log("payload=$payload");
+              if (payload.eventType == PostgresChangeEvent.insert ||
+                  payload.eventType == PostgresChangeEvent.update) {
+                _chatBloc.add(GetListConversation(
+                    userId: currentUserId, isLoading: false));
+              }
+            },
+          )
+          .subscribe((status, ob) {
+        log("status =$status");
+      });
+    });
   }
 
   _getData() async {
     _chatBloc.add(GetListConversation(userId: currentUserId));
+  }
+
+  @override
+  void dispose() {
+    supabase.removeChannel(_channel);
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override

@@ -2,17 +2,20 @@ import 'package:thuongmaidientu/features/customer/product/data/models/store_mode
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/data/models/profile_model.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
+import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/province_entity.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/ward_entity.dart';
 import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 
 abstract class ProfileRemoteDatasource {
   Future<ProfileEntityModel> getProfile(String email);
+  Future<void> updateProfile(ProfileEntity profile);
   Future<List<AddressEntity>> getAddress(String id);
   Future<List<ProvinceEntity>> getProvince();
   Future<List<WardEntity>> getWard(String id);
   Future<AddressEntity> addAddress(AddressEntity addAddress, String userId);
   Future<List<Store>> getStore(String userId);
+  Future<Store> createStore(Store store, String userId);
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
@@ -22,6 +25,15 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
         await supabase.from("Users").select().eq("email", email).single();
 
     return ProfileEntityModel.fromJson(profile);
+  }
+
+  @override
+  Future<void> updateProfile(ProfileEntity profile) async {
+    await supabase.from("Users").update({
+      "name": profile.name,
+      "avatar": profile.image,
+      "phone": profile.phone
+    }).eq("email", profile.email ?? "");
   }
 
   @override
@@ -83,5 +95,21 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
     final stores =
         await supabase.from('Stores').select('''*''').eq('user_id', userId);
     return stores.map((e) => StoreModel.fromJson(e)).toList();
+  }
+
+  @override
+  Future<Store> createStore(Store store, String userId) async {
+    final newStore = await supabase.from('Stores').insert({
+      "user_id": userId,
+      "name": store.name,
+      "address": store.address,
+      "phone": store.phone,
+      "logo_url": store.logoUrl,
+      "background_url": store.backgroundUrl,
+      "total_product": store.totalProducts,
+      "avg_rating": store.averageRating
+    }).select('''*''').single();
+    await supabase.from("Users").update({"role": "is_seller"}).eq("id", userId);
+    return StoreModel.fromJson(newStore);
   }
 }

@@ -8,20 +8,23 @@ class StoreModel extends Store {
       required super.address,
       required super.averageRating,
       required super.totalProducts,
+      required super.phone,
       required super.backgroundUrl});
 
   factory StoreModel.fromJson(Map<String, dynamic> json) {
     return StoreModel(
+      phone: json["phone"],
       backgroundUrl: json["background_url"],
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       logoUrl: json['logo_url'] ?? '',
       address: json['address'] ?? '',
-      averageRating: (json['average_rating'] ?? 0).toDouble(),
+      averageRating: (json['avg_rating'] ?? 0).toDouble(),
       totalProducts: json['total_products'] ?? 0,
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -30,7 +33,8 @@ class StoreModel extends Store {
       'address': address,
       'average_rating': averageRating,
       'total_products': totalProducts,
-      'background_url': backgroundUrl
+      'background_url': backgroundUrl,
+      'phone': phone
     };
   }
 }

@@ -1,5 +1,6 @@
 import 'package:thuongmaidientu/features/customer/product/domain/entities/category.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/product_detail.dart';
+import 'package:thuongmaidientu/features/customer/product/domain/entities/promotion.dart';
 import 'package:thuongmaidientu/features/seller/product_management/domain/entities/seller_product.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 
@@ -42,5 +43,22 @@ class ProductManagementRepositoryImpl implements ProductManagementRepository {
   @override
   Future<void> updateVariants(List<Variant> variants) async {
     await remoteDataSource.updateVariants(variants);
+  }
+
+  @override
+  Future<void> createPromotion(
+      Promotion promotion, List<SellerProduct> product) async {
+    await remoteDataSource.createPromotion(promotion, product);
+  }
+
+  @override
+  Future<List<Promotion>> getListPrmotion(String id) async {
+    final listPromotion = await remoteDataSource.getListPrmotion(id);
+    return listPromotion;
+  }
+
+  @override
+  Future<void> updatePromotion(Promotion promotion) async {
+    await remoteDataSource.updatePromotion(promotion);
   }
 }

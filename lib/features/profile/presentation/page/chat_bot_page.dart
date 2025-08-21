@@ -69,6 +69,7 @@ class _GeminiChatPageState extends State<GeminiChatPage> {
         $contextText
 
         Nếu câu hỏi: "$question" có liên quan đến hệ thống hãy dựa vào đó trả lời.
+        Câu trả lời trước đó là: ${_messages.last}.
         ''';
 
       // 3. Gửi đến Gemini cùng context

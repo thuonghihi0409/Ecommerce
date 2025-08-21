@@ -13,8 +13,10 @@ abstract class ProductRepository {
     int? maxPrice,
     String? storeId,
   });
-  Future<ProductDetail> getProductDetail(String id);
+  Future<ProductDetail> getProductDetail(String id, String userId);
   Future<Store> getStore();
   Future<List<Product>> getListProductSummerice(String categoryId);
   Future<List<Category>> getListCategory();
+  Future<void> updateWishlist(String id, String userId, bool isLike);
+  Future<List<ProductDetail>> getWishlist(String userId);
 }

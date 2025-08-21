@@ -177,7 +177,10 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             children: [
                               Text(
                                 Helper.formatCurrencyVND(
-                                    (entrie.value.variant?.price ?? 0)),
+                                  Helper.getDiscount(
+                                      entrie.value.variant?.prices?.price ?? 0,
+                                      entrie.value.productDetail?.promotion),
+                                ),
                                 style: AppTextStyles.textSize12(),
                                 overflow: TextOverflow.ellipsis,
                               ),

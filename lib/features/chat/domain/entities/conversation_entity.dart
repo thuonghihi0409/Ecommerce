@@ -8,11 +8,13 @@ class ConversationEntity {
   Store? store;
   MessageEntity? lastMessage;
   int unreadCount;
+  int unreadCountStore;
   // Constructor
   ConversationEntity(
       {required this.id,
       this.user,
       this.store,
+      required this.unreadCountStore,
       this.lastMessage,
       required this.unreadCount});
 }

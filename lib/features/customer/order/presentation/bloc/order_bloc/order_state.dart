@@ -7,6 +7,8 @@ class OrderState extends Equatable {
   final ListModel<OrderItem> listOrderDelivered; // Đã giao
   final ListModel<OrderItem> listOrderCancelled; // Đã hủy
   final ListModel<OrderItem> listOrderReviewed; // Đánh giá
+  final ListModel<OrderItem> listOrderReturnRequested; // Yêu cầu trả hàng
+  final ListModel<OrderItem> listOrderReturned; // Đã trả hàng
 
   final int count;
   final bool isGetDetail;
@@ -14,58 +16,71 @@ class OrderState extends Equatable {
   final bool isLoadingMore;
   final bool isRefreshing;
 
-  const OrderState(
-      {required this.listOrderPending,
-      required this.listOrderWaiting,
-      required this.listOrderDelivering,
-      required this.listOrderDelivered,
-      required this.listOrderCancelled,
-      required this.listOrderReviewed,
-      this.isGetDetail = false,
-      this.isLoading = false,
-      this.isLoadingMore = false,
-      this.isRefreshing = false,
-      this.count = 0});
+  const OrderState({
+    required this.listOrderPending,
+    required this.listOrderWaiting,
+    required this.listOrderDelivering,
+    required this.listOrderDelivered,
+    required this.listOrderCancelled,
+    required this.listOrderReviewed,
+    required this.listOrderReturnRequested,
+    required this.listOrderReturned,
+    this.isGetDetail = false,
+    this.isLoading = false,
+    this.isLoadingMore = false,
+    this.isRefreshing = false,
+    this.count = 0,
+  });
 
   factory OrderState.empty() {
     return const OrderState(
-        listOrderPending: ListModel(),
-        listOrderWaiting: ListModel(),
-        listOrderDelivering: ListModel(),
-        listOrderDelivered: ListModel(),
-        listOrderCancelled: ListModel(),
-        listOrderReviewed: ListModel(),
-        isGetDetail: false,
-        isLoading: false,
-        isLoadingMore: false,
-        isRefreshing: false,
-        count: 0);
+      listOrderPending: ListModel(),
+      listOrderWaiting: ListModel(),
+      listOrderDelivering: ListModel(),
+      listOrderDelivered: ListModel(),
+      listOrderCancelled: ListModel(),
+      listOrderReviewed: ListModel(),
+      listOrderReturnRequested: ListModel(),
+      listOrderReturned: ListModel(),
+      isGetDetail: false,
+      isLoading: false,
+      isLoadingMore: false,
+      isRefreshing: false,
+      count: 0,
+    );
   }
 
-  OrderState copyWith(
-      {ListModel<OrderItem>? listOrderPending,
-      ListModel<OrderItem>? listOrderWaiting,
-      ListModel<OrderItem>? listOrderDelivering,
-      ListModel<OrderItem>? listOrderDelivered,
-      ListModel<OrderItem>? listOrderCancelled,
-      ListModel<OrderItem>? listOrderReviewed,
-      bool? isGetDetail,
-      bool? isLoading,
-      bool? isLoadingMore,
-      bool? isRefreshing,
-      int? count}) {
+  OrderState copyWith({
+    ListModel<OrderItem>? listOrderPending,
+    ListModel<OrderItem>? listOrderWaiting,
+    ListModel<OrderItem>? listOrderDelivering,
+    ListModel<OrderItem>? listOrderDelivered,
+    ListModel<OrderItem>? listOrderCancelled,
+    ListModel<OrderItem>? listOrderReviewed,
+    ListModel<OrderItem>? listOrderReturnRequested,
+    ListModel<OrderItem>? listOrderReturned,
+    bool? isGetDetail,
+    bool? isLoading,
+    bool? isLoadingMore,
+    bool? isRefreshing,
+    int? count,
+  }) {
     return OrderState(
-        listOrderPending: listOrderPending ?? this.listOrderPending,
-        listOrderWaiting: listOrderWaiting ?? this.listOrderWaiting,
-        listOrderDelivering: listOrderDelivering ?? this.listOrderDelivering,
-        listOrderDelivered: listOrderDelivered ?? this.listOrderDelivered,
-        listOrderCancelled: listOrderCancelled ?? this.listOrderCancelled,
-        listOrderReviewed: listOrderReviewed ?? this.listOrderReviewed,
-        isGetDetail: isGetDetail ?? this.isGetDetail,
-        isLoading: isLoading ?? this.isLoading,
-        isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-        isRefreshing: isRefreshing ?? this.isRefreshing,
-        count: count ?? this.count);
+      listOrderPending: listOrderPending ?? this.listOrderPending,
+      listOrderWaiting: listOrderWaiting ?? this.listOrderWaiting,
+      listOrderDelivering: listOrderDelivering ?? this.listOrderDelivering,
+      listOrderDelivered: listOrderDelivered ?? this.listOrderDelivered,
+      listOrderCancelled: listOrderCancelled ?? this.listOrderCancelled,
+      listOrderReviewed: listOrderReviewed ?? this.listOrderReviewed,
+      listOrderReturnRequested:
+          listOrderReturnRequested ?? this.listOrderReturnRequested,
+      listOrderReturned: listOrderReturned ?? this.listOrderReturned,
+      isGetDetail: isGetDetail ?? this.isGetDetail,
+      isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
+      count: count ?? this.count,
+    );
   }
 
   @override
@@ -76,10 +91,12 @@ class OrderState extends Equatable {
         listOrderDelivered,
         listOrderCancelled,
         listOrderReviewed,
+        listOrderReturnRequested,
+        listOrderReturned,
         isGetDetail,
         isLoading,
         isLoadingMore,
         isRefreshing,
-        count
+        count,
       ];
 }

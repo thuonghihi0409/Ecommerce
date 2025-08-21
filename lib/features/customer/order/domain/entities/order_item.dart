@@ -2,6 +2,7 @@ import 'package:thuongmaidientu/features/customer/cart/domain/entities/cart_item
 import 'package:thuongmaidientu/features/customer/order/domain/entities/order_product_item.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/address_entity.dart';
+import 'package:thuongmaidientu/shared/utils/helper.dart';
 
 enum OrderStatus {
   pending, // Chờ duyệt
@@ -9,6 +10,8 @@ enum OrderStatus {
   delivering, // Đang giao
   delivered, // Đã giao
   cancelled, // Đã hủy
+  returnRequested, // Yêu cầu trả hàng
+  returned, // Đã trả hàng
 }
 
 OrderStatus orderStatusFromString(String status) {
@@ -23,7 +26,10 @@ OrderStatus orderStatusFromString(String status) {
       return OrderStatus.delivered;
     case 'cancelled':
       return OrderStatus.cancelled;
-
+    case 'returnRequested':
+      return OrderStatus.returnRequested;
+    case 'returned':
+      return OrderStatus.returned;
     default:
       throw Exception('Unknown order status: $status');
   }
@@ -41,6 +47,10 @@ String orderStatusToString(OrderStatus status) {
       return 'delivered';
     case OrderStatus.cancelled:
       return 'cancelled';
+    case OrderStatus.returnRequested:
+      return 'returnRequested';
+    case OrderStatus.returned:
+      return 'returned';
   }
 }
 
@@ -56,6 +66,10 @@ String orderStatusToText(OrderStatus status) {
       return 'Đã giao';
     case OrderStatus.cancelled:
       return 'Đã hủy';
+    case OrderStatus.returnRequested:
+      return 'Yêu cầu trả hàng';
+    case OrderStatus.returned:
+      return 'Đã trả hàng';
   }
 }
 
@@ -66,6 +80,7 @@ class OrderItem {
   final int total;
   final OrderStatus status;
   final String? paymentMethod;
+  final bool? isPayment;
   final List<OrderProductItem> productItem;
   final AddressEntity? address;
 
@@ -76,31 +91,43 @@ class OrderItem {
       required this.status,
       required this.address,
       required this.subtotal,
+      required this.isPayment,
       required this.paymentMethod,
       required this.total});
-  factory OrderItem.copyFromCartItem(CartItem item, AddressEntity? address) {
+  factory OrderItem.copyFromCartItem(CartItem item, AddressEntity? address,
+      String? paymentMethod, bool? isPayment) {
     return OrderItem(
-        paymentMethod: null,
+        paymentMethod: paymentMethod,
+        isPayment: isPayment,
         store: item.store,
         productItem: item.productItem
             .map((item) => OrderProductItem(
                 id: item.id,
                 productDetail: item.productDetail,
                 variant: item.variant,
+                price: item.variant?.prices,
                 number: item.number,
                 isReviewed: false))
             .toList(),
         id: item.id,
         status: OrderStatus.pending,
         address: address,
-        subtotal: item.productItem
-            .fold(0, (sum, item) => sum + (item.variant?.price ?? 0)),
-        total: item.productItem
-            .fold(0, (sum, item) => sum + (item.variant?.price ?? 0)));
+        subtotal: item.productItem.fold(
+            0,
+            (sum, item) =>
+                sum + (item.variant?.prices?.price ?? 0) * item.number),
+        total: item.productItem.fold(
+            0,
+            (sum, item) =>
+                sum +
+                (Helper.getDiscount(item.variant?.prices?.price ?? 0,
+                        item.productDetail?.promotion)) *
+                    item.number));
   }
 
   OrderItem copyWith({required OrderStatus? orderStatus}) {
     return OrderItem(
+        isPayment: isPayment,
         paymentMethod: paymentMethod,
         store: store,
         productItem: productItem,
