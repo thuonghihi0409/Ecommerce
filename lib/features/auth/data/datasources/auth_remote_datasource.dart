@@ -16,8 +16,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<User?> login(String email, String password) async {
-    final user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
+    final normalizedEmail = email.trim().toLowerCase();
+    final normalizedPassword = password.trim();
+    final user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: normalizedEmail, password: normalizedPassword);
 
     return user.user;
   }
@@ -29,8 +31,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<User?> register(String email, String password) async {
-    final user = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password);
+    final normalizedEmail = email.trim().toLowerCase();
+    final normalizedPassword = password.trim();
+    final user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: normalizedEmail, password: normalizedPassword);
     return user.user;
   }
 

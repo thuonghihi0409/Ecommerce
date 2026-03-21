@@ -31,6 +31,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthRegister>(authRegister);
     on<AuthSendVerifyEmail>(authSendVerifyEmail);
   }
+
+  String _firebaseAuthMessage(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'invalid-email':
+        return 'Email khong dung dinh dang';
+      case 'user-not-found':
+        return 'Khong tim thay tai khoan';
+      case 'wrong-password':
+      case 'invalid-credential':
+        return 'Email hoặc mật khẩu không đúng';
+      case 'email-already-in-use':
+        return 'Email da duoc su dung';
+      case 'weak-password':
+        return 'Mat khau qua yeu';
+      case 'user-disabled':
+        return 'Tai khoan da bi vo hieu hoa';
+      case 'too-many-requests':
+        return 'Ban thao tac qua nhanh, vui long thu lai sau';
+      case 'network-request-failed':
+        return 'Loi ket noi mang, vui long kiem tra internet';
+      case 'operation-not-allowed':
+        return 'Phuong thuc dang nhap nay chua duoc bat tren Firebase';
+      default:
+        return e.message ?? 'Dang xay ra loi xac thuc';
+    }
+  }
+
   void authResumeSession(AuthResumeSession event, Emitter<AuthState> emit) {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -66,7 +93,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       event.onSuccess?.call(AppConstraint.loginFailed);
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(isLoading: false));
-      event.onError?.call(e.message);
+      event.onError?.call(_firebaseAuthMessage(e));
     }
   }
 
@@ -81,7 +108,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       event.onSuccess?.call();
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(isLoading: false));
-      Helper.showToastBottom(message: e.message ?? "");
+      Helper.showToastBottom(message: _firebaseAuthMessage(e));
     }
   }
 
@@ -95,7 +122,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (result.id != null) event.onSuccess?.call();
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(isLoading: false));
-      event.onError?.call(e.message);
+      event.onError?.call(_firebaseAuthMessage(e));
     }
   }
 
@@ -104,13 +131,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(state.copyWith(isLoading: true));
       log("before send");
-      final result = await sendVerifyEmailUsecase.call(email: event.email);
+      await sendVerifyEmailUsecase.call(email: event.email);
       log("affter send");
       emit(state.copyWith(isLoading: false));
       event.onSuccess?.call();
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(isLoading: false));
-      event.onError?.call(e.message);
+      event.onError?.call(_firebaseAuthMessage(e));
     }
   }
 }

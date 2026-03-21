@@ -60,14 +60,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _submit() async {
+    final email = _usernameController.text.trim().toLowerCase();
+    final password = _passwordController.text.trim();
     context.read<AuthBloc>().add(AuthLogin(
-        email: _usernameController.text,
-        password: _passwordController.text,
+        email: email,
+        password: password,
         onSuccess: (val) {
           switch (val) {
             case AppConstraint.login:
               context.read<ProfileBloc>().add(GetProfile(
-                  email: _usernameController.text,
+                  email: email,
                   onSuccess: () async {
                     if (kIsWeb) {
                       final bloc = context.read<ProfileBloc>();
@@ -135,8 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
               break;
             case AppConstraint.isNotVerify:
               Helper.showToastBottom(message: "Tài khoản chưa xác thực");
-              NavigationService.instance
-                  .push(VerifyPage(email: _usernameController.text));
+              NavigationService.instance.push(VerifyPage(email: email));
               break;
             case AppConstraint.loginFailed:
               Helper.showToastBottom(message: "Tài khoản không tồn tại");
