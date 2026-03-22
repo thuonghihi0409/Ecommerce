@@ -178,7 +178,7 @@ class Helper {
                           children: [
                             if (isShowSecondButton)
                               CustomButton(
-                                padding: const EdgeInsetsGeometry.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 5),
                                 text: "key_cancel".tr(),
                                 isMinWidth: true,
@@ -189,7 +189,7 @@ class Helper {
                               ),
                             if (isShowPrimaryButton)
                               CustomButton(
-                                padding: const EdgeInsetsGeometry.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 5),
                                 text: "key_confirm".tr(),
                                 isMinWidth: true,

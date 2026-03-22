@@ -29,7 +29,7 @@ class CustomTextField extends StatefulWidget {
   final Color? fillColor;
   final Color? borderColor;
   final Color? focusedBorderColor;
-  final EdgeInsetsGeometry? contentPadding;
+  final EdgeInsets? contentPadding;
 
   final int? maxLine;
   final bool isShowErrorMessage;

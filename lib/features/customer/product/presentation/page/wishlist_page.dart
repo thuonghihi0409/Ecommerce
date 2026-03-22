@@ -54,7 +54,7 @@ class _WishlistPageState extends State<WishlistPage> {
           builder: (context, state) {
             final products = state.wishlist ?? [];
             return Padding(
-              padding: const EdgeInsetsGeometry.symmetric(
+              padding: const EdgeInsets.symmetric(
                   horizontal: 10, vertical: 12),
               child: ListView.separated(
                   itemBuilder: (conttext, index) => ListTile(

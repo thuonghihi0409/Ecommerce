@@ -56,7 +56,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
         isShowChatIcon: false,
       ),
       body: Padding(
-        padding: const EdgeInsetsGeometry.symmetric(horizontal: 5, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         child: Column(
           children: [
             Expanded(

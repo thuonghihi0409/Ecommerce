@@ -69,7 +69,7 @@ class _CartPageState extends State<CartPage> {
                     icon: AppAssets.cartIcon));
           }
           return Padding(
-            padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Column(
               children: [
                 Expanded(

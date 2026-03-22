@@ -92,9 +92,9 @@ class _SellerStoreDetailPageState extends State<SellerStoreDetailPage> {
       ),
       body: Padding(
         padding: kIsWeb
-            ? EdgeInsetsGeometry.symmetric(
+            ? EdgeInsets.symmetric(
                 vertical: 12, horizontal: context.widthScreen * 0.2)
-            : const EdgeInsetsGeometry.symmetric(horizontal: 12, vertical: 10),
+            : const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Form(
           key: _formKey,
           child: ListView(

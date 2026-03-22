@@ -9,7 +9,7 @@ class CustomButton extends StatelessWidget {
   final Color? foregroundColor;
   final Color? borderColor;
   final double borderRadius;
-  final EdgeInsetsGeometry? padding;
+  final EdgeInsets? padding;
   final double? width;
   final double? height;
   final Widget? icon;
