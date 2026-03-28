@@ -21,10 +21,12 @@ abstract class ProfileRemoteDatasource {
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
   @override
   Future<ProfileEntityModel> getProfile(String email) async {
-    final profile =
-        await supabase.from("Users").select().eq("email", email).single();
-
-    return ProfileEntityModel.fromJson(profile);
+    final profiles =
+        await supabase.from("Users").select().eq("email", email).limit(1);
+    if (profiles.isEmpty) {
+      throw Exception('Profile not found');
+    }
+    return ProfileEntityModel.fromJson(profiles.first);
   }
 
   @override

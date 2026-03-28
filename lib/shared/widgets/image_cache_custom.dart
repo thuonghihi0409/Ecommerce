@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 
@@ -66,7 +67,12 @@ class CustomCacheImageNetwork extends StatelessWidget {
               color: customColor,
               repeat: ImageRepeat.repeat,
               placeholderFadeInDuration: Duration.zero,
-              errorWidget: (_, __, ___) {
+              errorWidget: (_, url, error) {
+                if (kDebugMode) {
+                  debugPrint(
+                    '[CustomCacheImageNetwork] Load failed\n  url: $url\n  error: $error',
+                  );
+                }
                 if (imageType == ImageType.avatar) {
                   return Container(
                       height: height,

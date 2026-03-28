@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
@@ -80,6 +81,11 @@ class _ImageCarouselState extends State<ImageCarousel> {
                                     );
                                   },
                                   errorBuilder: (context, error, stackTrace) {
+                                    if (kDebugMode) {
+                                      debugPrint(
+                                        '[ImageCarousel] Load failed\n  url: ${widget.imageUrls[index].url}\n  error: $error',
+                                      );
+                                    }
                                     return _buildPlaceholderImage();
                                   },
                                 ),

@@ -3,10 +3,11 @@ import 'dart:developer';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:thuongmaidientu/shared/utils/embedding_align.dart';
 
 final supabase = Supabase.instance.client;
 final embeddingModel = GenerativeModel(
-  model: 'embedding-001',
+  model: 'gemini-embedding-001',
   apiKey: dotenv.env['GEMINI_API_KEY']!,
 );
 
@@ -32,15 +33,15 @@ Nhận xét: $reviewText
       taskType: TaskType.retrievalDocument,
     );
 
-    final embedding = result.embedding; // List<double> (768 số)
+    final aligned = alignEmbeddingToKnowledgeColumn(result.embedding.values);
 
-    // 5. Lưu vào bảng knowledge_base
+    // 5. Lưu vào bảng knowledge_base (cột vector phải cùng số chiều với RPC)
     await supabase.from('knowledge_base').insert({
       'content': text,
       'metadata': {
         'product_id': product['id'],
       },
-      'embedding': embedding.values,
+      'embedding': aligned,
     });
 
     log("Đã thêm knowledge cho: ${product['name']}");
