@@ -58,16 +58,17 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override
   Future<ConversationModel?> findConversation(
       String userId, String storeId) async {
-    final result = await supabase.from('Conversations').select('''
+    // Không dùng maybeSingle(): nếu DB có nhiều hàng trùng (user_id, store_id)
+    // PostgREST trả 406 "multiple rows returned".
+    final rows = await supabase.from('Conversations').select('''
       *,
       user: Users(*),
       store:Stores(*),
       last_message:Messages!Conversations_last_message_id_fkey(*)
-      ''').eq('user_id', userId).eq('store_id', storeId).maybeSingle();
-    if (result != null) {
-      return ConversationModel.fromJson(result);
-    }
-    return null;
+      ''').eq('user_id', userId).eq('store_id', storeId).limit(1);
+    if (rows.isEmpty) return null;
+    return ConversationModel.fromJson(
+        Map<String, dynamic>.from(rows.first as Map));
   }
 
   @override

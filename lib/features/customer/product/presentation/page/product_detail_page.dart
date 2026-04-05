@@ -17,6 +17,7 @@ import 'package:thuongmaidientu/features/customer/product/presentation/widget/pr
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/features/review/presentation/page/review_page.dart';
 import 'package:thuongmaidientu/shared/service/navigator_service.dart';
+import 'package:thuongmaidientu/shared/utils/chat_debug_log.dart';
 import 'package:thuongmaidientu/shared/utils/extension.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
@@ -360,15 +361,28 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                     'Không có thông tin cửa hàng cho sản phẩm này.');
                             return;
                           }
-                          context.read<ChatBloc>().add(CreateConversation(
-                              user: user,
-                              store: store,
-                              onSuccess: (conversation, isNew) {
-                                NavigationService.instance.push(ChatDetailPage(
-                                  productId:
-                                      state.productDetailModel?.productId,
-                                ));
-                              }));
+                          try {
+                            context.read<ChatBloc>().add(CreateConversation(
+                                user: user,
+                                store: store,
+                                onSuccess: (conversation, isNew) {
+                                  try {
+                                    NavigationService.instance
+                                        .push(ChatDetailPage(
+                                      productId:
+                                          state.productDetailModel?.productId,
+                                    ));
+                                  } catch (e, st) {
+                                    logChatError(
+                                        'product_detail open ChatDetailPage',
+                                        e,
+                                        st);
+                                  }
+                                }));
+                          } catch (e, st) {
+                            logChatError(
+                                'product_detail Chat onPressed', e, st);
+                          }
                         },
                       ),
                     ),

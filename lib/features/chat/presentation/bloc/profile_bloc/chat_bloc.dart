@@ -9,6 +9,7 @@ import 'package:thuongmaidientu/features/chat/domain/usecases/get_message_usecas
 import 'package:thuongmaidientu/features/chat/domain/usecases/send_message_usecase.dart';
 import 'package:thuongmaidientu/features/customer/product/domain/entities/store.dart';
 import 'package:thuongmaidientu/features/profile/domain/entities/profile_entity.dart';
+import 'package:thuongmaidientu/shared/utils/chat_debug_log.dart';
 import 'package:thuongmaidientu/shared/utils/helper.dart';
 import 'package:thuongmaidientu/shared/utils/list_model.dart';
 import 'package:thuongmaidientu/shared/utils/parse_error_model.dart';
@@ -46,7 +47,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       emit(
           state.copyWith(isLoading: false, listConversation: listConversation));
-    } catch (e) {
+    } catch (e, st) {
+      logChatError('getListConversation', e, st);
       emit(state.copyWith(
           isLoading: false,
           listConversation: state.listConversation
@@ -85,7 +87,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         event.onSuccess?.call(response, false);
         emit(state.copyWith(isLoading: false, conversation: response));
       }
-    } catch (e) {
+    } catch (e, st) {
+      logChatError('createConversation', e, st);
       emit(state.copyWith(isLoading: false));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
@@ -121,7 +124,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         listMessage: listmodel,
       ));
       GetListConversation(userId: event.senderId);
-    } catch (e) {
+    } catch (e, st) {
+      logChatError('sendMessage', e, st);
       emit(state.copyWith(isLoading: false));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
@@ -138,7 +142,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final response =
           await getMessageUseCase.call(state.conversation?.id ?? "");
       emit(state.copyWith(isLoading: false, listMessage: response));
-    } catch (e) {
+    } catch (e, st) {
+      logChatError('getMessage', e, st);
       emit(state.copyWith(isLoading: false));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }

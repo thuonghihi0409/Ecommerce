@@ -10,6 +10,7 @@ import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/cha
 import 'package:thuongmaidientu/features/chat/presentation/widgets/product_message_widget.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
+import 'package:thuongmaidientu/shared/utils/chat_debug_log.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final String? productId;
@@ -35,36 +36,44 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     super.initState();
     _scrollController.addListener(_onScroll);
 
-    _conversationEntity = context.read<ChatBloc>().state.conversation;
-    final convId = _conversationEntity?.id;
-    if (convId != null && convId.isNotEmpty) {
-      context.read<ChatBloc>().add(const GetMessage());
-    }
-    _currentId = context.read<ProfileBloc>().state.profile?.id ?? "";
-    if (widget.productId != null) {
-      _sendMessage(widget.productId ?? "", MessageType.product);
-    }
+    try {
+      _conversationEntity = context.read<ChatBloc>().state.conversation;
+      final convId = _conversationEntity?.id;
+      if (convId != null && convId.isNotEmpty) {
+        context.read<ChatBloc>().add(const GetMessage());
+      }
+      _currentId = context.read<ProfileBloc>().state.profile?.id ?? "";
+      if (widget.productId != null) {
+        _sendMessage(widget.productId ?? "", MessageType.product);
+      }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      currentUserId = kIsWeb
-          ? context.read<ProfileBloc>().state.store?.id ?? ""
-          : (context.read<ProfileBloc>().state.profile?.id ?? "");
-      _chatBloc = context.read<ChatBloc>();
-      _channel = supabase
-          .channel('public:Messages')
-          .onPostgresChanges(
-            event: PostgresChangeEvent.all,
-            schema: 'public',
-            table: 'Messages',
-            callback: (payload) {
-              if (payload.eventType == PostgresChangeEvent.insert ||
-                  payload.eventType == PostgresChangeEvent.update) {
-                context.read<ChatBloc>().add(const GetMessage());
-              }
-            },
-          )
-          .subscribe((status, ob) {});
-    });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        try {
+          currentUserId = kIsWeb
+              ? context.read<ProfileBloc>().state.store?.id ?? ""
+              : (context.read<ProfileBloc>().state.profile?.id ?? "");
+          _chatBloc = context.read<ChatBloc>();
+          _channel = supabase
+              .channel('public:Messages')
+              .onPostgresChanges(
+                event: PostgresChangeEvent.all,
+                schema: 'public',
+                table: 'Messages',
+                callback: (payload) {
+                  if (payload.eventType == PostgresChangeEvent.insert ||
+                      payload.eventType == PostgresChangeEvent.update) {
+                    context.read<ChatBloc>().add(const GetMessage());
+                  }
+                },
+              )
+              .subscribe((status, ob) {});
+        } catch (e, st) {
+          logChatError('ChatDetailPage postFrameCallback', e, st);
+        }
+      });
+    } catch (e, st) {
+      logChatError('ChatDetailPage initState', e, st);
+    }
   }
 
   void _onScroll() {
@@ -85,16 +94,20 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   void _sendMessage(String content, MessageType messageType) {
-    context.read<ChatBloc>().add(SendMessage(
-        messageType: messageType,
-        content: content,
-        receiverId: (_conversationEntity?.user?.id == _currentId
-                ? _conversationEntity?.store?.id
-                : _conversationEntity?.user?.id) ??
-            "",
-        senderId: _currentId));
-    _textController.clear();
-    _scrollToBottom();
+    try {
+      context.read<ChatBloc>().add(SendMessage(
+          messageType: messageType,
+          content: content,
+          receiverId: (_conversationEntity?.user?.id == _currentId
+                  ? _conversationEntity?.store?.id
+                  : _conversationEntity?.user?.id) ??
+              "",
+          senderId: _currentId));
+      _textController.clear();
+      _scrollToBottom();
+    } catch (e, st) {
+      logChatError('ChatDetailPage _sendMessage', e, st);
+    }
   }
 
   void _scrollToBottom() {
