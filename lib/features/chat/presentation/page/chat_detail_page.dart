@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
+import 'package:thuongmaidientu/shared/service/supabase_client.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/conversation_entity.dart';
 import 'package:thuongmaidientu/features/chat/domain/entities/message_entity.dart';
 import 'package:thuongmaidientu/features/chat/presentation/bloc/profile_bloc/chat_bloc.dart';
 import 'package:thuongmaidientu/features/chat/presentation/widgets/product_message_widget.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
-import 'package:thuongmaidientu/features/profile/presentation/page/chat_bot_page.dart';
 import 'package:thuongmaidientu/shared/service/picker_service.dart';
 
 class ChatDetailPage extends StatefulWidget {
@@ -35,9 +35,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     super.initState();
     _scrollController.addListener(_onScroll);
 
-    context.read<ChatBloc>().add(const GetMessage());
-
     _conversationEntity = context.read<ChatBloc>().state.conversation;
+    final convId = _conversationEntity?.id;
+    if (convId != null && convId.isNotEmpty) {
+      context.read<ChatBloc>().add(const GetMessage());
+    }
     _currentId = context.read<ProfileBloc>().state.profile?.id ?? "";
     if (widget.productId != null) {
       _sendMessage(widget.productId ?? "", MessageType.product);

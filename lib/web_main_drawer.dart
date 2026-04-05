@@ -177,7 +177,7 @@ class _WebMainDrawerState extends State<WebMainDrawer> {
                 ),
                 Expanded(
                   child: Navigator(
-                    observers: [NavigationService.instance.routeObserver],
+                    key: NavigationService.instance.shellNavigatorKey,
                     initialRoute: 'dashboard',
                     onGenerateRoute: (RouteSettings settings) {
                       Widget child = const ProductPage();

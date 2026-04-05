@@ -1,4 +1,5 @@
 {
     "key": "",
-    "key_unHandle_error": "An unexpected error occurred, please try again"
+    "key_unHandle_error": "An unexpected error occurred, please try again",
+    "key_create_store_success": "Store created successfully"
 }

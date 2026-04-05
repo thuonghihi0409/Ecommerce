@@ -38,6 +38,11 @@ class NavigationService {
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+  /// [WebMainDrawer] nested Navigator (web seller shell). Do not share
+  /// [RouteObserver] across multiple [Navigator]s — use this key for named routes.
+  final GlobalKey<NavigatorState> shellNavigatorKey =
+      GlobalKey<NavigatorState>();
+
   NavigationService._internal();
 
   Future<T?> push<T>(Widget page, {BuildContext? context}) {
@@ -120,13 +125,20 @@ class NavigationService {
     }
   }
 
-  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-
   Future<dynamic> pushNamed(String name, {dynamic arguments}) {
-    return routeObserver.navigator!.pushNamed(name, arguments: arguments);
+    final shell = shellNavigatorKey.currentState;
+    if (shell != null) {
+      return shell.pushNamed(name, arguments: arguments);
+    }
+    return navigatorKey.currentState!.pushNamed(name, arguments: arguments);
   }
 
   Future<dynamic> replaceNamed(String name, {dynamic arguments}) {
-    return routeObserver.navigator!.popAndPushNamed(name, arguments: arguments);
+    final shell = shellNavigatorKey.currentState;
+    if (shell != null) {
+      return shell.popAndPushNamed(name, arguments: arguments);
+    }
+    return navigatorKey.currentState!
+        .popAndPushNamed(name, arguments: arguments);
   }
 }

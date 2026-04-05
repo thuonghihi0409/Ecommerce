@@ -347,9 +347,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         onPressed: () {
                           final user =
                               context.read<ProfileBloc>().state.profile;
+                          final store = state.productDetailModel?.store;
+                          if (user == null || user.id.isEmpty) {
+                            Helper.showToastBottom(
+                                message:
+                                    'Vui lòng đăng nhập để chat với cửa hàng.');
+                            return;
+                          }
+                          if (store == null) {
+                            Helper.showToastBottom(
+                                message:
+                                    'Không có thông tin cửa hàng cho sản phẩm này.');
+                            return;
+                          }
                           context.read<ChatBloc>().add(CreateConversation(
-                              user: user!,
-                              store: state.productDetailModel!.store!,
+                              user: user,
+                              store: store,
                               onSuccess: (conversation, isNew) {
                                 NavigationService.instance.push(ChatDetailPage(
                                   productId:

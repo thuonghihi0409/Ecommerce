@@ -129,10 +129,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> getMessage(GetMessage event, Emitter<ChatState> emit) async {
     try {
-      emit(state.copyWith(isLoading: true));
       if (state.conversation?.id == null ||
-          (state.conversation?.id ?? "").isEmpty) return;
-
+          (state.conversation?.id ?? "").isEmpty) {
+        emit(state.copyWith(isLoading: false));
+        return;
+      }
+      emit(state.copyWith(isLoading: true));
       final response =
           await getMessageUseCase.call(state.conversation?.id ?? "");
       emit(state.copyWith(isLoading: false, listMessage: response));

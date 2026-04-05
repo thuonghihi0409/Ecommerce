@@ -15,14 +15,14 @@ class ConversationModel extends ConversationEntity {
   // From JSON
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      unreadCountStore: json["unread_count_store"],
-      id: json['id'],
-      user: ProfileEntityModel.fromJson(json['user']),
-      store: StoreModel.fromJson(json['store']),
+      unreadCountStore: _parseInt(json['unread_count_store']),
+      id: json['id']?.toString(),
+      user: ProfileEntityModel.fromJson(json['user'] as Map<String, dynamic>),
+      store: StoreModel.fromJson(json['store'] as Map<String, dynamic>),
       lastMessage: json['last_message'] != null
-          ? MessageModel.fromJson(json['last_message'])
+          ? MessageModel.fromJson(json['last_message'] as Map<String, dynamic>)
           : null,
-      unreadCount: json['unread_count'] ?? 0,
+      unreadCount: _parseInt(json['unread_count']),
     );
   }
 
@@ -36,4 +36,11 @@ class ConversationModel extends ConversationEntity {
       'unread_count': unreadCount
     };
   }
+}
+
+int _parseInt(dynamic value, [int fallback = 0]) {
+  if (value == null) return fallback;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.tryParse(value.toString()) ?? fallback;
 }
