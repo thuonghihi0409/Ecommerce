@@ -53,5 +53,27 @@ class ReviewRemoteDataSourceImpl implements ReviewRemoteDatasource {
     await supabase
         .from('ProductOrders')
         .update({"is_reviewed": true}).eq("id", id);
+
+    final productId = review.productId;
+    if (productId != null && productId.isNotEmpty) {
+      final reviews = await supabase
+          .from("Reviews")
+          .select("rating")
+          .eq("product_id", productId);
+      final totalRating = reviews.length;
+      final avgRating = totalRating == 0
+          ? 0.0
+          : reviews.fold<double>(
+                0.0,
+                (sum, item) =>
+                    sum + ((item["rating"] as num?)?.toDouble() ?? 0.0),
+              ) /
+              totalRating;
+
+      await supabase.from("Products").update({
+        "avg_rating": avgRating,
+        "total_rating": totalRating,
+      }).eq("id", productId);
+    }
   }
 }

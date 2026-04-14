@@ -176,10 +176,13 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     isEnable: addresses.isNotEmpty,
                     text: _isOnline ? "key_payment".tr() : "key_ordering".tr(),
                     onPressed: () async {
-                      final userId =
-                          context.read<ProfileBloc>().state.profile?.id ?? "";
+                      final profileBloc = context.read<ProfileBloc>();
+                      final orderBloc = context.read<OrderBloc>();
+                      final cartBloc = context.read<CartBloc>();
+                      final userId = profileBloc.state.profile?.id ?? "";
                       final totalUSD = await LiveCurrencyRate.convertCurrency(
                           "VND", "USD", widget.total.toDouble());
+                      if (!mounted) return;
 
                       if (_isOnline) {
                         NavigationService.instance.push(
@@ -217,14 +220,9 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                             note: "Cảm ơn bạn đã mua hàng!",
                             onSuccess: (Map params) {
                               log(params.toString());
-                              context.read<OrderBloc>().add(CreateOrder(
+                              orderBloc.add(CreateOrder(
                                   onSuccess: () {
-                                    // context
-                                    //     .read<CartBloc>()
-                                    //     .add(GetListCart(id: userId));
-                                    context
-                                        .read<CartBloc>()
-                                        .add(GetCountCart(userId: userId));
+                                    cartBloc.add(GetCountCart(userId: userId));
                                     NavigationService.instance.goBack();
                                     NavigationService.instance.goBack();
                                   },
@@ -245,11 +243,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           ),
                         );
                       } else {
-                        context.read<OrderBloc>().add(CreateOrder(
+                        orderBloc.add(CreateOrder(
                             onSuccess: () {
-                              // context
-                              //     .read<CartBloc>()
-                              //     .add(GetListCart(id: userId));
                               NavigationService.instance.goBack();
                               NavigationService.instance.goBack();
                             },

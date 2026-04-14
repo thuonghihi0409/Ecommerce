@@ -48,16 +48,19 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDatasource {
         await supabase.from('Orders').select('id').eq('store_id', storeId);
     final totalOrder = totalOrdersRes.length;
 
+    // Doanh thu seller nên tính theo đơn đã giao, không phụ thuộc is_payment
+    // (COD có thể không cập nhật is_payment = true).
     final revenues = await supabase
         .from('Orders')
-        .select('''*''')
+        .select('total')
         .eq('store_id', storeId)
-        .eq("is_payment", true);
-    int totalRevenue = 0;
-    revenues
-        .map((item) =>
-            totalRevenue += (int.tryParse(item["total"].toString()) ?? 0))
-        .toList();
+        .eq('status', 'delivered');
+    final totalRevenue = revenues.fold<int>(0, (sum, item) {
+      final total = item['total'];
+      if (total is int) return sum + total;
+      if (total is num) return sum + total.toInt();
+      return sum + (int.tryParse(total?.toString() ?? '') ?? 0);
+    });
     final transaction = supabase.from("Transactions").select();
     final fail = await transaction.eq("status", "failed");
     final succes = await transaction.eq("status", "success");

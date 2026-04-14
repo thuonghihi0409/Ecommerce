@@ -59,11 +59,30 @@ class OrderManagementRemoteDataSourceImpl
   @override
   Future<void> updateOrder(String userId, SellerOrderItem order) async {
     if (order.status == OrderStatus.delivering) {
+      final Map<String, int> soldByProduct = {};
       await Future.wait(order.productItem.map((item) async {
+        final productId = item.productDetail?.productId;
+        if (productId != null && productId.isNotEmpty) {
+          soldByProduct[productId] =
+              (soldByProduct[productId] ?? 0) + item.number;
+        }
         await supabase.from('Variants').update({
           'stock': (item.variant?.stock ?? 0) - item.number,
           'total_sold': (item.variant?.totalSold ?? 0) + item.number
         }).eq('id', item.variant?.id ?? "");
+      }));
+
+      // Đồng bộ số đã bán của bảng Products để UI customer/seller hiển thị đúng.
+      await Future.wait(soldByProduct.entries.map((entry) async {
+        final product = await supabase
+            .from('Products')
+            .select('total_sold')
+            .eq('id', entry.key)
+            .maybeSingle();
+        final currentSold = (product?['total_sold'] as num?)?.toInt() ?? 0;
+        await supabase.from('Products').update({
+          'total_sold': currentSold + entry.value,
+        }).eq('id', entry.key);
       }));
     }
     await supabase.from('Orders').update(

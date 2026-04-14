@@ -21,19 +21,34 @@ class OrderListTab extends StatefulWidget {
 
 class _OrderListTabState extends State<OrderListTab> {
   late OrderBloc _bloc;
-  late String _userId;
+  String _userId = "";
+  String _lastFetchedUserId = "";
   ListModel _data = const ListModel();
 
-  @override
-  void initState() {
-    super.initState();
-    _userId = context.read<ProfileBloc>().state.profile?.id ?? "";
-    _bloc = BlocProvider.of<OrderBloc>(context);
+  void _fetchOrders() {
+    if (_userId.isEmpty) return;
     _bloc.add(GetListOrder(orderStatus: widget.status, id: _userId));
   }
 
   @override
+  void initState() {
+    super.initState();
+    _bloc = BlocProvider.of<OrderBloc>(context);
+    _userId = context.read<ProfileBloc>().state.profile?.id ?? "";
+    _lastFetchedUserId = _userId;
+    _fetchOrders();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final currentUserId = context.read<ProfileBloc>().state.profile?.id ?? "";
+    if (currentUserId.isNotEmpty && currentUserId != _lastFetchedUserId) {
+      _userId = currentUserId;
+      _lastFetchedUserId = currentUserId;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _fetchOrders();
+      });
+    }
     return BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
       switch (widget.status) {
         case OrderStatus.pending:

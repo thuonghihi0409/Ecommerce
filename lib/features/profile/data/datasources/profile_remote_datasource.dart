@@ -21,12 +21,27 @@ abstract class ProfileRemoteDatasource {
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDatasource {
   @override
   Future<ProfileEntityModel> getProfile(String email) async {
-    final profiles =
-        await supabase.from("Users").select().eq("email", email).limit(1);
-    if (profiles.isEmpty) {
-      throw Exception('Profile not found');
+    final profiles = await supabase
+        .from("Users")
+        .select()
+        .eq("email", email.trim().toLowerCase())
+        .limit(1);
+    if (profiles.isNotEmpty) {
+      return ProfileEntityModel.fromJson(profiles.first);
     }
-    return ProfileEntityModel.fromJson(profiles.first);
+
+    // Auto-create profile nếu tài khoản Auth đã tồn tại nhưng chưa có record Users.
+    final fallbackName = email.split("@").first.trim();
+    final created = await supabase
+        .from("Users")
+        .insert({
+          'name': fallbackName.isEmpty ? 'User' : fallbackName,
+          'email': email.trim().toLowerCase(),
+          'role': "is_custommer",
+        })
+        .select()
+        .single();
+    return ProfileEntityModel.fromJson(created);
   }
 
   @override
