@@ -191,6 +191,34 @@ class _SellerOrderItemWidgetState extends State<SellerOrderItemWidget> {
                       )
                     ],
                   ),
+                if (widget.orderItem.status == OrderStatus.delivering)
+                  Row(
+                    children: [
+                      CustomButton(
+                        text: "key_delivered".tr(),
+                        isMinWidth: true,
+                        onPressed: () {
+                          Helper.showCustomDialog(
+                              message: "Xác nhận đơn hàng đã giao?",
+                              isShowPrimaryButton: true,
+                              isShowSecondButton: true,
+                              context: context,
+                              onPressPrimaryButton: () {
+                                _bloc.add(UpdateOrder(
+                                    id: context
+                                            .read<ProfileBloc>()
+                                            .state
+                                            .store
+                                            ?.id ??
+                                        "",
+                                    order: widget.orderItem,
+                                    newStatus: OrderStatus.delivered));
+                                NavigationService.instance.goBack();
+                              });
+                        },
+                      )
+                    ],
+                  ),
                 if (widget.orderItem.status == OrderStatus.returnRequested)
                   Row(
                     children: [
