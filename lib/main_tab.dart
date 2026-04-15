@@ -27,26 +27,11 @@ class _MainTabState extends State<MainTab> {
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
 
-  List<Widget> _screens = [
-    const ProductPage(),
-    // const VideosPage(),
-    const OrderPage(),
-    const NotificationScreen(),
-    const AccountScreen()
-  ];
-
   @override
   void initState() {
-    final id = context.read<ProfileBloc>().state.profile?.id;
     super.initState();
     FirebaseService.init();
     _getData();
-    _screens = [
-      const ProductPage(),
-      id == null ? const LoginScreen() : const OrderPage(),
-      id == null ? const LoginScreen() : const NotificationScreen(),
-      id == null ? const LoginScreen() : const AccountScreen()
-    ];
   }
 
   _getData() async {
@@ -59,6 +44,9 @@ class _MainTabState extends State<MainTab> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = context.select<ProfileBloc, bool>(
+      (bloc) => (bloc.state.profile?.id ?? "").isNotEmpty,
+    );
     return Scaffold(
       bottomNavigationBar: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -156,7 +144,12 @@ class _MainTabState extends State<MainTab> {
             _selectedIndex = index;
           });
         },
-        children: _screens,
+        children: [
+          const ProductPage(),
+          isLoggedIn ? const OrderPage() : const LoginScreen(),
+          isLoggedIn ? const NotificationScreen() : const LoginScreen(),
+          isLoggedIn ? const AccountScreen() : const LoginScreen(),
+        ],
       ),
     );
   }

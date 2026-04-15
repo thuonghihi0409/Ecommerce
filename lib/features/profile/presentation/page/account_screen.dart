@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thuongmaidientu/core/app_color.dart';
 import 'package:thuongmaidientu/core/app_text_style.dart';
 import 'package:thuongmaidientu/features/auth/presentation/bloc/auth_bloc/auth_bloc.dart';
+import 'package:thuongmaidientu/features/customer/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
+import 'package:thuongmaidientu/features/customer/order/presentation/bloc/order_bloc/order_bloc.dart';
 import 'package:thuongmaidientu/features/auth/presentation/page/intro.dart';
 import 'package:thuongmaidientu/features/customer/product/presentation/page/wishlist_page.dart';
 import 'package:thuongmaidientu/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
@@ -40,7 +42,13 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   _onLogout() {
+    final profileBloc = context.read<ProfileBloc>();
+    final orderBloc = context.read<OrderBloc>();
+    final cartBloc = context.read<CartBloc>();
     context.read<AuthBloc>().add(AuthLogout(onSuccess: () {
+      profileBloc.add(const ClearProfile());
+      orderBloc.add(const GetCountOrder(userId: ""));
+      cartBloc.add(const GetCountCart(userId: ""));
       NavigationService.instance.popUntilRootAndReplace(const IntroPage());
     }));
   }

@@ -48,6 +48,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<SetStore>(setStore);
     on<CreateStore>(createStore);
     on<UpdateProfile>(updateProfile);
+    on<ClearProfile>(clearProfile);
   }
 
   void getProfile(GetProfile event, Emitter<ProfileState> emit) async {
@@ -163,5 +164,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(isLoading: false));
       Helper.showToastBottom(message: ParseError.fromJson(e).message);
     }
+  }
+
+  void clearProfile(ClearProfile event, Emitter<ProfileState> emit) {
+    emit(ProfileState.empty());
   }
 }

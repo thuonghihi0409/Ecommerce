@@ -53,3 +53,7 @@ class CreateStore extends ProfileEvent {
   final Function? onSuccess;
   const CreateStore({required this.store, this.onSuccess});
 }
+
+class ClearProfile extends ProfileEvent {
+  const ClearProfile();
+}

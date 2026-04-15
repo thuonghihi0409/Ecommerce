@@ -16,6 +16,9 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
   @override
   Future<ListModel<OrderItemModel>> getListOrder(
       String userId, String status) async {
+    if (userId.isEmpty) {
+      return const ListModel(results: []);
+    }
     final data = await supabase
         .from("Orders")
         .select('''
@@ -90,6 +93,7 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDatasource {
 
   @override
   Future<int> getCount(String userId) async {
+    if (userId.isEmpty) return 0;
     final data = await supabase
         .from('Orders')
         .select('status')

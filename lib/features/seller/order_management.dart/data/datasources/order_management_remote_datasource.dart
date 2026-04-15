@@ -91,6 +91,7 @@ class OrderManagementRemoteDataSourceImpl
 
   @override
   Future<int> getCount(String userId) async {
+    if (userId.isEmpty) return 0;
     final data = await supabase
         .from('Orders')
         .select('status')

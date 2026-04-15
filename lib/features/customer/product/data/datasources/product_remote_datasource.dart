@@ -93,18 +93,23 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
             referencedTable:
                 'variants.prices') // giới hạn 1 bản ghi cho bảng con
         .single();
+    if (userId.isEmpty) {
+      data.addAll({"is_like": false});
+      return ProductDetailModel.fromJson(data);
+    }
     final isLike = await supabase
         .from("Wishlist")
         .select('''*''')
         .eq("user_id", userId)
         .eq("product_id", id)
         .maybeSingle();
-    data.addAll({"is_like": isLike == null ? false : true});
+    data.addAll({"is_like": isLike != null});
     return ProductDetailModel.fromJson(data);
   }
 
   @override
   Future<void> updateWishlist(String id, String userId, bool isLike) async {
+    if (userId.isEmpty) return;
     if (isLike) {
       await supabase
           .from("Wishlist")
@@ -144,6 +149,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDatasource {
 
   @override
   Future<List<ProductDetailModel>> getWishlist(String userId) async {
+    if (userId.isEmpty) return [];
     final data = await supabase
         .from("Wishlist")
         .select('''*, product : Products(*, images : Images(*),

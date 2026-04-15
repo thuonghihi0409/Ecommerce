@@ -17,6 +17,9 @@ class CartRemoteDataSourceImpl implements CartRemoteDatasource {
 
   @override
   Future<ListModel<CartItemModel>> getListCart(String userId) async {
+    if (userId.isEmpty) {
+      return const ListModel(results: []);
+    }
     final data = await supabase
         .from("Carts")
         .select('''
@@ -123,6 +126,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDatasource {
 
   @override
   Future<int> getCount(String userId) async {
+    if (userId.isEmpty) return 0;
     final data =
         await supabase.from('ProductCarts').select('*').eq('user_id', userId);
     return data.length;
